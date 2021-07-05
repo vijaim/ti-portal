@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import Header from '../header/header'
 
 function SignIn() {
@@ -26,7 +27,7 @@ function SignIn() {
                   <div className="text-center">
                     <p>Or,</p>
                     <a className="d-inline-block mb-40"><img src="images/sign-in-with-google.png" alt="Sign in with Google" width={192} height={46} /></a>
-                    <p>Create account? <a href="http://localhost:3000/signUp">Sign up</a></p>
+                    <p>Create account? <Link to="/signUp">Sign up</Link></p>
                   </div>
                 </div>
               </div>
