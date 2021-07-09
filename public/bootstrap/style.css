@@ -234,6 +234,10 @@ body {
     visibility: hidden
 }
 
+.text-danger {
+	color: #ff5252 !important;
+}
+
 .navbar-brand > img {
     width: 132px;
     height: auto;
