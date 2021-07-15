@@ -8,6 +8,10 @@
     "@testing-library/user-event": "^12.8.3",
     "bootstrap": "^5.0.2",
     "env-cmd": "^10.1.0",
+    "eslint": "^7.30.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
     "jquery": "^3.6.0",
     "pm2": "^5.1.0",
     "react": "^17.0.2",
@@ -24,7 +28,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start:production": "env-cmd -f .env.production react-scripts build && set PORT=8081 && env-cmd -f .env.production serve -s build -l 8081"
+    "start:production": "env-cmd -f .env.production react-scripts build && set PORT=8081 && env-cmd -f .env.production serve -s build -l 8081",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "eslintConfig": {
     "extends": [
