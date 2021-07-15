@@ -1,17 +1,18 @@
 import React, { useState } from 'react'
 import { Tabs, TabPanel, TabList, Tab } from 'react-tabs'
 import InsightsHeader from '../insights/insights-header'
-import SelectBar from '../settings/select-bar'
+import NavigationTab from './navigation-tab'
 import AddBusiness from '../signup/add-business'
+import { HEADING_TITLE } from '../../utils/constants'
 
 const SettingsBusiness = () => {
   const [state, setState] = useState({
     selectedIndex: 0,
     buttonActive: 0,
   })
-
   const { selectedIndex, buttonActive } = state
-
+  const { SETTINGS } = HEADING_TITLE
+  
   const handleBusinessSelect = (index) => {
     setState(() => ({ selectedIndex: index }))
   }
@@ -29,15 +30,15 @@ const SettingsBusiness = () => {
   }
 
   return (
-    <div>
+    <>
       <main>
         <section className="bg-white pb-20 position-relative shadow-sm">
           <div className="container">
-            <InsightsHeader headingTitle="Settings" />
+            <InsightsHeader headingTitle={SETTINGS} />
           </div>
         </section>
         <section className="bg-section section-padding-tab">
-          <SelectBar />
+          <NavigationTab navType="settings" />
           <div className="container pb-40 pt-40">
             <div className="gy-3 mb-40 row">
               <div className="col-md-4 col-lg-3">
@@ -71,7 +72,7 @@ const SettingsBusiness = () => {
           </div>
         </section>
       </main>
-    </div>
+    </>
   )
 }
 

@@ -1,25 +1,27 @@
 import React from 'react'
 import InsightsHeader from '../insights/insights-header'
-import SelectBar from '../settings/select-bar'
+import NavigationTab from './navigation-tab'
+import { HEADING_TITLE } from '../../utils/constants'
 
 const SettingsProfile = () => {
+  const { SETTINGS } = HEADING_TITLE
   return (
-    <div>
+    <>
       <main>
         <section className="bg-white pb-20 position-relative shadow-sm">
           <div className="container">
-            <InsightsHeader headingTitle="Settings" />
+            <InsightsHeader headingTitle={SETTINGS} />
           </div>
         </section>
         <section className="bg-section">
-          <SelectBar />
+          <NavigationTab navType="settings" />
           <div className="container pb-40 pt-40">
             <div className="row">
               <div className="col-lg-9 col-xl-6">
                 <div className="listing-item pt-20 pb-20 mb-20">
                   <div className="row">
                     <div className="col-md-8">
-                      <form action="#">
+                      <form>
                         <div className="mb-20">
                           <label htmlFor="inputName" className="form-label fw-bold">Name</label>
                           <input type="text" className="form-control" id="inputName" name="inputName" placeholder="Username" required />
@@ -32,7 +34,7 @@ const SettingsProfile = () => {
                 <div className="listing-item pt-20 pb-20 mb-20">
                   <div className="row">
                     <div className="col-md-8">
-                      <form action="#">
+                      <form>
                         <div className="mb-20">
                           <label htmlFor="inputPassword" className="form-label fw-bold">Password</label>
                           <input type="password" className="form-control" id="inputPassword" name="inputPassword" placeholder="******" required />
@@ -45,7 +47,7 @@ const SettingsProfile = () => {
                 <div className="listing-item pt-20 pb-20 mb-20">
                   <div className="row">
                     <div className="col-md-8">
-                      <form action="#">
+                      <form>
                         <div className="mb-20">
                           <label htmlFor="inputEmail" className="form-label fw-bold">Email</label>
                           <input type="email" className="form-control" id="inputEmail" name="inputEmail" placeholder="Email" required />
@@ -60,7 +62,7 @@ const SettingsProfile = () => {
           </div>
         </section>
       </main>
-    </div>
+    </>
   )
 }
 

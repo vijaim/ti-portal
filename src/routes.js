@@ -16,22 +16,25 @@ import Header from './component/header/header'
 import { ROUTES_PATH_NAME } from './utils/constants'
 
 function Routes() {
+  const { SIGN_IN, SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES, SALES, TRACKING,
+    SETTINGS_BUSINESS, SETTINGS_PROFILE } = ROUTES_PATH_NAME
+
   return (
     <Router>
-      <Header/>
+      <Header />
       <Switch>
-        <Route exact path={ROUTES_PATH_NAME.SIGN_IN} component={SignIn} />
-        <Route exact path={ROUTES_PATH_NAME.SIGN_UP} component={SignUp} />
-        <Route exact path={ROUTES_PATH_NAME.VERIFY_CODE} component={VerifyCode} />
-        <Route exact path={ROUTES_PATH_NAME.PASSWORD} component={Password} />
-        <Route exact path={ROUTES_PATH_NAME.BUSINESS} component={Business} />
-        <Route exact path={ROUTES_PATH_NAME.TRACK_CODE} component={TrackCode} />
-        <Route exact path={ROUTES_PATH_NAME.HOME} component={InSightsBusiness} />
-        <Route exact path={ROUTES_PATH_NAME.FAVORITES} component={Favorites} />
-        <Route exact path={ROUTES_PATH_NAME.SALES} component={Sales} />
-        <Route exact path={ROUTES_PATH_NAME.TRACKING} component={Tracking} />
-        <Route exact path={ROUTES_PATH_NAME.SETTINGS_BUSINESS} component={SettingsBusiness} />
-        <Route exact path={ROUTES_PATH_NAME.SETTINGS_PROFILE} component={SettingsProfile} />
+        <Route exact path={SIGN_IN} component={SignIn} />
+        <Route exact path={SIGN_UP} component={SignUp} />
+        <Route exact path={VERIFY_CODE} component={VerifyCode} />
+        <Route exact path={PASSWORD} component={Password} />
+        <Route exact path={BUSINESS} component={Business} />
+        <Route exact path={TRACK_CODE} component={TrackCode} />
+        <Route exact path={HOME} component={InSightsBusiness} />
+        <Route exact path={FAVORITES} component={Favorites} />
+        <Route exact path={SALES} component={Sales} />
+        <Route exact path={TRACKING} component={Tracking} />
+        <Route exact path={SETTINGS_BUSINESS} component={SettingsBusiness} />
+        <Route exact path={SETTINGS_PROFILE} component={SettingsProfile} />
       </Switch>
     </Router>
   )

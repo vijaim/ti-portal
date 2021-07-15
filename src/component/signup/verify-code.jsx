@@ -1,9 +1,9 @@
 import React from 'react'
 import useForm from '../validation/use-form'
-import { ROUTES_PATH_NAME } from '../../utils/constants'
+import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
 
 const ValidateForm = (values) => {
-  let errors = {}
+  const errors = {}
   if (!values.verifyCode) {
     errors.verifyCode = 'Verification code is required'
   }
@@ -11,6 +11,8 @@ const ValidateForm = (values) => {
 }
 
 const VerifyCode = () => {
+  const { PASSWORD } = ROUTES_PATH_NAME
+  const { VERIFICATION_CODE } = HEADING_TITLE
   const {
     values,
     errors,
@@ -19,17 +21,17 @@ const VerifyCode = () => {
   } = useForm(verifyCode, ValidateForm)
 
   function verifyCode() {
-    window.location.href = ROUTES_PATH_NAME.PASSWORD
+    window.location.href = PASSWORD
   }
 
   return (
-    <div>
+    <>
       <main>
         <section className="pb-40 pt-40">
           <div className="container">
             <div className="row">
               <div className="col-11 col-lg-5 col-md-9 col-xxl-4 me-auto ms-auto">
-                <h1 className="fw-bold h4 mb-40 text-center">Enter verification code</h1>
+                <h1 className="fw-bold h4 mb-40 text-center">{VERIFICATION_CODE}</h1>
                 <p className="mb-20">We’ve sent a verification code to your email. Enter the code below.</p>
                 <form onSubmit={handleSubmit} noValidate>
                   <div className="mb-12">
@@ -46,7 +48,7 @@ const VerifyCode = () => {
           </div>
         </section>
       </main>
-    </div>
+    </>
   )
 }
 

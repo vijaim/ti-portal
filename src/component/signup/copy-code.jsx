@@ -1,9 +1,11 @@
 import React from 'react'
+import { HEADING_TITLE } from '../../utils/constants'
 
 const CopyCode = (props) => {
+  const { COPY_CODE } = HEADING_TITLE
   return (
     <>
-      <h1 className="fw-bold h4 mb-40 text-center">Copy the tracking code</h1>
+      <h1 className="fw-bold h4 mb-40 text-center">{COPY_CODE}</h1>
       <ul className="mb-40">
         <li>Copy the tracking code</li>
         <li>Paste this tracking code inside the tag in the pages where transactions happen</li>

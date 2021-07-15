@@ -1,13 +1,16 @@
 import React from 'react'
 import InsightsHeader from '../insights/insights-header'
+import { IMAGE_URL, HEADING_TITLE } from '../../utils/constants'
 
 const Tracking = () => {
+  const { ORDERS, TRANSACTIONS, CUSTOMERS, PRODUCTS, LOCATION } = IMAGE_URL
+  const { TRACKING } = HEADING_TITLE
   return (
-    <div>
+    <>
       <main>
         <section className="bg-white pb-20 position-relative shadow-sm">
           <div className="container">
-            <InsightsHeader headingTitle="Tracking" businessName="Barney's Departmental Stores" />
+            <InsightsHeader headingTitle={TRACKING} businessName="Barney's Departmental Stores" />
           </div>
         </section>
         <section className="bg-section">
@@ -18,7 +21,7 @@ const Tracking = () => {
                 <div className="gy-3 row">
                   <div className="col-xl-4">
                     <h2 className="insightTitle">
-                      <img src="images/icons/icon-orders.png" width={24} height={24} alt="Computer" className="me-2 icon-base" />Orders
+                      <img src={ORDERS} width={24} height={24} alt="Computer" className="me-2 icon-base" />Orders
                     </h2>
                   </div>
                   <div className="col-xl-8">
@@ -125,7 +128,7 @@ const Tracking = () => {
                 <div className="gy-3 row">
                   <div className="col-xl-4">
                     <h2 className="insightTitle">
-                      <img src="images/icons/icon-transactions.png" width={24} height={24} alt="Computer" className="me-2 icon-base" />Transactions
+                      <img src={TRANSACTIONS} width={24} height={24} alt="Computer" className="me-2 icon-base" />Transactions
                     </h2>
                   </div>
                   <div className="col-xl-8">
@@ -232,7 +235,7 @@ const Tracking = () => {
                 <div className="gy-3 row">
                   <div className="col-xl-4">
                     <h2 className="insightTitle">
-                      <img src="images/icons/icon-location.png" width={24} height={24} alt="Computer" className="me-2 icon-base" />Location
+                      <img src={LOCATION} width={24} height={24} alt="Computer" className="me-2 icon-base" />Location
                     </h2>
                   </div>
                   <div className="col-xl-8">
@@ -339,7 +342,7 @@ const Tracking = () => {
                 <div className="gy-3 row">
                   <div className="col-xl-4">
                     <h2 className="insightTitle">
-                      <img src="images/icons/icon-customers.png" width={24} height={24} alt="Computer" className="me-2 icon-base" />Customers
+                      <img src={CUSTOMERS} width={24} height={24} alt="Computer" className="me-2 icon-base" />Customers
                     </h2>
                   </div>
                   <div className="col-xl-8">
@@ -446,7 +449,7 @@ const Tracking = () => {
                 <div className="gy-3 row">
                   <div className="col-xl-4">
                     <h2 className="insightTitle">
-                      <img src="images/icons/icon-products.png" width={24} height={24} alt="Computer" className="me-2 icon-base" />Products
+                      <img src={PRODUCTS} width={24} height={24} alt="Computer" className="me-2 icon-base" />Products
                     </h2>
                   </div>
                   <div className="col-xl-8">
@@ -553,7 +556,7 @@ const Tracking = () => {
           </div>
         </section>
       </main>
-    </div>
+    </>
   )
 }
 

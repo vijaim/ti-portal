@@ -3,12 +3,14 @@ import CopyCode from '../signup/copy-code'
 import { ROUTES_PATH_NAME } from '../../utils/constants'
 
 const TrackCode = () => {
+  const { SIGN_IN } = ROUTES_PATH_NAME
+  
   const trackCodeHandle = () => {
-    window.location.href = ROUTES_PATH_NAME.SIGN_IN
+    window.location.href = SIGN_IN
   }
 
   return (
-    <div>
+    <>
       <main>
         <section className="pb-40 pt-40">
           <div className="container">
@@ -20,7 +22,7 @@ const TrackCode = () => {
           </div>
         </section>
       </main>
-    </div>
+    </>
   )
 }
 
