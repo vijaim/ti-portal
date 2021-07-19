@@ -13,17 +13,15 @@ const ValidateForm = (values) => {
 const VerifyCode = () => {
   const { PASSWORD } = ROUTES_PATH_NAME
   const { VERIFICATION_CODE } = HEADING_TITLE
+  const verifyCode = () => {
+    window.location.href = PASSWORD
+  }
   const {
     values,
     errors,
     handleChange,
-    handleSubmit,
+    handleSubmit
   } = useForm(verifyCode, ValidateForm)
-
-  function verifyCode() {
-    window.location.href = PASSWORD
-  }
-
   return (
     <>
       <main>

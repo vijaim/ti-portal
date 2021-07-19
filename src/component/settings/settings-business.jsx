@@ -8,11 +8,11 @@ import { HEADING_TITLE } from '../../utils/constants'
 const SettingsBusiness = () => {
   const [state, setState] = useState({
     selectedIndex: 0,
-    buttonActive: 0,
+    buttonActive: 0
   })
   const { selectedIndex, buttonActive } = state
   const { SETTINGS } = HEADING_TITLE
-  
+
   const handleBusinessSelect = (index) => {
     setState(() => ({ selectedIndex: index }))
   }

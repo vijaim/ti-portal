@@ -22,18 +22,17 @@ const ValidateForm = (values) => {
 
 const Password = () => {
   const { BUSINESS } = ROUTES_PATH_NAME
-  const { PASSWORD } = HEADING_TITLE 
+  const { PASSWORD } = HEADING_TITLE
+  const password = () => {
+    window.location.href = BUSINESS
+  }
+
   const {
     values,
     errors,
     handleChange,
-    handleSubmit,
+    handleSubmit
   } = useForm(password, ValidateForm)
-
-  function password() {
-    window.location.href = BUSINESS
-  }
-
   return (
     <>
       <main>
@@ -47,7 +46,7 @@ const Password = () => {
                     <label htmlFor="inputName" className="form-label fw-bold">Name</label>
                     <input type="text" className="form-control" name="name" onChange={handleChange} value={values.name || ''} placeholder="Username" required />
                     {errors.name && (
-                    <div className="text-danger" >{errors.name}</div>
+                    <div className="text-danger">{errors.name}</div>
                     )}
                   </div>
                   <div className="mb-12">

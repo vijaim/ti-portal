@@ -4,7 +4,7 @@ import { ROUTES_PATH_NAME } from '../../utils/constants'
 
 const TrackCode = () => {
   const { SIGN_IN } = ROUTES_PATH_NAME
-  
+
   const trackCodeHandle = () => {
     window.location.href = SIGN_IN
   }

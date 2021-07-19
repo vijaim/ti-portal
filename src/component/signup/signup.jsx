@@ -17,17 +17,15 @@ const ValidateForm = (values) => {
 const SignUp = () => {
   const { VERIFY_CODE, SIGN_IN } = ROUTES_PATH_NAME
   const { SIGN_UP } = HEADING_TITLE
+  const signUp = () => {
+    window.location.href = VERIFY_CODE
+  }
   const {
     values,
     errors,
     handleChange,
-    handleSubmit,
+    handleSubmit
   } = useForm(signUp, ValidateForm)
-
-  function signUp() {
-    window.location.href = VERIFY_CODE
-  }
-
   return (
     <>
       <main>

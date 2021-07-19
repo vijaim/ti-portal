@@ -10,18 +10,16 @@ const InsightsHeader = (props) => {
   return (
     <>
       {routePath === FAVORITES || routePath === SALES || routePath === TRACKING
-        ?
-          <p className="mb-12 text-muted">{props.businessName}</p>
-        : ''
-      }
+        ? <p className="mb-12 text-muted">{props.businessName}</p>
+        : ''}
       {routePath === SALES
-        ? 
-          (<Link to={FAVORITES} className="mb-1 d-inline-flex align-items-center">
+        ? (
+          <Link to={FAVORITES} className="mb-1 d-inline-flex align-items-center">
             <img src={IMAGE_URL.ARROW_LEFT_BLUE} alt="Arrow Left" className="me-2" height={10} width={5} />
             Back to all insights
-          </Link>)
-        : ''
-      }
+          </Link>
+          )
+        : ''}
       <h1 className="fw-bold h4 mb-0 text-dark">{props.headingTitle}</h1>
     </>
   )

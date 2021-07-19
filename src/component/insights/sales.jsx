@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom'
 import { IMAGE_URL, HEADING_TITLE } from '../../utils/constants'
 
 const Sales = () => {
-  const { INCREASE, LIKE_ACTIVE, LIKE, DISLIKE_ACTIVE, DISLIKE, STAR_ACTIVE,STAR,
-    DECREASE } = IMAGE_URL
-    const { SALES } = HEADING_TITLE
+  const {
+    INCREASE, LIKE_ACTIVE, LIKE, DISLIKE_ACTIVE, DISLIKE, STAR_ACTIVE, STAR, DECREASE
+  } = IMAGE_URL
+  const { SALES } = HEADING_TITLE
   return (
     <>
       <main>
@@ -66,7 +67,7 @@ const Sales = () => {
                     </div>
                     <div className="col-xl-auto">
                       <div className="insightAction">
-                       <Link to="/#" className="insightAction-link">
+                        <Link to="/#" className="insightAction-link">
                           <img className="insightAction-icon icon-active" src={LIKE_ACTIVE} alt="Icon Thumb Up Active" height={24} width={24} />
                           <img className="insightAction-icon" src={LIKE} alt="Icon Thumb Up" height={24} width={24} />
                         </Link>
@@ -130,13 +131,14 @@ const Sales = () => {
                       <div className="insightStatus-content">
                         <img className="insightStatus-icon" src={INCREASE} alt="Increase Icon" height={8} width={14} />
                         <span className="fs-5 fw-bold text-success">21% </span>
-                        <span>increase in <strong> sales</strong> at 
-                        <strong> Downtown Store, today</strong></span>
+                        <span>increase in <strong> sales</strong> at
+                          <strong> Downtown Store, today</strong>
+                        </span>
                       </div>
                     </div>
                     <div className="col-xl-auto">
                       <div className="insightAction">
-                      <Link to="/#" className="insightAction-link active">
+                        <Link to="/#" className="insightAction-link active">
                           <img className="insightAction-icon icon-active" src={LIKE_ACTIVE} alt="Icon Thumb Up Active" height={24} width={24} />
                           <img className="insightAction-icon" src={LIKE} alt="Icon Thumb Up" height={24} width={24} />
                         </Link>
@@ -165,7 +167,7 @@ const Sales = () => {
                     </div>
                     <div className="col-xl-auto">
                       <div className="insightAction">
-                      <Link to="/#" className="insightAction-link">
+                        <Link to="/#" className="insightAction-link">
                           <img className="insightAction-icon icon-active" src={LIKE_ACTIVE} alt="Icon Thumb Up Active" height={24} width={24} />
                           <img className="insightAction-icon" src={LIKE} alt="Icon Thumb Up" height={24} width={24} />
                         </Link>
@@ -237,7 +239,7 @@ const Sales = () => {
                     </div>
                     <div className="col-xl-auto">
                       <div className="insightAction">
-                       <Link to="/#" className="insightAction-link active">
+                        <Link to="/#" className="insightAction-link active">
                           <img className="insightAction-icon icon-active" src={LIKE_ACTIVE} alt="Icon Thumb Up Active" height={24} width={24} />
                           <img className="insightAction-icon" src={LIKE} alt="Icon Thumb Up" height={24} width={24} />
                         </Link>

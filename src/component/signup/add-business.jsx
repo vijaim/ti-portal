@@ -10,13 +10,13 @@ const AddBusiness = (props) => {
   return (
     <form>
       {(routePath === HOME) || (routePath === SETTINGS_BUSINESS)
-        ?
+        ? (
           <div className="mb-12">
             <label htmlFor="inputName" className="form-label fw-bold">Name</label>
             <input type="text" className="form-control" id="inputName" name="inputName" placeholder="Username" required />
           </div>
-        : ''
-      }
+          )
+        : ''}
       <div className="mb-12">
         <label htmlFor="inputBusiness" className="form-label fw-bold">Business category</label>
         <select defaultValue="Select a category" className="form-select" aria-label="Business category" id="inputBusiness">
@@ -40,7 +40,7 @@ const AddBusiness = (props) => {
         <input type="url" defaultValue="https://" className="form-control" id="inputURL" placeholder="https://" />
       </div>
       {(routePath === SETTINGS_BUSINESS)
-        ?
+        ? (
           <>
             <div className="mb-12">
               <label htmlFor="inputTrackingCode" className="form-label fw-bold">Tracking Code</label>
@@ -98,8 +98,8 @@ const AddBusiness = (props) => {
               </div>
             </div>
           </>
-        : ''
-      }
+          )
+        : ''}
       <button type="submit" onClick={props.onClick} className={props.className}>{props.buttonTitle}</button>
     </form>
   )

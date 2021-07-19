@@ -3,7 +3,9 @@ import InsightsHeader from '../insights/insights-header'
 import { IMAGE_URL, HEADING_TITLE } from '../../utils/constants'
 
 const Tracking = () => {
-  const { ORDERS, TRANSACTIONS, CUSTOMERS, PRODUCTS, LOCATION } = IMAGE_URL
+  const {
+    ORDERS, TRANSACTIONS, CUSTOMERS, PRODUCTS, LOCATION
+  } = IMAGE_URL
   const { TRACKING } = HEADING_TITLE
   return (
     <>

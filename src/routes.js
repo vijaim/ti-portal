@@ -15,10 +15,11 @@ import SettingsProfile from './component/settings/settings-profile'
 import Header from './component/header/header'
 import { ROUTES_PATH_NAME } from './utils/constants'
 
-function Routes() {
-  const { SIGN_IN, SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES, SALES, TRACKING,
-    SETTINGS_BUSINESS, SETTINGS_PROFILE } = ROUTES_PATH_NAME
-
+const Routes = () => {
+  const {
+    SIGN_IN, SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES, SALES,
+    TRACKING, SETTINGS_BUSINESS, SETTINGS_PROFILE
+  } = ROUTES_PATH_NAME
   return (
     <Router>
       <Header />

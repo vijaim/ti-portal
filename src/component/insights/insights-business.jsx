@@ -9,7 +9,7 @@ import { ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE } from '../../utils/constant
 const InSightsBusiness = () => {
   const [state, setState] = useState({
     isBusinessModalOpen: false,
-    isTrackModalOpen: false,
+    isTrackModalOpen: false
   })
   const { isBusinessModalOpen, isTrackModalOpen } = state
   const { FAVORITES } = ROUTES_PATH_NAME
@@ -49,7 +49,7 @@ const InSightsBusiness = () => {
         </section>
         <section className="bg-section section-padding">
           <div className="container pb-40 pt-40">
-            <Link to="/#" className="business-item" to={FAVORITES}>
+            <Link className="business-item" to={FAVORITES}>
               <div className="listing-item">
                 <div className="align-items-center gy-3 row">
                   <div className="col-xl-4">

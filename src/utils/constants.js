@@ -11,14 +11,14 @@ export const ROUTES_PATH_NAME = {
   SALES: '/sales',
   TRACKING: '/tracking',
   SETTINGS_BUSINESS: '/settingsBusiness',
-  SETTINGS_PROFILE: '/settingsProfile',
+  SETTINGS_PROFILE: '/settingsProfile'
 }
 
 export const NAVIGATION_TABS = [
   { id: 'favorites', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Favorites', type: 'home' },
   { id: 'all', routePath: ROUTES_PATH_NAME.SALES, name: 'All', type: 'home' },
   { id: 'businesses', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Businesses', type: 'settings' },
-  { id: 'profile', routePath: ROUTES_PATH_NAME.SETTINGS_PROFILE, name: 'Profile', type: 'settings' },
+  { id: 'profile', routePath: ROUTES_PATH_NAME.SETTINGS_PROFILE, name: 'Profile', type: 'settings' }
 ]
 
 export const HEADER_NAVIGATION = [
@@ -26,13 +26,13 @@ export const HEADER_NAVIGATION = [
   { id: 'signup', routePath: ROUTES_PATH_NAME.SIGN_UP, name: 'Sign up', type: 'auth' },
   { id: 'home', routePath: ROUTES_PATH_NAME.HOME, name: 'Home', type: 'dashboard' },
   { id: 'tracking', routePath: ROUTES_PATH_NAME.TRACKING, name: 'Tracking', type: 'dashboard' },
-  { id: 'settings', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Settings', type: 'dashboard'  },
-  { id: 'logout', routePath: ROUTES_PATH_NAME.SIGN_IN, name: 'Logout', type: 'dashboard'  },
+  { id: 'settings', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Settings', type: 'dashboard' },
+  { id: 'logout', routePath: ROUTES_PATH_NAME.SIGN_IN, name: 'Logout', type: 'dashboard' }
 ]
 
 export const IMAGES = {
   IMAGE_PATH: 'images/',
-  IMAGE_PATHS: 'images/icons/',
+  IMAGE_PATHS: 'images/icons/'
 }
 
 export const IMAGE_URL = {
@@ -55,7 +55,7 @@ export const IMAGE_URL = {
   COMPUTER: `${IMAGES.IMAGE_PATHS}${'icon-computer.png'}`,
   MOBILE: `${IMAGES.IMAGE_PATHS}${'icon-mobile.png'}`,
   ARROW_LEFT_BLUE: `${IMAGES.IMAGE_PATHS}${'icon-arrow-left-blue.png'}`,
-  GOOGLE_SIGN_IN: `${IMAGES.IMAGE_PATH}${'sign-in-with-google.png'}`,
+  GOOGLE_SIGN_IN: `${IMAGES.IMAGE_PATH}${'sign-in-with-google.png'}`
 }
 
 export const HEADING_TITLE = {
@@ -69,5 +69,5 @@ export const HEADING_TITLE = {
   FAVORITES: 'Insights',
   SALES: 'Insights - Sales',
   TRACKING: 'Tracking',
-  SETTINGS: 'Settings',
+  SETTINGS: 'Settings'
 }

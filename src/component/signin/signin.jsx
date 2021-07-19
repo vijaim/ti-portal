@@ -18,19 +18,18 @@ const ValidateForm = (values) => {
 }
 
 const SignIn = () => {
+  const handleSignIn = () => {
+    window.location.href = HOME
+  }
   const {
     values,
     errors,
     handleChange,
-    handleSubmit,
+    handleSubmit
   } = useForm(handleSignIn, ValidateForm)
-  
+
   const { SIGN_UP, HOME } = ROUTES_PATH_NAME
   const { SIGN_IN } = HEADING_TITLE
-
-  function handleSignIn() {
-    window.location.href = HOME
-  }
 
   return (
     <>
@@ -60,7 +59,9 @@ const SignIn = () => {
                 <div className="text-center">
                   <p>Or,</p>
                   <GoogleSignIn />
-                  <p>Create account? <Link to={SIGN_UP}>Sign up</Link></p>
+                  <p>Create account?
+                    <Link to={SIGN_UP}>Sign up</Link>
+                  </p>
                 </div>
               </div>
             </div>
