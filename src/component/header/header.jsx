@@ -8,7 +8,7 @@ const Header = () => {
   const routePath = GetRoutesPathName()
   const {
     SIGN_IN, SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES,
-    SALES, SETTINGS_BUSINESS, SETTINGS_PROFILE
+    SALES, SETTINGS_BUSINESS, SETTINGS_PROFILE, OTP
   } = ROUTES_PATH_NAME
 
   const setRoutesPath = (routePath) => {
@@ -19,13 +19,15 @@ const Header = () => {
     } else if (routePath === VERIFY_CODE || routePath === PASSWORD || routePath === BUSINESS ||
       routePath === TRACK_CODE) {
       return SIGN_UP
+    } else if (routePath === SIGN_IN || routePath === OTP) {
+      return OTP
     }
     return routePath
   }
 
   const checkAuthHeader = () => {
     return routePath === SIGN_IN || routePath === SIGN_UP || routePath === VERIFY_CODE ||
-    routePath === PASSWORD || routePath === BUSINESS || routePath === TRACK_CODE
+    routePath === PASSWORD || routePath === BUSINESS || routePath === TRACK_CODE || routePath === OTP
   }
 
   return (

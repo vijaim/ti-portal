@@ -6,11 +6,6 @@ import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
 
 const ValidateForm = (values) => {
   const errors = {}
-  if (!values.email) {
-    errors.email = 'Email address is required'
-  } else if (!/\S+@\S+\.\S+/.test(values.email)) {
-    errors.email = 'Email address is invalid'
-  }
   if (!values.password) {
     errors.password = 'Password is required'
   }
@@ -42,7 +37,7 @@ const SignIn = () => {
                 <form className="mb-40" onSubmit={handleSubmit} noValidate>
                   <div className="mb-12">
                     <label htmlFor="inputSignUpEmail" className="form-label fw-bold">Email</label>
-                    <input type="email" className="form-control" name="email" onChange={handleChange} value={values.email || ''} placeholder="Email" required />
+                    <input type="email" className="form-control" name="email" onChange={handleChange} value="mukkandan.tgi@gmail.com" placeholder="Email" required disabled={true} />
                     {errors.email && (
                     <div className="text-danger">{errors.email}</div>
                     )}

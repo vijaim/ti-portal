@@ -14,17 +14,19 @@ import Tracking from './component/insights/tracking'
 import SettingsBusiness from './component/settings/settings-business'
 import SettingsProfile from './component/settings/settings-profile'
 import Header from './component/header/header'
+import Otp from './component/signin/otp'
 import { ROUTES_PATH_NAME } from './utils/constants'
 
 const Routes = () => {
   const {
     SIGN_IN, SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES, SALES,
-    TRACKING, SETTINGS_BUSINESS, SETTINGS_PROFILE
+    TRACKING, SETTINGS_BUSINESS, SETTINGS_PROFILE, OTP
   } = ROUTES_PATH_NAME
   return (
     <Router>
       <Header />
       <Switch>
+        <Route exact path={OTP} component={Otp} />
         <Route exact path={SIGN_IN} component={SignIn} />
         <Route exact path={SIGN_UP} component={SignUp} />
         <Route exact path={VERIFY_CODE} component={VerifyCode} />
