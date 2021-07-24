@@ -14,21 +14,23 @@ import Tracking from './component/insights/tracking'
 import SettingsBusiness from './component/settings/settings-business'
 import SettingsProfile from './component/settings/settings-profile'
 import Header from './component/header/header'
-import Otp from './component/signin/otp'
+import GenerateOtp from './component/signin/generate-otp'
+import SignUpForm from './component/signup/signup-form'
 import { ROUTES_PATH_NAME } from './utils/constants'
 
 const Routes = () => {
   const {
     SIGN_IN, SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES, SALES,
-    TRACKING, SETTINGS_BUSINESS, SETTINGS_PROFILE, OTP
+    TRACKING, SETTINGS_BUSINESS, SETTINGS_PROFILE, GENERATE_OTP, SIGN_UP_FORM
   } = ROUTES_PATH_NAME
   return (
     <Router>
       <Header />
       <Switch>
-        <Route exact path={OTP} component={Otp} />
+        <Route exact path={GENERATE_OTP} component={GenerateOtp} />
         <Route exact path={SIGN_IN} component={SignIn} />
         <Route exact path={SIGN_UP} component={SignUp} />
+        <Route exact path={SIGN_UP_FORM} component={SignUpForm} />
         <Route exact path={VERIFY_CODE} component={VerifyCode} />
         <Route exact path={PASSWORD} component={Password} />
         <Route exact path={BUSINESS} component={Business} />

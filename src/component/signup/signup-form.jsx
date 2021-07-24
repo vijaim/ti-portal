@@ -10,7 +10,7 @@ const ValidateForm = (values) => {
   return errors
 }
 
-const SignIn = () => {
+const SignInForm = () => {
   const handleSignIn = () => {
     window.location.href = HOME
   }
@@ -22,7 +22,7 @@ const SignIn = () => {
   } = useForm(handleSignIn, ValidateForm)
 
   const { HOME } = ROUTES_PATH_NAME
-  const { SIGN_IN } = HEADING_TITLE
+  const { SIGN_UP } = HEADING_TITLE
 
   return (
     <>
@@ -31,7 +31,7 @@ const SignIn = () => {
           <div className="container">
             <div className="row">
               <div className="col-11 col-lg-5 col-md-9 col-xxl-4 me-auto ms-auto">
-                <h1 className="fw-bold h4 mb-40 text-center">{SIGN_IN}</h1>
+                <h1 className="fw-bold h4 mb-40 text-center">{SIGN_UP}</h1>
                 <form className="mb-40" onSubmit={handleSubmit} noValidate>
                   <div className="mb-12">
                     <label htmlFor="inputSignUpEmail" className="form-label fw-bold">Email</label>
@@ -47,7 +47,7 @@ const SignIn = () => {
                     <div className="text-danger">{errors.password}</div>
                     )}
                   </div>
-                  <button type="submit" className="btn btn-primary d-block mt-20 w-100">Sign in</button>
+                  <button type="submit" className="btn btn-primary d-block mt-20 w-100">Sign up</button>
                 </form>
               </div>
             </div>
@@ -58,4 +58,4 @@ const SignIn = () => {
   )
 }
 
-export default SignIn
+export default SignInForm

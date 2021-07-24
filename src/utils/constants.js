@@ -1,8 +1,9 @@
 // Routes Path
 export const ROUTES_PATH_NAME = {
-  OTP: '/',
+  GENERATE_OTP: '/',
   SIGN_IN: '/signIn',
   SIGN_UP: '/signUp',
+  SIGN_UP_FORM: '/signUpForm',
   VERIFY_CODE: '/verifyCode',
   PASSWORD: '/password',
   BUSINESS: '/business',
@@ -23,12 +24,12 @@ export const NAVIGATION_TABS = [
 ]
 
 export const HEADER_NAVIGATION = [
-  { id: 'signin', routePath: ROUTES_PATH_NAME.OTP, name: 'Sign in', type: 'auth' },
+  { id: 'signin', routePath: ROUTES_PATH_NAME.GENERATE_OTP, name: 'Sign in', type: 'auth' },
   { id: 'signup', routePath: ROUTES_PATH_NAME.SIGN_UP, name: 'Sign up', type: 'auth' },
   { id: 'home', routePath: ROUTES_PATH_NAME.HOME, name: 'Home', type: 'dashboard' },
   { id: 'tracking', routePath: ROUTES_PATH_NAME.TRACKING, name: 'Tracking', type: 'dashboard' },
   { id: 'settings', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Settings', type: 'dashboard' },
-  { id: 'logout', routePath: ROUTES_PATH_NAME.OTP, name: 'Logout', type: 'dashboard' }
+  { id: 'logout', routePath: ROUTES_PATH_NAME.GENERATE_OTP, name: 'Logout', type: 'dashboard' }
 ]
 
 export const IMAGES = {

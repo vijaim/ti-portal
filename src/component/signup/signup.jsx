@@ -18,10 +18,10 @@ const ValidateForm = (values) => {
 }
 
 const SignUp = () => {
-  const { SIGN_IN, OTP } = ROUTES_PATH_NAME
+  const { SIGN_UP_FORM, GENERATE_OTP } = ROUTES_PATH_NAME
   const { SIGN_UP } = HEADING_TITLE
   const signUp = () => {
-    window.location.href = SIGN_IN
+    window.location.href = SIGN_UP_FORM
   }
   const {
     values,
@@ -57,7 +57,7 @@ const SignUp = () => {
                 <div className="text-center">
                   <p>Or,</p>
                   <GoogleSignIn />
-                  <p>Have an account? <Link to={OTP}>Sign in</Link></p>
+                  <p>Have an account? <Link to={GENERATE_OTP}>Sign in</Link></p>
                 </div>
               </div>
             </div>

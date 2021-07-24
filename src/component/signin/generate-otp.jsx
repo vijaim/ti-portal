@@ -1,6 +1,8 @@
 import React from 'react'
-import useForm from '../validation/use-form'
+import { Link } from 'react-router-dom'
 import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
+import GoogleSignIn from './google-signin'
+import useForm from '../validation/use-form'
 
 const ValidateForm = (values) => {
   const errors = {}
@@ -12,8 +14,8 @@ const ValidateForm = (values) => {
   return errors
 }
 
-const Otp = () => {
-  const { SIGN_IN } = ROUTES_PATH_NAME
+const GenerateOtp = () => {
+  const { SIGN_IN, SIGN_UP } = ROUTES_PATH_NAME
   const { SIGN_IN: SignIn } = HEADING_TITLE
   const otp = () => {
     window.location.href = SIGN_IN
@@ -42,6 +44,13 @@ const Otp = () => {
                   </div>
                   <button type="submit" className="btn btn-primary d-block mt-20 w-100">Get OTP</button>
                 </form>
+                <div className="text-center">
+                  <p>Or,</p>
+                  <GoogleSignIn />
+                  <p>Create account?
+                    <Link to={SIGN_UP}> Sign up</Link>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -51,4 +60,4 @@ const Otp = () => {
   )
 }
 
-export default Otp
+export default GenerateOtp

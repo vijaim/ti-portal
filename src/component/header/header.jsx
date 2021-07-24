@@ -8,7 +8,7 @@ const Header = () => {
   const routePath = GetRoutesPathName()
   const {
     SIGN_IN, SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES,
-    SALES, SETTINGS_BUSINESS, SETTINGS_PROFILE, OTP
+    SALES, SETTINGS_BUSINESS, SETTINGS_PROFILE, GENERATE_OTP, SIGN_UP_FORM
   } = ROUTES_PATH_NAME
 
   const setRoutesPath = (routePath) => {
@@ -16,18 +16,18 @@ const Header = () => {
       return HOME
     } else if (routePath === SETTINGS_PROFILE) {
       return SETTINGS_BUSINESS
-    } else if (routePath === VERIFY_CODE || routePath === PASSWORD || routePath === BUSINESS ||
+    } else if (routePath === SIGN_UP_FORM || routePath === VERIFY_CODE || routePath === PASSWORD || routePath === BUSINESS ||
       routePath === TRACK_CODE) {
       return SIGN_UP
-    } else if (routePath === SIGN_IN || routePath === OTP) {
-      return OTP
+    } else if (routePath === SIGN_IN || routePath === GENERATE_OTP) {
+      return GENERATE_OTP
     }
     return routePath
   }
 
   const checkAuthHeader = () => {
-    return routePath === SIGN_IN || routePath === SIGN_UP || routePath === VERIFY_CODE ||
-    routePath === PASSWORD || routePath === BUSINESS || routePath === TRACK_CODE || routePath === OTP
+    return routePath === SIGN_IN || routePath === SIGN_UP_FORM || routePath === SIGN_UP || routePath === VERIFY_CODE ||
+    routePath === PASSWORD || routePath === BUSINESS || routePath === TRACK_CODE || routePath === GENERATE_OTP
   }
 
   return (
