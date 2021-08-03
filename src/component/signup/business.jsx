@@ -2,11 +2,12 @@ import React from 'react'
 import AddBusiness from '../signup/add-business'
 import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
 
-const Business = () => {
+const Business = (props) => {
   const { TRACK_CODE } = ROUTES_PATH_NAME
   const { ADD_BUSINESS } = HEADING_TITLE
+
   const addBusinessHandle = () => {
-    window.location.href = TRACK_CODE
+    props.history.push(TRACK_CODE)
   }
 
   return (

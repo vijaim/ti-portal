@@ -5,6 +5,7 @@ import { HEADING_TITLE } from '../../utils/constants'
 
 const SettingsProfile = () => {
   const { SETTINGS } = HEADING_TITLE
+
   return (
     <>
       <main>

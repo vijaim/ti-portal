@@ -74,3 +74,8 @@ export const HEADING_TITLE = {
   TRACKING: 'Tracking',
   SETTINGS: 'Settings'
 }
+
+export const ROOT = {
+  OTP_GENERATE: 'https://portalapi.trueinsights.co/users/generate_password',
+  LOGIN: 'https://portalapi.trueinsights.co/users/login'
+}

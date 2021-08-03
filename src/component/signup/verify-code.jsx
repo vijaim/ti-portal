@@ -10,18 +10,21 @@ const ValidateForm = (values) => {
   return errors
 }
 
-const VerifyCode = () => {
+const VerifyCode = (props) => {
   const { PASSWORD } = ROUTES_PATH_NAME
   const { VERIFICATION_CODE } = HEADING_TITLE
+
   const verifyCode = () => {
-    window.location.href = PASSWORD
+    props.history.push(PASSWORD)
   }
+
   const {
     values,
     errors,
     handleChange,
     handleSubmit
   } = useForm(verifyCode, ValidateForm)
+
   return (
     <>
       <main>

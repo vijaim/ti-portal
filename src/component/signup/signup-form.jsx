@@ -10,9 +10,12 @@ const ValidateForm = (values) => {
   return errors
 }
 
-const SignInForm = () => {
+const SignInForm = (props) => {
+  const { HOME } = ROUTES_PATH_NAME
+  const { SIGN_UP } = HEADING_TITLE
+
   const handleSignIn = () => {
-    window.location.href = HOME
+    props.history.push(HOME)
   }
   const {
     values,
@@ -20,9 +23,6 @@ const SignInForm = () => {
     handleChange,
     handleSubmit
   } = useForm(handleSignIn, ValidateForm)
-
-  const { HOME } = ROUTES_PATH_NAME
-  const { SIGN_UP } = HEADING_TITLE
 
   return (
     <>

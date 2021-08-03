@@ -2,11 +2,11 @@ import React from 'react'
 import CopyCode from '../signup/copy-code'
 import { ROUTES_PATH_NAME } from '../../utils/constants'
 
-const TrackCode = () => {
+const TrackCode = (props) => {
   const { SIGN_IN } = ROUTES_PATH_NAME
 
   const trackCodeHandle = () => {
-    window.location.href = SIGN_IN
+    props.history.push(SIGN_IN)
   }
 
   return (

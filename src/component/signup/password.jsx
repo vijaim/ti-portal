@@ -20,11 +20,12 @@ const ValidateForm = (values) => {
   return errors
 }
 
-const Password = () => {
+const Password = (props) => {
   const { BUSINESS } = ROUTES_PATH_NAME
   const { PASSWORD } = HEADING_TITLE
+
   const password = () => {
-    window.location.href = BUSINESS
+    props.history.push(BUSINESS)
   }
 
   const {
@@ -33,6 +34,7 @@ const Password = () => {
     handleChange,
     handleSubmit
   } = useForm(password, ValidateForm)
+
   return (
     <>
       <main>

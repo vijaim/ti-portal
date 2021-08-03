@@ -7,6 +7,7 @@ const Tracking = () => {
     ORDERS, TRANSACTIONS, CUSTOMERS, PRODUCTS, LOCATION
   } = IMAGE_URL
   const { TRACKING } = HEADING_TITLE
+
   return (
     <>
       <main>

@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+/* eslint-disable no-unneeded-ternary */
+import React, { useState, useEffect } from 'react'
+import { Router, Route, Switch } from 'react-router-dom'
 import SignIn from './component/signin/signin'
 import SignUp from './component/signup/signup'
 import VerifyCode from './component/signup/verify-code'
@@ -16,15 +17,29 @@ import SettingsProfile from './component/settings/settings-profile'
 import Header from './component/header/header'
 import GenerateOtp from './component/signin/generate-otp'
 import SignUpForm from './component/signup/signup-form'
+import { connect } from 'react-redux'
 import { ROUTES_PATH_NAME } from './utils/constants'
+import { history } from './history'
+import { getCookie } from './functions/cookie-functions'
 
-const Routes = () => {
+const Routes = (props) => {
   const {
     SIGN_IN, SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES, SALES,
     TRACKING, SETTINGS_BUSINESS, SETTINGS_PROFILE, GENERATE_OTP, SIGN_UP_FORM
   } = ROUTES_PATH_NAME
+  const [state, setState] = useState({
+    isLoggedIn: false
+  })
+  const { isLoggedIn } = state
+  const { cookie } = props
+
+  useEffect(() => {
+    const loginCookie = getCookie('trueinsights-cookie')
+    setState(() => ({ isLoggedIn: loginCookie !== undefined && loginCookie !== '' && loginCookie !== null ? true : false }))
+  }, [cookie])
+
   return (
-    <Router>
+    <Router history={history}>
       <Header />
       <Switch>
         <Route exact path={GENERATE_OTP} component={GenerateOtp} />
@@ -35,15 +50,22 @@ const Routes = () => {
         <Route exact path={PASSWORD} component={Password} />
         <Route exact path={BUSINESS} component={Business} />
         <Route exact path={TRACK_CODE} component={TrackCode} />
-        <Route exact path={HOME} component={InSightsBusiness} />
-        <Route exact path={FAVORITES} component={Favorites} />
-        <Route exact path={SALES} component={Sales} />
-        <Route exact path={TRACKING} component={Tracking} />
-        <Route exact path={SETTINGS_BUSINESS} component={SettingsBusiness} />
-        <Route exact path={SETTINGS_PROFILE} component={SettingsProfile} />
+        {isLoggedIn && <Route exact path={HOME} component={InSightsBusiness} /> }
+        {isLoggedIn && <Route exact path={FAVORITES} component={Favorites} /> }
+        {isLoggedIn && <Route exact path={SALES} component={Sales} /> }
+        {isLoggedIn && <Route exact path={TRACKING} component={Tracking} /> }
+        {isLoggedIn && <Route exact path={SETTINGS_BUSINESS} component={SettingsBusiness} /> }
+        {isLoggedIn && <Route exact path={SETTINGS_PROFILE} component={SettingsProfile} /> }
+        <Route exact path="*" component={GenerateOtp} />
       </Switch>
     </Router>
   )
 }
 
-export default Routes
+const mapStateToProps = (state) => {
+  return {
+    cookie: state.signIn.cookie
+  }
+}
+
+export default connect(mapStateToProps, null)(Routes)

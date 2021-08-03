@@ -8,6 +8,7 @@ const Sales = () => {
     INCREASE, LIKE_ACTIVE, LIKE, DISLIKE_ACTIVE, DISLIKE, STAR_ACTIVE, STAR, DECREASE
   } = IMAGE_URL
   const { SALES } = HEADING_TITLE
+
   return (
     <>
       <main>

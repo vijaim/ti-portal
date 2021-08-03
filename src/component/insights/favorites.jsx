@@ -10,6 +10,7 @@ const Favorites = () => {
     STAR, DECREASE, TRANSACTIONS, ARROW_LEFT, CUSTOMERS, PRODUCTS, LOCATION
   } = IMAGE_URL
   const { FAVORITES } = HEADING_TITLE
+
   return (
     <>
       <main>

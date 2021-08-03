@@ -3,6 +3,7 @@ import { HEADING_TITLE } from '../../utils/constants'
 
 const CopyCode = (props) => {
   const { COPY_CODE } = HEADING_TITLE
+
   return (
     <>
       <h1 className="fw-bold h4 mb-40 text-center">{COPY_CODE}</h1>

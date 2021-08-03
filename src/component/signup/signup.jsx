@@ -17,18 +17,21 @@ const ValidateForm = (values) => {
   return errors
 }
 
-const SignUp = () => {
+const SignUp = (props) => {
   const { SIGN_UP_FORM, GENERATE_OTP } = ROUTES_PATH_NAME
   const { SIGN_UP } = HEADING_TITLE
+
   const signUp = () => {
-    window.location.href = SIGN_UP_FORM
+    props.history.push(SIGN_UP_FORM)
   }
+
   const {
     values,
     errors,
     handleChange,
     handleSubmit
   } = useForm(signUp, ValidateForm)
+
   return (
     <>
       <main>
