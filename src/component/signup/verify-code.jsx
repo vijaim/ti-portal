@@ -1,21 +1,40 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import useForm from '../validation/use-form'
+import validateForm from '../validation/validate-form'
 import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
-
-const ValidateForm = (values) => {
-  const errors = {}
-  if (!values.verifyCode) {
-    errors.verifyCode = 'Verification code is required'
-  }
-  return errors
-}
+import { connect } from 'react-redux'
+import { setLoginCookie, setPreviousPath } from '../signin/signin-actions'
+import { toast } from 'react-toastify'
+import { getCookie, setCookies } from '../../functions/cookie-functions'
+import NetworkManager from '../../network-manager/network-config'
+import 'react-toastify/dist/ReactToastify.css'
 
 const VerifyCode = (props) => {
-  const { PASSWORD } = ROUTES_PATH_NAME
+  const { HOME } = ROUTES_PATH_NAME
   const { VERIFICATION_CODE } = HEADING_TITLE
+  const { setLoginCookie, email, setPreviousPath } = props
 
-  const verifyCode = () => {
-    props.history.push(PASSWORD)
+  const verificationCode = () => {
+    const payload = {
+      email: email,
+      password: values.code
+    }
+    NetworkManager.signIn(payload).then(response => {
+      if (response.status === 200) {
+        setCookies('trueinsights-cookie', response.data.response_objects.token)
+        const loginCookie = getCookie('trueinsights-cookie')
+        setLoginCookie(loginCookie)
+        props.history.push(HOME)
+      }
+    })
+      .catch(error => {
+        console.log(error.response)
+        if (error.response.data.response_objects === null) {
+          toast('Invalid Login Credentials', {
+            position: toast.POSITION.TOP_CENTER
+          })
+        }
+      })
   }
 
   const {
@@ -23,7 +42,12 @@ const VerifyCode = (props) => {
     errors,
     handleChange,
     handleSubmit
-  } = useForm(verifyCode, ValidateForm)
+  } = useForm({ code: '' }, validateForm)
+
+  useEffect(() => {
+    const previousPath = props.history.location.state.from
+    setPreviousPath(previousPath)
+  }, [])
 
   return (
     <>
@@ -37,12 +61,12 @@ const VerifyCode = (props) => {
                 <form onSubmit={handleSubmit} noValidate>
                   <div className="mb-12">
                     <label htmlFor="inputVerificationCode" className="form-label fw-bold">Verification code</label>
-                    <input type="text" className="form-control" name="verifyCode" onChange={handleChange} value={values.verifyCode || ''} placeholder="******" required />
-                    {errors.verifyCode && (
-                    <div className="text-danger">{errors.verifyCode}</div>
+                    <input type="password" className="form-control" name="code" onChange={handleChange} value={values.code || ''} placeholder="*****" required />
+                    {errors.code && (
+                    <div className="text-danger">{errors.code}</div>
                     )}
                   </div>
-                  <button type="submit" className="btn btn-primary d-block mt-20 w-100">Continue</button>
+                  <button type="submit" onClick={verificationCode} className="btn btn-primary d-block mt-20 w-100">Continue</button>
                 </form>
               </div>
             </div>
@@ -53,4 +77,22 @@ const VerifyCode = (props) => {
   )
 }
 
-export default VerifyCode
+const mapStateToProps = (state) => {
+  return {
+    cookie: state.signIn.cookie,
+    email: state.signIn.email
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setLoginCookie: (cookie) => {
+      dispatch(setLoginCookie(cookie))
+    },
+    setPreviousPath: (path) => {
+      dispatch(setPreviousPath(path))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(VerifyCode)

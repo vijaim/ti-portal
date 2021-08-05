@@ -1,46 +1,39 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
+import GoogleSignIn from './google-signin'
 import useForm from '../validation/use-form'
-import { HEADING_TITLE, ROUTES_PATH_NAME } from '../../utils/constants'
+import validateForm from '../validation/validate-form'
 import { connect } from 'react-redux'
-import { setLoginCookie } from './signin-actions'
-import { toast, ToastContainer } from 'react-toastify'
-import { getCookie, setCookies } from '../../functions/cookie-functions'
+import { setEmail } from './signin-actions'
 import NetworkManager from '../../network-manager/network-config'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-const ValidateForm = (values) => {
-  const errors = {}
-  if (!values.password) {
-    errors.password = 'Password is required'
-  }
-  return errors
-}
-
 const SignIn = (props) => {
-  const { setLoginCookie, email } = props
-  const { SIGN_IN } = HEADING_TITLE
-  const { HOME } = ROUTES_PATH_NAME
+  const { VERIFY_CODE, SIGN_UP, SIGN_IN } = ROUTES_PATH_NAME
+  const { SIGN_IN: signin } = HEADING_TITLE
+  const { setEmail } = props
 
-  const handleSignIn = () => {
+  const otpGenerate = () => {
     const payload = {
-      email: email,
-      password: values.password
+      email: values.email
     }
-    NetworkManager.signIn(payload).then(response => {
+    NetworkManager.generateOtp(payload).then(response => {
       if (response.status === 200) {
-        setCookies('trueinsights-cookie', response.data.response_objects.token)
-        const loginCookie = getCookie('trueinsights-cookie')
-        setLoginCookie(loginCookie)
-        props.history.push(HOME)
+        setEmail(values.email)
+        props.history.push({
+          pathname: VERIFY_CODE,
+          state: {
+            from: SIGN_IN
+          }
+        })
       }
     })
       .catch(error => {
-        console.log(error.response)
-        if (error.response.data.response_objects === null) {
-          toast('Invalid Login Credentials', {
-            position: toast.POSITION.TOP_CENTER
-          })
-        }
+        toast(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER
+        })
       })
   }
 
@@ -49,7 +42,7 @@ const SignIn = (props) => {
     errors,
     handleChange,
     handleSubmit
-  } = useForm(handleSignIn, ValidateForm)
+  } = useForm({ email: '' }, validateForm)
 
   return (
     <>
@@ -58,25 +51,24 @@ const SignIn = (props) => {
           <div className="container">
             <div className="row">
               <div className="col-11 col-lg-5 col-md-9 col-xxl-4 me-auto ms-auto">
-                <h1 className="fw-bold h4 mb-40 text-center">{SIGN_IN}</h1>
+                <h1 className="fw-bold h4 mb-40 text-center">{signin}</h1>
                 <form className="mb-40" onSubmit={handleSubmit} noValidate>
                   <div className="mb-12">
                     <label htmlFor="inputSignUpEmail" className="form-label fw-bold">Email</label>
-                    <input type="email" className="form-control" name="email" onChange={handleChange} value={email} placeholder="Email" required disabled={true} />
+                    <input type="email" className="form-control" name="email" onChange={handleChange} value={values.email || ''} placeholder="Email" required />
                     {errors.email && (
                     <div className="text-danger">{errors.email}</div>
                     )}
                   </div>
-                  <div className="mb-12">
-                    <label htmlFor="inputPassword" className="form-label fw-bold">Password</label>
-                    <input type="password" className="form-control" name="password" onChange={handleChange} value={values.password || ''} placeholder="*****" required />
-                    {errors.password && (
-                    <div className="text-danger">{errors.password}</div>
-                    )}
-                  </div>
-                  <button type="submit" className="btn btn-primary d-block mt-20 w-100">Sign in</button>
-                  <ToastContainer />
+                  <button type="submit" onClick={otpGenerate} className="btn btn-primary d-block mt-20 w-100">Sign in</button>
                 </form>
+                <div className="text-center">
+                  <p>Or,</p>
+                  <GoogleSignIn />
+                  <p>Create an account?
+                    <Link to={SIGN_UP}> Sign up</Link>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -88,15 +80,14 @@ const SignIn = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    cookie: state.signIn.cookie,
     email: state.signIn.email
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setLoginCookie: (cookie) => {
-      dispatch(setLoginCookie(cookie))
+    setEmail: (email) => {
+      dispatch(setEmail(email))
     }
   }
 }

@@ -13,3 +13,10 @@ export const setLoginCookie = (cookie) => {
     payload: cookie
   }
 }
+
+export const setPreviousPath = (path) => {
+  return {
+    type: Actions.SET_PREVIOUS_PATH,
+    payload: path
+  }
+}

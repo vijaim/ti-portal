@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { ROOT } from '../utils/constants'
 
-const { OTP_GENERATE, LOGIN } = ROOT
+const { OTP_GENERATE, LOGIN, SIGNUP } = ROOT
 
 const NetworkManager = {
   generateOtp: (params) => {
@@ -10,6 +10,10 @@ const NetworkManager = {
 
   signIn: (params) => {
     return axios.post(LOGIN, params)
+  },
+
+  signUp: (params) => {
+    return axios.post(SIGNUP, params)
   }
 }
 

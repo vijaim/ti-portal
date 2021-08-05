@@ -11,14 +11,14 @@ import { setLoginCookie } from '../signin/signin-actions'
 const Header = (props) => {
   const routePath = GetRoutesPathName()
   const {
-    SIGN_IN, SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES,
-    SALES, SETTINGS_BUSINESS, SETTINGS_PROFILE, GENERATE_OTP, SIGN_UP_FORM, TRACKING
+    SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES,
+    SALES, SETTINGS_BUSINESS, SETTINGS_PROFILE, SIGN_IN, TRACKING
   } = ROUTES_PATH_NAME
   const [state, setState] = useState({
     cookieHeader: false
   })
   const { isHeaderShow } = state
-  const { cookie, setLoginCookie } = props
+  const { cookie, setLoginCookie, path } = props
 
   useEffect(() => {
     const loginCookie = getCookie('trueinsights-cookie')
@@ -27,30 +27,30 @@ const Header = (props) => {
 
   const setRoutesPath = (routePath) => {
     if (routePath === FAVORITES || routePath === SALES) {
-      return isHeaderShow ? HOME : GENERATE_OTP
+      return isHeaderShow ? HOME : SIGN_IN
     } else if (routePath === SETTINGS_PROFILE) {
-      return isHeaderShow ? SETTINGS_BUSINESS : GENERATE_OTP
-    } else if (routePath === SIGN_UP_FORM || routePath === VERIFY_CODE || routePath === PASSWORD || routePath === BUSINESS ||
+      return isHeaderShow ? SETTINGS_BUSINESS : SIGN_IN
+    } else if (routePath === PASSWORD || routePath === BUSINESS ||
       routePath === TRACK_CODE) {
       return SIGN_UP
-    } else if (routePath === SIGN_IN || routePath === GENERATE_OTP) {
-      return GENERATE_OTP
+    } else if (routePath === VERIFY_CODE) {
+      return path === SIGN_UP ? SIGN_UP : SIGN_IN
     } else if (routePath === SETTINGS_BUSINESS) {
-      return isHeaderShow ? SETTINGS_BUSINESS : GENERATE_OTP
+      return isHeaderShow ? SETTINGS_BUSINESS : SIGN_IN
     } else if (routePath === HOME) {
-      return isHeaderShow ? HOME : GENERATE_OTP
+      return isHeaderShow ? HOME : SIGN_IN
     } else if (routePath === TRACKING) {
-      return isHeaderShow ? TRACKING : GENERATE_OTP
+      return isHeaderShow ? TRACKING : SIGN_IN
     }
     return routePath
   }
 
   const checkAuthHeader = () => {
-    return routePath === SIGN_IN || routePath === SIGN_UP_FORM || routePath === SIGN_UP || routePath === VERIFY_CODE ||
-    routePath === PASSWORD || routePath === BUSINESS || routePath === TRACK_CODE || routePath === GENERATE_OTP
+    return routePath === SIGN_UP || routePath === VERIFY_CODE ||
+    routePath === PASSWORD || routePath === BUSINESS || routePath === TRACK_CODE || routePath === SIGN_IN
   }
 
-  const logout = () => {
+  const logOut = () => {
     setLoginCookie(null)
     localStorage.clear()
     deleteCookie('trueinsights-cookie')
@@ -111,7 +111,7 @@ const Header = (props) => {
                             <li key={headerNav.id} className="nav-item">
                               <Link
                                 className={setRoutesPath(routePath) === headerNav.routePath ? 'btn btn-primary ms-lg-3' : 'nav-link'}
-                                onClick={headerNav.id === 'logout' ? logout : ''}
+                                onClick={headerNav.id === 'logOut' ? logOut : ''}
                                 to={headerNav.routePath}>
                                 {headerNav.name}
                               </Link>
@@ -142,7 +142,8 @@ const Header = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    cookie: state.signIn.cookie
+    cookie: state.signIn.cookie,
+    path: state.signIn.path
   }
 }
 

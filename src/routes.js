@@ -2,7 +2,6 @@
 /* eslint-disable no-unneeded-ternary */
 import React, { useState, useEffect } from 'react'
 import { Router, Route, Switch } from 'react-router-dom'
-import SignIn from './component/signin/signin'
 import SignUp from './component/signup/signup'
 import VerifyCode from './component/signup/verify-code'
 import Password from './component/signup/password'
@@ -15,17 +14,17 @@ import Tracking from './component/insights/tracking'
 import SettingsBusiness from './component/settings/settings-business'
 import SettingsProfile from './component/settings/settings-profile'
 import Header from './component/header/header'
-import GenerateOtp from './component/signin/generate-otp'
-import SignUpForm from './component/signup/signup-form'
+import SignIn from './component/signin/signin'
 import { connect } from 'react-redux'
 import { ROUTES_PATH_NAME } from './utils/constants'
-import { history } from './history'
+import { history } from './utils/util-methods'
 import { getCookie } from './functions/cookie-functions'
+import { ToastContainer } from 'react-toastify'
 
 const Routes = (props) => {
   const {
-    SIGN_IN, SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES, SALES,
-    TRACKING, SETTINGS_BUSINESS, SETTINGS_PROFILE, GENERATE_OTP, SIGN_UP_FORM
+    SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES, SALES,
+    TRACKING, SETTINGS_BUSINESS, SETTINGS_PROFILE, SIGN_IN
   } = ROUTES_PATH_NAME
   const [state, setState] = useState({
     isLoggedIn: false
@@ -41,11 +40,10 @@ const Routes = (props) => {
   return (
     <Router history={history}>
       <Header />
+      <ToastContainer />
       <Switch>
-        <Route exact path={GENERATE_OTP} component={GenerateOtp} />
         <Route exact path={SIGN_IN} component={SignIn} />
         <Route exact path={SIGN_UP} component={SignUp} />
-        <Route exact path={SIGN_UP_FORM} component={SignUpForm} />
         <Route exact path={VERIFY_CODE} component={VerifyCode} />
         <Route exact path={PASSWORD} component={Password} />
         <Route exact path={BUSINESS} component={Business} />
@@ -56,7 +54,7 @@ const Routes = (props) => {
         {isLoggedIn && <Route exact path={TRACKING} component={Tracking} /> }
         {isLoggedIn && <Route exact path={SETTINGS_BUSINESS} component={SettingsBusiness} /> }
         {isLoggedIn && <Route exact path={SETTINGS_PROFILE} component={SettingsProfile} /> }
-        <Route exact path="*" component={GenerateOtp} />
+        <Route exact path="*" component={SignIn} />
       </Switch>
     </Router>
   )
