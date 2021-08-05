@@ -28,7 +28,6 @@ const VerifyCode = (props) => {
       }
     })
       .catch(error => {
-        console.log(error.response)
         if (error.response.data.response_objects === null) {
           toast('Invalid Login Credentials', {
             position: toast.POSITION.TOP_CENTER

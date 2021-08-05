@@ -21,7 +21,6 @@ const SignUp = (props) => {
     }
     NetworkManager.generateOtp(payload).then(response => {
       if (response.status === 200) {
-        console.log(response)
         setEmail(values.email)
         props.history.push({
           pathname: VERIFY_CODE,
@@ -45,7 +44,6 @@ const SignUp = (props) => {
     }
     NetworkManager.signUp(payload).then(response => {
       if (response.status === 200) {
-        console.log(response)
         otpGenerate()
       }
     })
@@ -86,7 +84,7 @@ const SignUp = (props) => {
                     <div className="text-danger">{errors.name}</div>
                     )}
                   </div>
-                  <button type="submit" onClick={signUp} className="btn btn-primary d-block mt-20 w-100">Sign up</button>
+                  <button type="submit" onClick={signUp} className="btn btn-primary d-block mt-20 w-100">Continue</button>
                 </form>
                 <div className="text-center">
                   <p>Or,</p>

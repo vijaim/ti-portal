@@ -60,7 +60,7 @@ const SignIn = (props) => {
                     <div className="text-danger">{errors.email}</div>
                     )}
                   </div>
-                  <button type="submit" onClick={otpGenerate} className="btn btn-primary d-block mt-20 w-100">Sign in</button>
+                  <button type="submit" onClick={otpGenerate} className="btn btn-primary d-block mt-20 w-100">Continue</button>
                 </form>
                 <div className="text-center">
                   <p>Or,</p>
