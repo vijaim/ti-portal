@@ -31,9 +31,9 @@ const SignUp = (props) => {
       }
     })
       .catch(error => {
-        toast(error.response.data.message, {
-          position: toast.POSITION.TOP_CENTER
-        })
+        if (error.response.data.response_objects === null) {
+          // console.log(error)
+        }
       })
   }
 
@@ -48,9 +48,11 @@ const SignUp = (props) => {
       }
     })
       .catch(error => {
-        toast(error.response.data.message, {
-          position: toast.POSITION.TOP_CENTER
-        })
+        if (error.response.data.message === 'You have already signed up. Please try using signin.') {
+          toast(error.response.data.message, {
+            position: toast.POSITION.TOP_CENTER
+          })
+        }
       })
   }
 

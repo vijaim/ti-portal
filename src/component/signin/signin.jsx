@@ -7,8 +7,6 @@ import validateForm from '../validation/validate-form'
 import { connect } from 'react-redux'
 import { setEmail } from './signin-actions'
 import NetworkManager from '../../network-manager/network-config'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 
 const SignIn = (props) => {
   const { VERIFY_CODE, SIGN_UP, SIGN_IN } = ROUTES_PATH_NAME
@@ -31,9 +29,9 @@ const SignIn = (props) => {
       }
     })
       .catch(error => {
-        toast(error.response.data.message, {
-          position: toast.POSITION.TOP_CENTER
-        })
+        if (error.response.data.response_objects === null) {
+          // console.log(error)
+        }
       })
   }
 

@@ -28,7 +28,13 @@ const VerifyCode = (props) => {
       }
     })
       .catch(error => {
-        if (error.response.data.response_objects === null) {
+        if (error.response.data.message === 'password is not allowed to be empty') {
+          console.log(error)
+        } else if (error.response.data.message === 'password length must be less than or equal to 5 characters long') {
+          toast(error.response.data.message, {
+            position: toast.POSITION.TOP_CENTER
+          })
+        } else {
           toast('Invalid Login Credentials', {
             position: toast.POSITION.TOP_CENTER
           })

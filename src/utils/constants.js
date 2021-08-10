@@ -76,5 +76,12 @@ export const HEADING_TITLE = {
 export const ROOT = {
   OTP_GENERATE: 'https://portalapi.trueinsights.co/users/generate_password',
   LOGIN: 'https://portalapi.trueinsights.co/users/login',
-  SIGNUP: 'https://portalapi.trueinsights.co/users/signup'
+  SIGNUP: 'https://portalapi.trueinsights.co/users/signup',
+  GET_BUSINESS: 'https://portalapi.trueinsights.co/apps'
+}
+
+export const BUSINESSKEYS = {
+  APPS: 'apps',
+  VERTICALS: 'verticals',
+  PLATFORMS: 'platforms'
 }

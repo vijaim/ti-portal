@@ -1,20 +1,27 @@
-import React, { useState } from 'react'
+/* eslint-disable no-tabs */
+/* eslint-disable no-mixed-spaces-and-tabs */
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Modal from 'react-bootstrap/Modal'
 import InsightsHeader from '../insights/insights-header'
 import AddBusiness from '../signup/add-business'
 import CopyCode from '../signup/copy-code'
-import { ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE } from '../../utils/constants'
+import NetworkManager from '../../network-manager/network-config'
+import { toast } from 'react-toastify'
+import { ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, BUSINESSKEYS } from '../../utils/constants'
+import 'react-toastify/dist/ReactToastify.css'
 
 const InSightsBusiness = () => {
   const [state, setState] = useState({
     isBusinessModalOpen: false,
-    isTrackModalOpen: false
+    isTrackModalOpen: false,
+    businessObj: {}
   })
-  const { isBusinessModalOpen, isTrackModalOpen } = state
+  const { isBusinessModalOpen, isTrackModalOpen, businessObj } = state
   const { FAVORITES } = ROUTES_PATH_NAME
-  const { COMPUTER, MOBILE } = IMAGE_URL
+  const { COMPUTER } = IMAGE_URL
   const { BUSINESSES, ADD_BUSINESS } = HEADING_TITLE
+  const { APPS, VERTICALS, PLATFORMS } = BUSINESSKEYS
 
   const showBusinessModal = () => {
     setState(() => ({ isBusinessModalOpen: true }))
@@ -30,7 +37,29 @@ const InSightsBusiness = () => {
 
   const hideTrackModal = () => {
     setState(() => ({ isTrackModalOpen: false }))
+    business()
   }
+
+  const business = () => {
+    NetworkManager.getBusiness().then(response => {
+      if (response.status === 200) {
+        if (response.data.response_objects.app_ids === null) {
+          setState(() => ({ businessObj: {} }))
+        } else {
+          setState(() => ({ businessObj: response.data.response_objects }))
+        }
+      }
+    })
+      .catch(error => {
+        toast(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER
+        })
+      })
+  }
+
+  useEffect(() => {
+    business()
+  }, [])
 
   return (
     <>
@@ -49,81 +78,47 @@ const InSightsBusiness = () => {
         </section>
         <section className="bg-section section-padding">
           <div className="container pb-40 pt-40">
-            <Link className="business-item" to={FAVORITES}>
-              <div className="listing-item">
-                <div className="align-items-center gy-3 row">
-                  <div className="col-xl-4">
-                    <h2 className="fw-bold h6 mb-1">Barney’s Departmental Stores</h2>
-                    <span>businessname.com</span>
-                  </div>
-                  <div className="col-lg-3 col-sm-6 col-xl">
-                    <img src={COMPUTER} width={24} height={24} alt="Computer" className="me-2 icon-base" />
-                    <span>Web app</span>
-                  </div>
-                  <div className="col-lg-3 col-sm-6 col-xl">
-                    <span>Ecommerce</span>
-                  </div>
-                  <div className="col-lg-3 col-sm-6 col-xl text-xl-center">
-                    <h2 className="fw-bold h5 mb-0">57</h2>
-                    <span className="text-muted-2">key metrics</span>
-                  </div>
-                  <div className="col-lg-3 col-sm-6 col-xl text-xl-center">
-                    <h2 className="fw-bold h5 mb-0">5</h2>
-                    <span className="text-muted-2">insights today</span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-            <Link to="/#" className="business-item">
-              <div className="listing-item">
-                <div className="align-items-center gy-3 row">
-                  <div className="col-xl-4">
-                    <h2 className="fw-bold h6 mb-1">Barney’s Online Shopping</h2>
-                    <span>businessname.com</span>
-                  </div>
-                  <div className="col-lg-3 col-sm-6 col-xl">
-                    <img src={MOBILE} width={24} height={24} alt="Mobile" className="me-2 icon-base" />
-                    <span>iOS app</span>
-                  </div>
-                  <div className="col-lg-3 col-sm-6 col-xl">
-                    <span>Ecommerce</span>
-                  </div>
-                  <div className="col-lg-3 col-sm-6 col-xl text-xl-center">
-                    <h2 className="fw-bold h5 mb-0">57</h2>
-                    <span className="text-muted-2">key metrics</span>
-                  </div>
-                  <div className="col-lg-3 col-sm-6 col-xl text-xl-center">
-                    <h2 className="fw-bold h5 mb-0">5</h2>
-                    <span className="text-muted-2">insights today</span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-            <Link to="/#" className="business-item">
-              <div className="listing-item">
-                <div className="align-items-center gy-3 row">
-                  <div className="col-xl-4">
-                    <h2 className="fw-bold h6 mb-1">Barney’s Fitness</h2>
-                    <span>businessname.com</span>
-                  </div>
-                  <div className="col-lg-3 col-sm-6 col-xl">
-                    <img src={COMPUTER} width={24} height={24} alt="Computer" className="me-2 icon-base" />
-                    <span>Web app</span>
-                  </div>
-                  <div className="col-lg-3 col-sm-6 col-xl">
-                    <span>Ecommerce</span>
-                  </div>
-                  <div className="col-lg-3 col-sm-6 col-xl text-xl-center">
-                    <h2 className="fw-bold h5 mb-0">57</h2>
-                    <span className="text-muted-2">key metrics</span>
-                  </div>
-                  <div className="col-lg-3 col-sm-6 col-xl text-xl-center">
-                    <h2 className="fw-bold h5 mb-0">5</h2>
-                    <span className="text-muted-2">insights today</span>
-                  </div>
-                </div>
-              </div>
-            </Link>
+            { businessObj !== null && businessObj !== undefined && (
+              Object.entries(businessObj).map(([key, value]) => (
+                key === APPS && (
+                  businessObj[APPS].map(business => (
+                  <Link className="business-item" to={FAVORITES} key={business.id}>
+                    <div className="listing-item">
+                      <div className="align-items-center gy-3 row">
+                        <div className="col-xl-4">
+                          <h2 className="fw-bold h6 mb-1">{business.name}</h2>
+                          <span>{business.url}</span>
+                        </div>
+                        {businessObj[VERTICALS].map(vertical => (
+                          vertical.id === business.vertical_id && (
+                            <div className="col-lg-3 col-sm-6 col-xl" key={vertical.id}>
+                              <img src={COMPUTER} width={24} height={24} alt="Computer" className="me-2 icon-base" />
+                              <span>{vertical.name}</span>
+                            </div>
+                          )
+                        ))}
+                        {businessObj[PLATFORMS].map(platform => (
+                          platform.id === business.platform_id && (
+                          <div className="col-lg-3 col-sm-6 col-xl" key={platform.id}>
+                            <span>{platform.name}</span>
+                          </div>
+                          )
+                        ))}
+                        <div className="col-lg-3 col-sm-6 col-xl text-xl-center">
+                          <h2 className="fw-bold h5 mb-0">57</h2>
+                          <span className="text-muted-2">key metrics</span>
+                        </div>
+                        <div className="col-lg-3 col-sm-6 col-xl text-xl-center">
+                          <h2 className="fw-bold h5 mb-0">{business.insights_today_count}</h2>
+                          <span className="text-muted-2">insights today</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                  ))
+                )
+              ))
+            )}
           </div>
         </section>
       </main>
@@ -138,7 +133,7 @@ const InSightsBusiness = () => {
       <Modal className="modal fade" show={isTrackModalOpen} onHide={hideTrackModal} aria-labelledby="contained-modal-title-vcenter" centered>
         <div className="modal-content border-0 rounded-0">
           <div className="modal-body">
-            <CopyCode />
+            <CopyCode onClick={hideTrackModal} />
           </div>
         </div>
       </Modal>
