@@ -10,8 +10,9 @@ import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import { ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, BUSINESSKEYS } from '../../utils/constants'
 import 'react-toastify/dist/ReactToastify.css'
+import { connect } from 'react-redux'
 
-const InSightsBusiness = () => {
+const InSightsBusiness = (props) => {
   const [state, setState] = useState({
     isBusinessModalOpen: false,
     isTrackModalOpen: false,
@@ -22,6 +23,7 @@ const InSightsBusiness = () => {
   const { COMPUTER } = IMAGE_URL
   const { BUSINESSES, ADD_BUSINESS } = HEADING_TITLE
   const { APPS, VERTICALS, PLATFORMS } = BUSINESSKEYS
+  const { cookie } = props
 
   const showBusinessModal = () => {
     setState(() => ({ isBusinessModalOpen: true }))
@@ -29,6 +31,7 @@ const InSightsBusiness = () => {
 
   const hideBusinessModal = () => {
     setState(() => ({ isBusinessModalOpen: false }))
+    businessList()
   }
 
   const showTrackModal = () => {
@@ -37,11 +40,11 @@ const InSightsBusiness = () => {
 
   const hideTrackModal = () => {
     setState(() => ({ isTrackModalOpen: false }))
-    business()
+    businessList()
   }
 
-  const business = () => {
-    NetworkManager.getBusiness().then(response => {
+  const businessList = () => {
+    NetworkManager.getBusiness(cookie).then(response => {
       if (response.status === 200) {
         if (response.data.response_objects.app_ids === null) {
           setState(() => ({ businessObj: {} }))
@@ -51,6 +54,7 @@ const InSightsBusiness = () => {
       }
     })
       .catch(error => {
+        console.log('error', error)
         toast(error.response.data.message, {
           position: toast.POSITION.TOP_CENTER
         })
@@ -58,7 +62,7 @@ const InSightsBusiness = () => {
   }
 
   useEffect(() => {
-    business()
+    businessList()
   }, [])
 
   return (
@@ -89,25 +93,21 @@ const InSightsBusiness = () => {
                           <h2 className="fw-bold h6 mb-1">{business.name}</h2>
                           <span>{business.url}</span>
                         </div>
-                        {businessObj[VERTICALS].map(vertical => (
-                          vertical.id === business.vertical_id && (
-                            <div className="col-lg-3 col-sm-6 col-xl" key={vertical.id}>
-                              <img src={COMPUTER} width={24} height={24} alt="Computer" className="me-2 icon-base" />
-                              <span>{vertical.name}</span>
-                            </div>
-                          )
-                        ))}
                         {businessObj[PLATFORMS].map(platform => (
                           platform.id === business.platform_id && (
                           <div className="col-lg-3 col-sm-6 col-xl" key={platform.id}>
+                            <img src={COMPUTER} width={24} height={24} alt="Computer" className="me-2 icon-base" />
                             <span>{platform.name}</span>
                           </div>
                           )
                         ))}
-                        <div className="col-lg-3 col-sm-6 col-xl text-xl-center">
-                          <h2 className="fw-bold h5 mb-0">57</h2>
-                          <span className="text-muted-2">key metrics</span>
-                        </div>
+                        {businessObj[VERTICALS].map(vertical => (
+                          vertical.id === business.vertical_id && (
+                            <div className="col-lg-3 col-sm-6 col-xl" key={vertical.id}>
+                              <span>{vertical.name}</span>
+                            </div>
+                          )
+                        ))}
                         <div className="col-lg-3 col-sm-6 col-xl text-xl-center">
                           <h2 className="fw-bold h5 mb-0">{business.insights_today_count}</h2>
                           <span className="text-muted-2">insights today</span>
@@ -141,4 +141,10 @@ const InSightsBusiness = () => {
   )
 }
 
-export default InSightsBusiness
+const mapStateToProps = (state) => {
+  return {
+    cookie: state.signIn.cookie
+  }
+}
+
+export default connect(mapStateToProps, null)(InSightsBusiness)

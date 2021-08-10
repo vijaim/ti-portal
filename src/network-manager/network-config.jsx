@@ -1,18 +1,17 @@
 import axios from 'axios'
 import { ROOT } from '../utils/constants'
-import { getCookie } from '../functions/cookie-functions'
 
 const { OTP_GENERATE, LOGIN, SIGNUP, GET_BUSINESS } = ROOT
 
-const token = getCookie('trueinsights-cookie')
-
-const config = {
-  headers: {
-    'Content-type': 'application/json',
+const config = (cookie) => {
+  const headers = {
+    'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Cache-Control': 'no-cache',
-    Authorization: token
+    Authorization: cookie
   }
+  const headersConfig = { headers: { ...headers } }
+  return headersConfig
 }
 
 const NetworkManager = {
@@ -28,8 +27,8 @@ const NetworkManager = {
     return axios.post(SIGNUP, params)
   },
 
-  getBusiness: () => {
-    return axios.get(GET_BUSINESS, config)
+  getBusiness: (cookie) => {
+    return axios.get(GET_BUSINESS, config(cookie))
   }
 }
 
