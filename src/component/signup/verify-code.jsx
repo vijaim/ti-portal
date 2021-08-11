@@ -24,6 +24,7 @@ const VerifyCode = (props) => {
         setCookies('trueinsights-cookie', response.data.response_objects.token)
         const loginCookie = getCookie('trueinsights-cookie')
         setLoginCookie(loginCookie)
+        localStorage.setItem('localLoginCookie', loginCookie)
         props.history.push(HOME)
       }
     })
