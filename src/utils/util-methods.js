@@ -7,3 +7,5 @@ export const GetRoutesPathName = () => {
 }
 
 export const history = createBrowserHistory()
+
+export const loginCookie = localStorage.getItem('localLoginCookie')

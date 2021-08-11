@@ -8,9 +8,9 @@ import AddBusiness from '../signup/add-business'
 import CopyCode from '../signup/copy-code'
 import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
-import { ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, BUSINESSKEYS } from '../../utils/constants'
 import 'react-toastify/dist/ReactToastify.css'
-import { connect } from 'react-redux'
+import { ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, BUSINESSKEYS } from '../../utils/constants'
+import { loginCookie } from '../../utils/util-methods'
 
 const InSightsBusiness = (props) => {
   const [state, setState] = useState({
@@ -23,10 +23,9 @@ const InSightsBusiness = (props) => {
   const { COMPUTER } = IMAGE_URL
   const { BUSINESSES, ADD_BUSINESS } = HEADING_TITLE
   const { APPS, VERTICALS, PLATFORMS } = BUSINESSKEYS
-  const { cookie } = props
 
-  const showBusinessModal = () => {
-    setState(() => ({ isBusinessModalOpen: true }))
+  const showBusinessModal = (businessObj) => {
+    setState(() => ({ isBusinessModalOpen: true, businessObj: businessObj }))
   }
 
   const hideBusinessModal = () => {
@@ -44,7 +43,7 @@ const InSightsBusiness = (props) => {
   }
 
   const businessList = () => {
-    NetworkManager.getBusiness(cookie).then(response => {
+    NetworkManager.getBusiness(loginCookie).then(response => {
       if (response.status === 200) {
         if (response.data.response_objects.app_ids === null) {
           setState(() => ({ businessObj: {} }))
@@ -54,7 +53,6 @@ const InSightsBusiness = (props) => {
       }
     })
       .catch(error => {
-        console.log('error', error)
         toast(error.response.data.message, {
           position: toast.POSITION.TOP_CENTER
         })
@@ -75,15 +73,15 @@ const InSightsBusiness = (props) => {
                 <InsightsHeader headingTitle={BUSINESSES} />
               </div>
               <div className="col-md-auto col-sm-auto text-xl-center">
-                <button type="button" className="btn btn-primary" onClick={showBusinessModal}>Add Business</button>
+                <button type="button" className="btn btn-primary" onClick= { () => { showBusinessModal(businessObj) } } >Add Business</button>
               </div>
             </div>
           </div>
         </section>
         <section className="bg-section section-padding">
           <div className="container pb-40 pt-40">
-            { businessObj !== null && businessObj !== undefined && (
-              Object.entries(businessObj).map(([key, value]) => (
+            {
+              businessObj && Object.entries(businessObj).map(([key, value]) => (
                 key === APPS && (
                   businessObj[APPS].map(business => (
                   <Link className="business-item" to={FAVORITES} key={business.id}>
@@ -118,11 +116,11 @@ const InSightsBusiness = (props) => {
                   ))
                 )
               ))
-            )}
+            }
           </div>
         </section>
       </main>
-      <Modal className="modal fade" show={isBusinessModalOpen} onHide={hideBusinessModal} aria-labelledby="contained-modal-title-vcenter" centered>
+      <Modal className="modal fade" show={isBusinessModalOpen} onHide={hideBusinessModal} data-backdrop="static" aria-labelledby="contained-modal-title-vcenter" centered>
         <div className="modal-content border-0 rounded-0">
           <div className="modal-body">
             <h2 className="fw-bold h4 mb-40 text-center" id="addBusinessModalLabel">{ADD_BUSINESS}</h2>
@@ -141,10 +139,4 @@ const InSightsBusiness = (props) => {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    cookie: state.signIn.cookie
-  }
-}
-
-export default connect(mapStateToProps, null)(InSightsBusiness)
+export default InSightsBusiness
