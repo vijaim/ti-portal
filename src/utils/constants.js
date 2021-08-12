@@ -74,10 +74,13 @@ export const HEADING_TITLE = {
 }
 
 export const ROOT = {
-  OTP_GENERATE: 'https://portalapi.trueinsights.co/users/generate_password',
+  OTP_GENERATE: 'https://portalapi.trueinsights.co/users/generate_passwordttt',
   LOGIN: 'https://portalapi.trueinsights.co/users/login',
   SIGNUP: 'https://portalapi.trueinsights.co/users/signup',
-  GET_BUSINESS: 'https://portalapi.trueinsights.co/apps'
+  GET_BUSINESS: 'https://portalapi.trueinsights.co/apps',
+  ADD_BUSINESS: 'https://portalapi.trueinsights.co/apps',
+  GET_ALL_VERTICALS: 'https://portalapi.trueinsights.co/lookup/verticals',
+  GET_ALL_PLATFORMS: 'https://portalapi.trueinsights.co/lookup/platforms'
 }
 
 export const BUSINESSKEYS = {

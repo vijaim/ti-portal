@@ -1,43 +1,98 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { GetRoutesPathName } from '../../utils/util-methods'
+import { GetRoutesPathName, loginCookie } from '../../utils/util-methods'
 import { ROUTES_PATH_NAME } from '../../utils/constants'
+import NetworkManager from '../../network-manager/network-config'
+import useForm from '../validation/use-form'
+import validateForm from '../validation/validate-form'
 
 const AddBusiness = (props) => {
   const routePath = GetRoutesPathName()
   const { SETTINGS_BUSINESS, HOME } = ROUTES_PATH_NAME
+  const [state, setState] = useState({
+    verticalList: [],
+    platformList: []
+  })
+  const { verticalList, platformList } = state
+
+  const addBusiness = () => {
+    const payload = {
+      name: values.businessName,
+      url: values.urlPath ? values.urlPath : '',
+      vertical_id: values.businessCategory ? values.businessCategory : '',
+      platform_id: values.platform ? values.platform : ''
+    }
+    NetworkManager.addBusiness(payload, loginCookie).then(response => {
+      if (response.status === 200) {
+        props.onClick()
+      }
+    })
+      .catch(error => {
+        if (error.response.data.message) {
+          // console.log(error.response.data.message)
+        }
+      })
+  }
+
+  const {
+    values,
+    errors,
+    handleChange,
+    handleSubmit
+  } = useForm({ businessName: '', businessCategory: '', platform: '', urlPath: '' }, validateForm)
+
+  useEffect(() => {
+    const fetchList = async () => {
+      const getVerticalList = await NetworkManager.getAllVerticals(loginCookie)
+      const getPlatformList = await NetworkManager.getAllPlatforms(loginCookie)
+      setState(() => ({ verticalList: getVerticalList.data.response_objects, platformList: getPlatformList.data.response_objects }))
+    }
+    fetchList()
+  }, [])
 
   return (
-    <form>
+    <form onSubmit={handleSubmit} noValidate>
       {(routePath === HOME) || (routePath === SETTINGS_BUSINESS)
         ? (
           <div className="mb-12">
-            <label htmlFor="inputName" className="form-label fw-bold">Name</label>
-            <input type="text" className="form-control" id="inputName" name="inputName" placeholder="Username" required />
+            <label htmlFor="businessName" className="form-label fw-bold">Name</label>
+            <input type="text" className="form-control" onChange={handleChange} value={values.businessName || ''} name="businessName" placeholder="Name"/>
+            {errors.businessName && (
+              <div className="text-danger">{errors.businessName}</div>
+            )}
           </div>
           )
         : ''}
       <div className="mb-12">
-        <label htmlFor="inputBusiness" className="form-label fw-bold">Business category</label>
-        <select defaultValue="Select a category" className="form-select" aria-label="Business category" id="inputBusiness">
-          <option value>Select a category</option>
-          <option value={1}>One</option>
-          <option value={2}>Two</option>
-          <option value={3}>Three</option>
+        <label htmlFor="businessCategory" className="form-label fw-bold">Business category</label>
+        <select className="form-select" aria-label="Business category" name="businessCategory" onChange={handleChange} value={values.businessCategory || ''} >
+          <option value=''>Select a category</option>
+            {verticalList && verticalList.map((vertical) => (
+              <option value={vertical.id} key={vertical.id} label={vertical.name}></option>
+            ))}
         </select>
+        {errors.businessCategory && (
+          <div className="text-danger">{errors.businessCategory}</div>
+        )}
       </div>
       <div className="mb-12">
-        <label htmlFor="inputPlatform" className="form-label fw-bold">App platform</label>
-        <select defaultValue="Select a category" className="form-select" aria-label="Business category" id="inputPlatform">
-          <option value>Select a category</option>
-          <option value={1}>Web</option>
-          <option value={2}>IOS</option>
-          <option value={3}>Android</option>
+        <label htmlFor="platform" className="form-label fw-bold">App platform</label>
+        <select className="form-select" aria-label="Business category" onChange={handleChange} value={values.platform || ''} name="platform">
+          <option value=''>Select a category</option>
+            {platformList && platformList.map((platform) => (
+              <option value={platform.id} key={platform.id} label={platform.name}></option>
+            ))}
         </select>
+        {errors.platform && (
+          <div className="text-danger">{errors.platform}</div>
+        )}
       </div>
       <div className="mb-12">
-        <label htmlFor="inputURL" className="form-label fw-bold">URL</label>
-        <input type="url" defaultValue="https://" className="form-control" id="inputURL" placeholder="https://" />
+        <label htmlFor="urlPath" className="form-label fw-bold">URL</label>
+        <input type="url" className="form-control" name="urlPath" onChange={handleChange} value={values.urlPath || ''} placeholder="https://" required/>
+        {errors.urlPath && (
+          <div className="text-danger">{errors.urlPath}</div>
+        )}
       </div>
       {(routePath === SETTINGS_BUSINESS)
         ? (
@@ -100,7 +155,7 @@ const AddBusiness = (props) => {
           </>
           )
         : ''}
-      <button type="submit" onClick={props.onClick} className={props.className}>{props.buttonTitle}</button>
+      <button type="submit" onClick={addBusiness} className={props.className}>{props.buttonTitle}</button>
     </form>
   )
 }

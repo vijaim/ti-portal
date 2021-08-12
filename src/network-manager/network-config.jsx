@@ -1,7 +1,9 @@
 import axios from 'axios'
 import { ROOT } from '../utils/constants'
 
-const { OTP_GENERATE, LOGIN, SIGNUP, GET_BUSINESS } = ROOT
+const {
+  OTP_GENERATE, LOGIN, SIGNUP, GET_BUSINESS, ADD_BUSINESS, GET_ALL_PLATFORMS, GET_ALL_VERTICALS
+} = ROOT
 
 const config = (cookie) => {
   const headers = {
@@ -29,6 +31,18 @@ const NetworkManager = {
 
   getBusiness: (cookie) => {
     return axios.get(GET_BUSINESS, config(cookie))
+  },
+
+  addBusiness: (params, cookie) => {
+    return axios.post(ADD_BUSINESS, params, config(cookie))
+  },
+
+  getAllVerticals: (cookie) => {
+    return axios.get(GET_ALL_VERTICALS, config(cookie))
+  },
+
+  getAllPlatforms: (cookie) => {
+    return axios.get(GET_ALL_PLATFORMS, config(cookie))
   }
 }
 

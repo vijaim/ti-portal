@@ -11,6 +11,18 @@ const ValidateForm = (values) => {
   if (!values.code) {
     errors.code = 'Verification code is required'
   }
+  if (!values.businessName) {
+    errors.businessName = 'Business name is required'
+  }
+  if (!values.businessCategory) {
+    errors.businessCategory = 'Business category is required'
+  }
+  if (!values.platform) {
+    errors.platform = 'Platform is required'
+  }
+  if (!values.urlPath) {
+    errors.urlPath = 'URL is required'
+  }
   return errors
 }
 
