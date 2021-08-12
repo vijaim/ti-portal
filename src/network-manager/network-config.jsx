@@ -2,7 +2,8 @@ import axios from 'axios'
 import { ROOT } from '../utils/constants'
 
 const {
-  OTP_GENERATE, LOGIN, SIGNUP, GET_BUSINESS, ADD_BUSINESS, GET_ALL_PLATFORMS, GET_ALL_VERTICALS
+  OTP_GENERATE, LOGIN, SIGNUP, GET_BUSINESS, ADD_BUSINESS, GET_ALL_PLATFORMS, GET_ALL_VERTICALS,
+  COPY_TRACK_CODE
 } = ROOT
 
 const config = (cookie) => {
@@ -43,6 +44,10 @@ const NetworkManager = {
 
   getAllPlatforms: (cookie) => {
     return axios.get(GET_ALL_PLATFORMS, config(cookie))
+  },
+
+  copyTrackCode: (params, cookie) => {
+    return axios.get(`${COPY_TRACK_CODE}${params.id}`, config(cookie))
   }
 }
 

@@ -80,7 +80,8 @@ export const ROOT = {
   GET_BUSINESS: 'https://portalapi.trueinsights.co/apps',
   ADD_BUSINESS: 'https://portalapi.trueinsights.co/apps',
   GET_ALL_VERTICALS: 'https://portalapi.trueinsights.co/lookup/verticals',
-  GET_ALL_PLATFORMS: 'https://portalapi.trueinsights.co/lookup/platforms'
+  GET_ALL_PLATFORMS: 'https://portalapi.trueinsights.co/lookup/platforms',
+  COPY_TRACK_CODE: 'https://portalapi.trueinsights.co/apps/'
 }
 
 export const BUSINESSKEYS = {

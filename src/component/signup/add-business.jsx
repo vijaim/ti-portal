@@ -25,7 +25,7 @@ const AddBusiness = (props) => {
     }
     NetworkManager.addBusiness(payload, loginCookie).then(response => {
       if (response.status === 200) {
-        props.onClick()
+        props.onClick(response.data.response_objects.id, props.businessObj)
       }
     })
       .catch(error => {

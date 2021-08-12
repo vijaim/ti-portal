@@ -15,9 +15,10 @@ const InSightsBusiness = (props) => {
   const [state, setState] = useState({
     isBusinessModalOpen: false,
     isTrackModalOpen: false,
-    businessObj: {}
+    businessObj: {},
+    businessId: ''
   })
-  const { isBusinessModalOpen, isTrackModalOpen, businessObj } = state
+  const { isBusinessModalOpen, isTrackModalOpen, businessObj, businessId } = state
   const { FAVORITES } = ROUTES_PATH_NAME
   const { COMPUTER } = IMAGE_URL
   const { BUSINESSES, ADD_BUSINESS } = HEADING_TITLE
@@ -32,8 +33,8 @@ const InSightsBusiness = (props) => {
     businessList()
   }
 
-  const showTrackModal = () => {
-    setState(() => ({ isTrackModalOpen: true, isBusinessModalOpen: false }))
+  const showTrackModal = (businessId, businessObj) => {
+    setState(() => ({ isTrackModalOpen: true, isBusinessModalOpen: false, businessId: businessId, businessObj: businessObj }))
   }
 
   const hideTrackModal = () => {
@@ -124,14 +125,14 @@ const InSightsBusiness = (props) => {
         <div className="modal-content border-0 rounded-0">
           <div className="modal-body">
             <h2 className="fw-bold h4 mb-40 text-center" id="addBusinessModalLabel">{ADD_BUSINESS}</h2>
-            <AddBusiness onClick={showTrackModal} className="btn btn-primary d-block mt-20 w-100" buttonTitle="Continue" />
+            <AddBusiness onClick={showTrackModal} businessObj={businessObj} className="btn btn-primary d-block mt-20 w-100" buttonTitle="Continue" />
           </div>
         </div>
       </Modal>
       <Modal className="modal fade" show={isTrackModalOpen} onHide={hideTrackModal} aria-labelledby="contained-modal-title-vcenter" centered>
         <div className="modal-content border-0 rounded-0">
           <div className="modal-body">
-            <CopyCode onClick={hideTrackModal} />
+            <CopyCode onClick={hideTrackModal} businessId={businessId} />
           </div>
         </div>
       </Modal>
