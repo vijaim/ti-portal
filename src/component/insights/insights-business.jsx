@@ -10,7 +10,6 @@ import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, BUSINESSKEYS } from '../../utils/constants'
-import { loginCookie } from '../../utils/util-methods'
 
 const InSightsBusiness = (props) => {
   const [state, setState] = useState({
@@ -43,6 +42,7 @@ const InSightsBusiness = (props) => {
   }
 
   const businessList = () => {
+    const loginCookie = localStorage.getItem('localLoginCookie')
     NetworkManager.getBusiness(loginCookie).then(response => {
       if (response.status === 200) {
         if (response.data.response_objects.app_ids === null) {

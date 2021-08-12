@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { GetRoutesPathName, loginCookie } from '../../utils/util-methods'
+import { GetRoutesPathName } from '../../utils/util-methods'
 import { ROUTES_PATH_NAME } from '../../utils/constants'
 import NetworkManager from '../../network-manager/network-config'
 import useForm from '../validation/use-form'
@@ -14,6 +14,7 @@ const AddBusiness = (props) => {
     platformList: []
   })
   const { verticalList, platformList } = state
+  const loginCookie = localStorage.getItem('localLoginCookie')
 
   const addBusiness = () => {
     const payload = {
