@@ -1,10 +1,43 @@
+/* eslint-disable no-empty */
 import React from 'react'
 import InsightsHeader from '../insights/insights-header'
 import NavigationTab from './navigation-tab'
 import { HEADING_TITLE } from '../../utils/constants'
+import NetworkManager from '../../network-manager/network-config'
+import useForm from '../validation/use-form'
+import validateForm from '../validation/validate-form'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-const SettingsProfile = () => {
+const SettingsProfile = (props) => {
   const { SETTINGS } = HEADING_TITLE
+  const loginCookie = localStorage.getItem('localLoginCookie')
+  const userId = localStorage.getItem('userId')
+
+  const updateProfile = () => {
+    const payload = {
+      email: values.email,
+      name: values.name
+    }
+    NetworkManager.updateUserProfile(userId, payload, loginCookie).then(response => {
+      if (response.status === 200) {
+      }
+    })
+      .catch(error => {
+        if (error.response.data.message) {
+          toast(error.response.data.message, {
+            position: toast.POSITION.TOP_CENTER
+          })
+        }
+      })
+  }
+
+  const {
+    values,
+    errors,
+    handleChange,
+    handleSubmit
+  } = useForm({ email: '', name: '' }, validateForm)
 
   return (
     <>
@@ -22,38 +55,22 @@ const SettingsProfile = () => {
                 <div className="listing-item pt-20 pb-20 mb-20">
                   <div className="row">
                     <div className="col-md-8">
-                      <form>
-                        <div className="mb-20">
-                          <label htmlFor="inputName" className="form-label fw-bold">Name</label>
-                          <input type="text" className="form-control" id="inputName" name="inputName" placeholder="Username" required />
-                        </div>
-                        <button type="submit" className="btn btn-primary">Change</button>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-                <div className="listing-item pt-20 pb-20 mb-20">
-                  <div className="row">
-                    <div className="col-md-8">
-                      <form>
-                        <div className="mb-20">
-                          <label htmlFor="inputPassword" className="form-label fw-bold">Password</label>
-                          <input type="password" className="form-control" id="inputPassword" name="inputPassword" placeholder="******" required />
-                        </div>
-                        <button type="submit" className="btn btn-primary">Change</button>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-                <div className="listing-item pt-20 pb-20 mb-20">
-                  <div className="row">
-                    <div className="col-md-8">
-                      <form>
+                      <form onSubmit={handleSubmit} noValidate>
                         <div className="mb-20">
                           <label htmlFor="inputEmail" className="form-label fw-bold">Email</label>
-                          <input type="email" className="form-control" id="inputEmail" name="inputEmail" placeholder="Email" required />
+                          <input type="email" className="form-control" name="email" onChange={handleChange} value={values.email || ''} placeholder="Email" required />
+                          {errors.email && (
+                          <div className="text-danger">{errors.email}</div>
+                          )}
                         </div>
-                        <button type="submit" className="btn btn-primary">Change</button>
+                        <div className="mb-20">
+                          <label htmlFor="inputName" className="form-label fw-bold">Name</label>
+                          <input type="text" className="form-control" name="name" onChange={handleChange} value={values.name || ''} placeholder="Name" required />
+                          {errors.name && (
+                          <div className="text-danger">{errors.name}</div>
+                          )}
+                        </div>
+                        <button type="submit" onClick={updateProfile} className="btn btn-primary">Update</button>
                       </form>
                     </div>
                   </div>

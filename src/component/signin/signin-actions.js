@@ -20,3 +20,10 @@ export const setPreviousPath = (path) => {
     payload: path
   }
 }
+
+export const setUserId = (userId) => {
+  return {
+    type: Actions.SET_USER_ID,
+    payload: userId
+  }
+}

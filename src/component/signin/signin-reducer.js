@@ -3,7 +3,8 @@ import Actions from '../../redux-store/actions'
 const initialState = {
   email: '',
   cookie: '',
-  path: ''
+  path: '',
+  userId: ''
 }
 const setEmailDetail = (state, payload) => {
   return {
@@ -26,6 +27,13 @@ const setPreviousRoute = (state, payload) => {
   }
 }
 
+const setUserId = (state, payload) => {
+  return {
+    ...state,
+    userId: payload
+  }
+}
+
 const SignInReducer = (state = initialState, action) => {
   switch (action.type) {
     case Actions.SET_EMAIL:
@@ -34,6 +42,8 @@ const SignInReducer = (state = initialState, action) => {
       return setCookieData(state, action.payload)
     case Actions.SET_PREVIOUS_PATH:
       return setPreviousRoute(state, action.payload)
+    case Actions.SET_USER_ID:
+      return setUserId(state, action.payload)
     default:
       return state
   }

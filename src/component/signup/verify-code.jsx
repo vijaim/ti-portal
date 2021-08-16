@@ -1,9 +1,10 @@
+/* eslint-disable no-empty */
 import React, { useEffect } from 'react'
 import useForm from '../validation/use-form'
 import validateForm from '../validation/validate-form'
 import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
 import { connect } from 'react-redux'
-import { setLoginCookie, setPreviousPath } from '../signin/signin-actions'
+import { setLoginCookie, setPreviousPath, setUserId } from '../signin/signin-actions'
 import { toast } from 'react-toastify'
 import { getCookie, setCookies } from '../../functions/cookie-functions'
 import NetworkManager from '../../network-manager/network-config'
@@ -12,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css'
 const VerifyCode = (props) => {
   const { HOME } = ROUTES_PATH_NAME
   const { VERIFICATION_CODE } = HEADING_TITLE
-  const { setLoginCookie, email, setPreviousPath } = props
+  const { setLoginCookie, email, setPreviousPath, setUserId } = props
 
   const verificationCode = () => {
     const payload = {
@@ -24,19 +25,16 @@ const VerifyCode = (props) => {
         setCookies('trueinsights-cookie', response.data.response_objects.token)
         const loginCookie = getCookie('trueinsights-cookie')
         setLoginCookie(loginCookie)
+        setUserId(response.data.response_objects.user_id)
         localStorage.setItem('localLoginCookie', loginCookie)
+        localStorage.setItem('userId', response.data.response_objects.user_id)
         props.history.push(HOME)
       }
     })
       .catch(error => {
-        if (error.response.data.message === 'password is not allowed to be empty') {
-          console.log(error)
-        } else if (error.response.data.message === 'password length must be less than or equal to 5 characters long') {
-          toast(error.response.data.message, {
-            position: toast.POSITION.TOP_CENTER
-          })
+        if (error.response.data.message === 'password is required') {
         } else {
-          toast('Invalid Login Credentials', {
+          toast('invalid login credentials', {
             position: toast.POSITION.TOP_CENTER
           })
         }
@@ -67,7 +65,7 @@ const VerifyCode = (props) => {
                 <form onSubmit={handleSubmit} noValidate>
                   <div className="mb-12">
                     <label htmlFor="inputVerificationCode" className="form-label fw-bold">Verification code</label>
-                    <input type="password" className="form-control" name="code" onChange={handleChange} value={values.code || ''} placeholder="*****" required />
+                    <input type="password" className="form-control" name="code" maxlength="5" onChange={handleChange} value={values.code || ''} placeholder="*****" required />
                     {errors.code && (
                     <div className="text-danger">{errors.code}</div>
                     )}
@@ -97,6 +95,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setPreviousPath: (path) => {
       dispatch(setPreviousPath(path))
+    },
+    setUserId: (userId) => {
+      dispatch(setUserId(userId))
     }
   }
 }

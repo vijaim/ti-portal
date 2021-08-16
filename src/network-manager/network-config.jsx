@@ -3,7 +3,7 @@ import { ROOT } from '../utils/constants'
 
 const {
   OTP_GENERATE, LOGIN, SIGNUP, GET_BUSINESS, ADD_BUSINESS, GET_ALL_PLATFORMS, GET_ALL_VERTICALS,
-  COPY_TRACK_CODE
+  COPY_TRACK_CODE, UPDATE_USER_PROFILE, GET_ALL_USERS
 } = ROOT
 
 const config = (cookie) => {
@@ -48,6 +48,14 @@ const NetworkManager = {
 
   copyTrackCode: (params, cookie) => {
     return axios.get(`${COPY_TRACK_CODE}${params.id}`, config(cookie))
+  },
+
+  updateUserProfile: (id, params, cookie) => {
+    return axios.put(`${UPDATE_USER_PROFILE}${id}`, params, config(cookie))
+  },
+
+  getAllUsers: (params, cookie) => {
+    return axios.get(`${GET_ALL_USERS}${params.id}`, config(cookie))
   }
 }
 
