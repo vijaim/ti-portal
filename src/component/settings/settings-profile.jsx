@@ -9,7 +9,7 @@ import validateForm from '../validation/validate-form'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-const SettingsProfile = (props) => {
+const SettingsProfile = () => {
   const { SETTINGS } = HEADING_TITLE
   const loginCookie = localStorage.getItem('localLoginCookie')
   const userId = localStorage.getItem('userId')
@@ -21,10 +21,14 @@ const SettingsProfile = (props) => {
     }
     NetworkManager.updateUserProfile(userId, payload, loginCookie).then(response => {
       if (response.status === 200) {
+        toast('User profile updated successfully.', {
+          position: toast.POSITION.TOP_CENTER
+        })
       }
     })
       .catch(error => {
-        if (error.response.data.message) {
+        if (error.response.data.response_objects === null) {
+        } else {
           toast(error.response.data.message, {
             position: toast.POSITION.TOP_CENTER
           })
