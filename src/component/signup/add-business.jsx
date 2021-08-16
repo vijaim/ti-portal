@@ -1,10 +1,11 @@
+/* eslint-disable no-empty */
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { GetRoutesPathName } from '../../utils/util-methods'
 import { ROUTES_PATH_NAME } from '../../utils/constants'
 import NetworkManager from '../../network-manager/network-config'
-import useForm from '../validation/use-form'
-import validateForm from '../validation/validate-form'
+import AddBusinessValidateForm from '../validation/add-business-validate-form'
+import useForms from '../validation/use-forms'
 
 const AddBusiness = (props) => {
   const routePath = GetRoutesPathName()
@@ -15,13 +16,14 @@ const AddBusiness = (props) => {
   })
   const { verticalList, platformList } = state
   const loginCookie = localStorage.getItem('localLoginCookie')
+  const [errors, setErrors] = useState({})
 
   const addBusiness = () => {
     const payload = {
       name: values.businessName,
-      url: values.urlPath ? values.urlPath : '',
-      vertical_id: values.businessCategory ? values.businessCategory : '',
-      platform_id: values.platform ? values.platform : ''
+      url: values.urlPath,
+      vertical_id: values.businessCategory,
+      platform_id: values.platform
     }
     NetworkManager.addBusiness(payload, loginCookie).then(response => {
       if (response.status === 200) {
@@ -30,17 +32,21 @@ const AddBusiness = (props) => {
     })
       .catch(error => {
         if (error.response.data.message) {
-          // console.log(error.response.data.message)
         }
       })
   }
 
-  const {
-    values,
-    errors,
-    handleChange,
-    handleSubmit
-  } = useForm({ businessName: '', businessCategory: '', platform: '', urlPath: '' }, validateForm)
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    const validationErrors = AddBusinessValidateForm(values)
+    const noErrors = Object.keys(validationErrors).length === 0
+    setErrors(validationErrors)
+    if (noErrors) {
+      addBusiness()
+    }
+  }
+
+  const { values, handleChange } = useForms({ businessName: '', businessCategory: '', platform: '', urlPath: '' }, AddBusinessValidateForm)
 
   useEffect(() => {
     const fetchList = async () => {
@@ -90,7 +96,7 @@ const AddBusiness = (props) => {
       </div>
       <div className="mb-12">
         <label htmlFor="urlPath" className="form-label fw-bold">URL</label>
-        <input type="url" className="form-control" name="urlPath" onChange={handleChange} value={values.urlPath || ''} placeholder="https://" required/>
+        <input type="url" className="form-control" name="urlPath" onChange={handleChange} value={values.urlPath || ''} placeholder="https://"/>
         {errors.urlPath && (
           <div className="text-danger">{errors.urlPath}</div>
         )}
@@ -156,7 +162,7 @@ const AddBusiness = (props) => {
           </>
           )
         : ''}
-      <button type="submit" onClick={addBusiness} className={props.className}>{props.buttonTitle}</button>
+      <button type="submit" className={props.className}>{props.buttonTitle}</button>
     </form>
   )
 }

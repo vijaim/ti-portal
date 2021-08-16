@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import React from 'react'
 import { Link } from 'react-router-dom'
 import useForm from '../validation/use-form'
@@ -32,7 +33,6 @@ const SignUp = (props) => {
     })
       .catch(error => {
         if (error.response.data.response_objects === null) {
-          // console.log(error)
         }
       })
   }

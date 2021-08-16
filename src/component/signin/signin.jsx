@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
@@ -7,6 +8,8 @@ import validateForm from '../validation/validate-form'
 import { connect } from 'react-redux'
 import { setEmail } from './signin-actions'
 import NetworkManager from '../../network-manager/network-config'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const SignIn = (props) => {
   const { VERIFY_CODE, SIGN_UP, SIGN_IN } = ROUTES_PATH_NAME
@@ -29,8 +32,12 @@ const SignIn = (props) => {
       }
     })
       .catch(error => {
-        if (error.response.data.response_objects === null) {
-          // console.log(error)
+        if (error.response.data.message === 'email is required') {
+        } else if (error.response.data.message === 'Incorrect email.') {
+        } else {
+          toast(error.response.data.message, {
+            position: toast.POSITION.TOP_CENTER
+          })
         }
       })
   }

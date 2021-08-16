@@ -1,4 +1,4 @@
-/* eslint-disable no-return-assign */
+/* eslint-disable no-empty */
 // COPY CODE REFERENCE : https://blog.devgenius.io/react-tips-copy-to-clipboard-comparing-old-and-new-values-with-hooks-a5f22a258a09
 import React, { useState, useEffect, useRef } from 'react'
 import { HEADING_TITLE } from '../../utils/constants'
@@ -25,7 +25,7 @@ const CopyCode = (props) => {
     })
       .catch(error => {
         if (error.response) {
-          // console.log(error.response.data.message)
+          // console.log(error.response)
         }
       })
   }

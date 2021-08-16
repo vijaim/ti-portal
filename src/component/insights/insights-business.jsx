@@ -62,6 +62,9 @@ const InSightsBusiness = (props) => {
 
   useEffect(() => {
     businessList()
+    return () => {
+      setState({})
+    }
   }, [])
 
   return (
