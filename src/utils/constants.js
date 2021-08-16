@@ -73,15 +73,17 @@ export const HEADING_TITLE = {
   SETTINGS: 'Settings'
 }
 
+export const API_ROOT = process.env.REACT_APP_API_ENDPOINT || 'https://devportalapi.trueinsights.co/'
+
 export const ROOT = {
-  OTP_GENERATE: 'https://portalapi.trueinsights.co/users/generate_password',
-  LOGIN: 'https://portalapi.trueinsights.co/users/login',
-  SIGNUP: 'https://portalapi.trueinsights.co/users/signup',
-  GET_BUSINESS: 'https://portalapi.trueinsights.co/apps',
-  ADD_BUSINESS: 'https://portalapi.trueinsights.co/apps',
-  GET_ALL_VERTICALS: 'https://portalapi.trueinsights.co/lookup/verticals',
-  GET_ALL_PLATFORMS: 'https://portalapi.trueinsights.co/lookup/platforms',
-  COPY_TRACK_CODE: 'https://portalapi.trueinsights.co/apps/'
+  OTP_GENERATE: `${API_ROOT}users/generate_password`,
+  LOGIN: `${API_ROOT}users/login`,
+  SIGNUP: `${API_ROOT}users/signup`,
+  GET_BUSINESS: `${API_ROOT}apps`,
+  ADD_BUSINESS: `${API_ROOT}apps`,
+  GET_ALL_VERTICALS: `${API_ROOT}lookup/verticals`,
+  GET_ALL_PLATFORMS: `${API_ROOT}lookup/platforms`,
+  COPY_TRACK_CODE: `${API_ROOT}apps/`
 }
 
 export const BUSINESSKEYS = {
