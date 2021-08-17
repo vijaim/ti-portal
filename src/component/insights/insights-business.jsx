@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-tabs */
 /* eslint-disable no-mixed-spaces-and-tabs */
 import React, { useState, useEffect } from 'react'
@@ -67,6 +68,9 @@ const InSightsBusiness = (props) => {
     }
   }, [])
 
+  const selectedBusiness = (item) => {
+    localStorage.setItem('selectedAppsInfo', JSON.stringify(item))
+  }
   return (
     <>
       <main>
@@ -88,7 +92,7 @@ const InSightsBusiness = (props) => {
               businessObj && Object.entries(businessObj).map(([key, value]) => (
                 key === APPS && (
                   businessObj[APPS].map(business => (
-                  <Link className="business-item" to={FAVORITES} key={business.id}>
+                  <Link className="business-item" onClick={() => selectedBusiness(business)} to={FAVORITES} key={business.id}>
                     <div className="listing-item">
                       <div className="align-items-center gy-3 row">
                         <div className="col-xl-4">

@@ -15,10 +15,11 @@ export const ROUTES_PATH_NAME = {
 }
 
 export const NAVIGATION_TABS = [
-  { id: 'favorites', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Favorites', type: 'home' },
-  { id: 'all', routePath: ROUTES_PATH_NAME.SALES, name: 'All', type: 'home' },
-  { id: 'businesses', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Businesses', type: 'settings' },
-  { id: 'profile', routePath: ROUTES_PATH_NAME.SETTINGS_PROFILE, name: 'Profile', type: 'settings' }
+  { id: 'favorites', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Favorites', type: 'home', isNavigation: false },
+  { id: 'all', routePath: ROUTES_PATH_NAME.SALES, name: 'All', type: 'home', isNavigation: false },
+  { id: 'hiddens', routePath: ROUTES_PATH_NAME.SALES, name: 'Hidden', type: 'home', isNavigation: false },
+  { id: 'businesses', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Businesses', type: 'settings', isNavigation: true },
+  { id: 'profile', routePath: ROUTES_PATH_NAME.SETTINGS_PROFILE, name: 'Profile', type: 'settings', isNavigation: true }
 ]
 
 export const HEADER_NAVIGATION = [
@@ -36,7 +37,7 @@ export const IMAGES = {
 }
 
 export const IMAGE_URL = {
-  TRUEINSIGHTS_LOGO: `${IMAGES.IMAGE_PATH}${'trueInsights-logo.png'}`,
+  TRUEINSIGHTS_LOGO: `${IMAGES.IMAGE_PATH}${'trueInsights-logo.jpeg'}`,
   TODAY: `${IMAGES.IMAGE_PATHS}${'icon-today.png'}`,
   ORDERS: `${IMAGES.IMAGE_PATHS}${'icon-orders.png'}`,
   TRANSACTIONS: `${IMAGES.IMAGE_PATHS}${'icon-transactions.png'}`,
@@ -55,7 +56,9 @@ export const IMAGE_URL = {
   COMPUTER: `${IMAGES.IMAGE_PATHS}${'icon-computer.png'}`,
   MOBILE: `${IMAGES.IMAGE_PATHS}${'icon-mobile.png'}`,
   ARROW_LEFT_BLUE: `${IMAGES.IMAGE_PATHS}${'icon-arrow-left-blue.png'}`,
-  GOOGLE_SIGN_IN: `${IMAGES.IMAGE_PATH}${'sign-in-with-google.png'}`
+  GOOGLE_SIGN_IN: `${IMAGES.IMAGE_PATH}${'sign-in-with-google.png'}`,
+  VISIBLE: `${IMAGES.IMAGE_PATHS}${'visible.jpeg'}`,
+  HIDDEN: `${IMAGES.IMAGE_PATHS}${'hidden.jpeg'}`
 }
 
 export const HEADING_TITLE = {

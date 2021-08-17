@@ -65,7 +65,7 @@ const VerifyCode = (props) => {
                 <form onSubmit={handleSubmit} noValidate>
                   <div className="mb-12">
                     <label htmlFor="inputVerificationCode" className="form-label fw-bold">Verification code</label>
-                    <input type="password" className="form-control" name="code" maxlength="5" onChange={handleChange} value={values.code || ''} placeholder="*****" required />
+                    <input type="password" className="form-control" name="code" maxLength="5" onChange={handleChange} value={values.code || ''} placeholder="*****" required />
                     {errors.code && (
                     <div className="text-danger">{errors.code}</div>
                     )}
