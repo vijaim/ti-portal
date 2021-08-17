@@ -27,3 +27,10 @@ export const setUserId = (userId) => {
     payload: userId
   }
 }
+
+export const setSearchBar = (value) => {
+  return {
+    type: Actions.SET_SEARCH_VALUE,
+    payload: value
+  }
+}

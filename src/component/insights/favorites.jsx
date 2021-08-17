@@ -15,6 +15,7 @@ import { IMAGE_URL, HEADING_TITLE, anosHiddenListFirstFive } from '../../utils/c
 import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import { connect } from 'react-redux'
+import { setSearchBar } from '../signin/signin-actions'
 
 const Favorites = (props) => {
   const {
@@ -27,13 +28,17 @@ const Favorites = (props) => {
   const [pageNo, setPageNo] = useState(1)
   const [limit, setLimit] = useState(10)
   const [isLoadMore, setIsLoadMore] = useState(false)
-  const { cookie, userId } = props
+  const { cookie, userId, searchValue, setSearchBarValue} = props
   let responseList = []
   const loginCookie = localStorage.getItem('localLoginCookie')
   const user_Id = localStorage.getItem('userId')
   useEffect(() => {
     setLimit(10)
     inSightsList(tabName, 0)
+    return () => {
+      // componentWillUnmount events
+      setSearchBarValue('')
+    }
   }, [])
 
   const inSightsList = (path, offSet) => {
@@ -44,6 +49,7 @@ const Favorites = (props) => {
       offSet: offSet * limit,
       limit: ((offSet + 1) * limit)
     }
+    setIsLoadMore(false)
     setPageNo(offSet)
     setLimit(params.limit)
 
@@ -193,38 +199,46 @@ const Favorites = (props) => {
         </h2>
         { categoryList.map((subvalue, subKey) => {
           const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS
-          return <React.Fragment> <div className="col-lg-3 col-xl-2">
-            <h3 className="insightTitle">
-              <img src={categoryTypeImage} width={24} height={24} alt="Computer" className="me-2 icon-base" />{`${subvalue.name}`}
-            </h3>
-          </div>
-          <div className="col-lg-9 col-xl-10">
-          { subvalue.value.map((subvalueItem, anosIndex) => {
-            return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className="listing-item">
-                <div className="align-items-center gy-2 row">
-                  <div className="col-xl-11">
-                    <div className="insightStatus-content">
-                      <span dangerouslySetInnerHTML={ {__html: fillTemplate(subvalueItem.output, subvalueItem) }} />
+          const outputvalueCheck = subvalue.value.map(item => `${fillTemplate(item.output, item)}`.includes(searchValue))
+          if (!searchValue !== '' && (`${subvalue.name}`.includes(searchValue) || outputvalueCheck.includes(true))) {
+            return <React.Fragment> <div className="col-lg-3 col-xl-2">
+              <h3 className="insightTitle">
+                <img src={categoryTypeImage} width={24} height={24} alt="Computer" className="me-2 icon-base" />{`${subvalue.name}`}
+              </h3>
+            </div>
+            <div className="col-lg-9 col-xl-10">
+            { subvalue.value.map((subvalueItem, anosIndex) => {
+              if (!searchValue !== '' && `${fillTemplate(subvalueItem.output, subvalueItem)}`.includes(searchValue) || `${subvalue.name}`.includes(searchValue)) {
+                return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className="listing-item">
+                  <div className="align-items-center gy-2 row">
+                    <div className="col-xl-11">
+                      <div className="insightStatus-content">
+                        <span dangerouslySetInnerHTML={ {__html: fillTemplate(subvalueItem.output, subvalueItem) }} />
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-xl-1">
-                    <div className="insightAction d-flex justify-content-start align-items-center">
-                      <span className="insightAction-link inSightAction-PaddingRight mr-5" onClick={() => iconPressed(subvalueItem, 'hiddens')}>
-                        <img className="insightAction-icon mt-1" src={subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
-                      </span>
-                      <span className={`insightAction-link  ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
-                        <img className="insightAction-icon" src={subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
-                      </span>
+                    <div className="col-xl-1">
+                      <div className="insightAction d-flex justify-content-start align-items-center">
+                        <span className="insightAction-link inSightAction-PaddingRight mr-5" onClick={() => iconPressed(subvalueItem, 'hiddens')}>
+                          <img className="insightAction-icon mt-1" src={subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
+                        </span>
+                        <span className={`insightAction-link  ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
+                          <img className="insightAction-icon" src={subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-          })
+              } else {
+                return null
+              }
+            })
+            }
+            </div>
+            </React.Fragment>
+          } else {
+            return null
           }
-          </div>
-          </React.Fragment>
-        })
-      }
+        })}
          </div>
     </div>
     })
@@ -257,8 +271,15 @@ const Favorites = (props) => {
 const mapStateToProps = (state) => {
   return {
     cookie: state.signIn.cookie,
-    userId: state.signIn.userId
+    userId: state.signIn.userId,
+    searchValue: state.signIn.searchValue
   }
 }
-
-export default connect(mapStateToProps, null)(Favorites)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setSearchBarValue: (value) => {
+      dispatch(setSearchBar(value))
+    }
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Favorites)
