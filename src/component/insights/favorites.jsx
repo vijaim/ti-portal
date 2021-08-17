@@ -26,7 +26,7 @@ const Favorites = (props) => {
   const [anosList, setAnosList] = useState(new Map())
   const [pageNo, setPageNo] = useState(1)
   const [limit, setLimit] = useState(10)
-  const [isLoadMore, setIsLoadMore] = useState(true)
+  const [isLoadMore, setIsLoadMore] = useState(false)
   const { cookie, userId } = props
   let responseList = []
   const loginCookie = localStorage.getItem('localLoginCookie')
