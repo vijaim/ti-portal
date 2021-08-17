@@ -13,13 +13,17 @@ const NavigationTab = (props) => {
         {
           NAVIGATION_TABS.map((navTab) => (
             navType === navTab.type && (
-              <Link
+              (navTab.isNavigation
+                ? <Link
                 key={navTab.id}
                 className={routePath === navTab.routePath ? 'nav-link active' : 'nav-link'}
                 to={navTab.routePath}
               >
                 {navTab.name}
               </Link>
+                : <div key={navTab.name} onClick={() => props.tabRender(navTab)} className={props.currentTab === navTab.id ? 'nav-link active' : 'nav-link'}>
+                  {navTab.name}
+               </div>)
             )
           ))
         }

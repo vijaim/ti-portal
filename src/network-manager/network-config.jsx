@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import axios from 'axios'
 import { ROOT } from '../utils/constants'
 
@@ -56,6 +57,20 @@ const NetworkManager = {
 
   getAllUsers: (params, cookie) => {
     return axios.get(`${GET_ALL_USERS}${params.id}`, config(cookie))
+  },
+
+  // ANOS SERVICES
+  getAnos: (params) => {
+    const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
+    return axios.get(`${GET_ALL_USERS}/${params.userId}/apps/${apps.id}/anos${params.type}?offset=${params.offSet}&limit=${params.limit}`, config(params.cookie))
+  },
+  putAnosIconAction: (params) => {
+    const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
+    return axios.put(`${GET_ALL_USERS}/${params.userId}/apps/${apps.id}/narratives/${params.narrativeId}${params.type}`, {}, config(params.cookie))
+  },
+  deleteAnosIconAction: (params) => {
+    const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
+    return axios.delete(`${GET_ALL_USERS}/${params.userId}/apps/${apps.id}/narratives/${params.narrativeId}${params.type}`, config(params.cookie))
   }
 }
 

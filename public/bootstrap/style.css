@@ -415,6 +415,10 @@ a.business-item:hover .listing-item{
     opacity: 0;
 }
 
+.inSightAction-PaddingRight{
+    padding-right: 1rem;
+}
+
 /* divider for tracking page */
 @media (min-width: 768px) {
     .divider-x > div:nth-child(2n+1) {
