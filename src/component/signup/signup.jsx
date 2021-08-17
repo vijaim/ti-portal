@@ -81,7 +81,7 @@ const SignUp = (props) => {
                   </div>
                   <div className="mb-12">
                     <label htmlFor="inputName" className="form-label fw-bold">Name</label>
-                    <input type="text" className="form-control" name="name" onChange={handleChange} value={values.name || ''} placeholder="Name" required />
+                    <input type="text" className="form-control" name="name" maxLength="25" onChange={handleChange} value={values.name || ''} placeholder="Name" required />
                     {errors.name && (
                     <div className="text-danger">{errors.name}</div>
                     )}
