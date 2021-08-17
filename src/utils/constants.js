@@ -37,7 +37,7 @@ export const IMAGES = {
 }
 
 export const IMAGE_URL = {
-  TRUEINSIGHTS_LOGO: `${IMAGES.IMAGE_PATH}${'trueInsights-logo.jpeg'}`,
+  TRUEINSIGHTS_LOGO: `${IMAGES.IMAGE_PATH}${'trueInsights-logo.png'}`,
   TODAY: `${IMAGES.IMAGE_PATHS}${'icon-today.png'}`,
   ORDERS: `${IMAGES.IMAGE_PATHS}${'icon-orders.png'}`,
   TRANSACTIONS: `${IMAGES.IMAGE_PATHS}${'icon-transactions.png'}`,
