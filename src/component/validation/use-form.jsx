@@ -15,7 +15,6 @@ const useForm = (callback, validate) => {
     if (event) { event.preventDefault() }
     setErrors(validate(values))
     setIsSubmitting(true)
-    setTimeout(() => setValues(values => ({ values: '' })), 1000)
   }
 
   const handleChange = (event) => {
@@ -23,9 +22,14 @@ const useForm = (callback, validate) => {
     setValues(values => ({ ...values, [event.target.name]: event.target.value }))
   }
 
+  const handleClear = (event) => {
+    setTimeout(() => setValues(values => ({ values: '' })), 1000)
+  }
+
   return {
     handleChange,
     handleSubmit,
+    handleClear,
     values,
     errors
   }

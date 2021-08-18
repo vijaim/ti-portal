@@ -6,7 +6,7 @@ import { ROUTES_PATH_NAME, HEADER_NAVIGATION, IMAGE_URL } from '../../utils/cons
 import { GetRoutesPathName } from '../../utils/util-methods'
 import { deleteCookie, getCookie } from '../../functions/cookie-functions'
 import { connect } from 'react-redux'
-import { setLoginCookie } from '../signin/signin-actions'
+import { setLoginCookie, setSearchBar } from '../signin/signin-actions'
 
 const Header = (props) => {
   const routePath = GetRoutesPathName()
@@ -17,8 +17,9 @@ const Header = (props) => {
   const [state, setState] = useState({
     cookieHeader: false
   })
+  const [searchValue, setSearchValue] = useState('')
   const { isHeaderShow } = state
-  const { cookie, setLoginCookie, path } = props
+  const { cookie, setLoginCookie, path, setSearchBarValue } = props
 
   useEffect(() => {
     const loginCookie = getCookie('trueinsights-cookie')
@@ -54,6 +55,11 @@ const Header = (props) => {
     setLoginCookie(null)
     localStorage.clear()
     deleteCookie('trueinsights-cookie')
+  }
+
+  const onSearchValueChange = (e) => {
+    setSearchBarValue(e.target.value)
+    setSearchValue(e.target.value)
   }
 
   return (
@@ -128,7 +134,7 @@ const Header = (props) => {
               ? (
                 <div className="container">
                   <form className="mb-60">
-                    <SearchBar />
+                    <SearchBar searchValue = {searchValue} onSearchValueChange = {(e) => onSearchValueChange(e)}/>
                   </form>
                 </div>
                 )
@@ -151,6 +157,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setLoginCookie: (cookie) => {
       dispatch(setLoginCookie(cookie))
+    },
+    setSearchBarValue: (value) => {
+      dispatch(setSearchBar(value))
     }
   }
 }

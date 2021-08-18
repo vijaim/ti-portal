@@ -24,11 +24,11 @@ const SettingsProfile = () => {
         toast('User profile updated successfully.', {
           position: toast.POSITION.TOP_CENTER
         })
+        handleClear()
       }
     })
       .catch(error => {
-        if (error.response.data.response_objects === null) {
-        } else {
+        if (error.response.data.message === 'Email already exists.') {
           toast(error.response.data.message, {
             position: toast.POSITION.TOP_CENTER
           })
@@ -40,7 +40,8 @@ const SettingsProfile = () => {
     values,
     errors,
     handleChange,
-    handleSubmit
+    handleSubmit,
+    handleClear
   } = useForm({ email: '', name: '' }, validateForm)
 
   return (
@@ -69,7 +70,7 @@ const SettingsProfile = () => {
                         </div>
                         <div className="mb-20">
                           <label htmlFor="inputName" className="form-label fw-bold">Name</label>
-                          <input type="text" className="form-control" name="name" onChange={handleChange} value={values.name || ''} placeholder="Name" required />
+                          <input type="text" className="form-control" name="name" maxLength="25" onChange={handleChange} value={values.name || ''} placeholder="Name" required />
                           {errors.name && (
                           <div className="text-danger">{errors.name}</div>
                           )}
