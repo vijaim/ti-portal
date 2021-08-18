@@ -56,7 +56,7 @@ export const IMAGE_URL = {
   COMPUTER: `${IMAGES.IMAGE_PATHS}${'icon-computer.png'}`,
   MOBILE: `${IMAGES.IMAGE_PATHS}${'icon-mobile.png'}`,
   ARROW_LEFT_BLUE: `${IMAGES.IMAGE_PATHS}${'icon-arrow-left-blue.png'}`,
-  GOOGLE_SIGN_IN: `${IMAGES.IMAGE_PATH}${'sign-in-with-google.png'}`,
+  GOOGLE_SIGN_IN: `${IMAGES.IMAGE_PATH}${'sign-in-with-google.jpg'}`,
   VISIBLE: `${IMAGES.IMAGE_PATHS}${'visible.jpeg'}`,
   HIDDEN: `${IMAGES.IMAGE_PATHS}${'hidden.jpeg'}`
 }
