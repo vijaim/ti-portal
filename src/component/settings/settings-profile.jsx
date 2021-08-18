@@ -29,10 +29,9 @@ const SettingsProfile = () => {
     })
       .catch(error => {
         if (error.response.data.message === 'Email already exists.') {
-          toast('Invalid email Id.', {
+          toast(error.response.data.message, {
             position: toast.POSITION.TOP_CENTER
           })
-        } else {
         }
       })
   }
