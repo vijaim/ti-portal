@@ -28,12 +28,13 @@ const Favorites = (props) => {
   const [pageNo, setPageNo] = useState(1)
   const [limit, setLimit] = useState(10)
   const [isLoadMore, setIsLoadMore] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const { cookie, userId, searchValue, setSearchBarValue} = props
   let responseList = []
   const loginCookie = localStorage.getItem('localLoginCookie')
   const user_Id = localStorage.getItem('userId')
   useEffect(() => {
-    setLimit(10)
+    setIsLoading(true)
     inSightsList(tabName, 0)
     return () => {
       // componentWillUnmount events
@@ -63,9 +64,11 @@ const Favorites = (props) => {
         }
         const result = getConstructFormat(responseList, path)
         setAnosList(result)
+        setIsLoading(false)
       }
     })
       .catch(error => {
+        setIsLoading(true)
         console.log('error', error)
         toast(error.response.data.message, {
           position: toast.POSITION.TOP_CENTER
@@ -112,6 +115,7 @@ const Favorites = (props) => {
   }
 
   const setTabValue = (tab) => {
+    setIsLoading(true)
     responseList = []
     setTabName(tab.id)
     setAnosList(new Map())
@@ -129,6 +133,7 @@ const Favorites = (props) => {
   }
 
   const iconPressed = (item, action) => {
+    setIsLoading(true)
     if ((action === 'favorites' && item.isFavorite) || (action !== 'favorites' && tabName === 'hiddens')) {
       deleteAction(action, item.narrative_id)
     } else {
@@ -150,6 +155,7 @@ const Favorites = (props) => {
     })
       .catch(error => {
         console.log('error', error)
+        setIsLoading(false)
         toast(error.response.data.message, {
           position: toast.POSITION.TOP_CENTER
         })
@@ -170,6 +176,7 @@ const Favorites = (props) => {
     })
       .catch(error => {
         console.log('error', error)
+        setIsLoading(false)
         toast(error.response.data.message, {
           position: toast.POSITION.TOP_CENTER
         })
@@ -177,6 +184,7 @@ const Favorites = (props) => {
   }
 
   const loadMoreData = (pageNo) => {
+    setIsLoading(true)
     inSightsList(tabName, pageNo + 1)
   }
 
@@ -199,8 +207,8 @@ const Favorites = (props) => {
         </h2>
         { categoryList.map((subvalue, subKey) => {
           const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS
-          const outputvalueCheck = subvalue.value.map(item => `${fillTemplate(item.output, item)}`.includes(searchValue))
-          if (!searchValue !== '' && (`${subvalue.name}`.includes(searchValue) || outputvalueCheck.includes(true))) {
+          const outputvalueCheck = subvalue.value.map(item => `${fillTemplate(item.output, item)}`.toLowerCase().includes(searchValue.toLowerCase()))
+          if (!searchValue !== '' && (`${subvalue.name}`.toLowerCase().includes(searchValue.toLowerCase()) || outputvalueCheck.includes(true))) {
             return <React.Fragment> <div className="col-lg-3 col-xl-2">
               <h3 className="insightTitle">
                 <img src={categoryTypeImage} width={24} height={24} alt="Computer" className="me-2 icon-base" />{`${subvalue.name}`}
@@ -208,7 +216,7 @@ const Favorites = (props) => {
             </div>
             <div className="col-lg-9 col-xl-10">
             { subvalue.value.map((subvalueItem, anosIndex) => {
-              if (!searchValue !== '' && `${fillTemplate(subvalueItem.output, subvalueItem)}`.includes(searchValue) || `${subvalue.name}`.includes(searchValue)) {
+              if (!searchValue !== '' && `${fillTemplate(subvalueItem.output, subvalueItem)}`.toLowerCase().includes(searchValue.toLowerCase()) || `${subvalue.name}`.includes(searchValue)) {
                 return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className="listing-item">
                   <div className="align-items-center gy-2 row">
                     <div className="col-xl-11">
@@ -254,14 +262,19 @@ const Favorites = (props) => {
         </section>
         <section className="bg-section">
           <NavigationTab currentTab={tabName} navType="home" tabRender={setTabValue} />
-          <div className="container pb-40 pt-40">
-            {/* Insights Data */}
-            { anosList.size > 0 && renderTabContent(tabName)}
-            {/* Insights Data end */}
-            {isLoadMore && <div className="text-center pt-20 pb-20" onClick={() => loadMoreData(pageNo, limit)}>
-              <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
+            <div className="container pb-40 pt-40">
+              {/* Insights Data */}
+              { anosList.size > 0 && renderTabContent(tabName)}
+              {/* Insights Data end */}
+              {isLoading && <div className="d-flex justify-content-center align-items-center" >
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
             </div>}
-          </div>
+              {isLoadMore && <div className="text-center pt-20 pb-20" onClick={() => loadMoreData(pageNo, limit)}>
+                <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
+              </div>}
+            </div>
         </section>
       </main>
     </>

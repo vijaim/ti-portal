@@ -35,6 +35,9 @@ const Routes = (props) => {
   useEffect(() => {
     const loginCookie = getCookie('trueinsights-cookie')
     setState(() => ({ isLoggedIn: loginCookie !== undefined && loginCookie !== '' && loginCookie !== null ? true : false }))
+    if (isLoggedIn && (SIGN_IN || SIGN_UP || VERIFY_CODE || PASSWORD)) {
+      history.push(HOME)
+    }
   }, [cookie])
 
   return (
@@ -54,7 +57,8 @@ const Routes = (props) => {
         {isLoggedIn && <Route exact path={TRACKING} component={Tracking} /> }
         {isLoggedIn && <Route exact path={SETTINGS_BUSINESS} component={SettingsBusiness} /> }
         {isLoggedIn && <Route exact path={SETTINGS_PROFILE} component={SettingsProfile} /> }
-        <Route exact path="*" component={SignIn} />
+        {isLoggedIn && <Route exact path="*" component={InSightsBusiness} />}
+        {!isLoggedIn && <Route exact path="*" component={SignIn} />}
       </Switch>
     </Router>
   )
