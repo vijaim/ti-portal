@@ -17,20 +17,20 @@ import { toast } from 'react-toastify'
 import { connect } from 'react-redux'
 import { setSearchBar } from '../signin/signin-actions'
 
+let responseList = []
 const Favorites = (props) => {
   const {
     TODAY, ORDERS, STAR_ACTIVE, STAR, ARROW_LEFT, HIDDEN, VISIBLE
     // DECREASE, TRANSACTIONS, , CUSTOMERS, PRODUCTS, INCREASE, DISLIKE, LOCATION, LIKE, DISLIKE_ACTIVE, LIKE_ACTIVE,
   } = IMAGE_URL
   const { FAVORITES } = HEADING_TITLE
-  const [tabName, setTabName] = useState('favorites')
+  const [tabName, setTabName] = useState('all')
   const [anosList, setAnosList] = useState(new Map())
   const [pageNo, setPageNo] = useState(1)
   const [limit, setLimit] = useState(10)
   const [isLoadMore, setIsLoadMore] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { cookie, userId, searchValue, setSearchBarValue} = props
-  let responseList = []
   const loginCookie = localStorage.getItem('localLoginCookie')
   const user_Id = localStorage.getItem('userId')
   useEffect(() => {
@@ -39,6 +39,7 @@ const Favorites = (props) => {
     return () => {
       // componentWillUnmount events
       setSearchBarValue('')
+      setEmptyList(null, false)
     }
   }, [])
 
@@ -48,23 +49,21 @@ const Favorites = (props) => {
       userId: userId || user_Id,
       type: path === 'all' ? '' : `/${path}`,
       offSet: offSet * limit,
-      limit: ((offSet + 1) * limit)
+      limit: (limit)
     }
     setIsLoadMore(false)
     setPageNo(offSet)
-    setLimit(params.limit)
-
     NetworkManager.getAnos(params).then(response => {
-      if (response.status === 200 && response.data.response_objects[0] && response.data.response_objects[0].narratives) {
-        const responseList = response.data.response_objects[0]
-        if (response.data.response_objects[0].narratives.length >= limit) {
+      setIsLoading(false)
+      if (response.status === 200 && response.data.response_objects && response.data.response_objects.narratives) {
+        const responseLists = response.data.response_objects
+        if (response.data.response_objects.narratives.length >= limit) {
           setIsLoadMore(true)
         } else {
           setIsLoadMore(false)
         }
-        const result = getConstructFormat(responseList, path)
+        const result = getConstructFormat(responseLists, path)
         setAnosList(result)
-        setIsLoading(false)
       }
     })
       .catch(error => {
@@ -77,7 +76,6 @@ const Favorites = (props) => {
   }
 
   const getConstructFormat = (data, tab) => {
-    setAnosList(new Map())
     const responseObject = []
     for (let i = 0; i < data.narratives.length; i++) {
       const narrative = data.narratives[i]
@@ -85,7 +83,7 @@ const Favorites = (props) => {
       innerObj.created_at = `${data.anos[i].created_at}`.split('T')[0]
       innerObj.category_name = narrative.category_name
       innerObj.category_image_url = narrative.category_image_url
-      innerObj.output = narrative.output
+      innerObj.formattedNarrativeOutput = narrative.formattedNarrativeOutput
       innerObj.narrative_id = narrative.narrative_id
       innerObj.values = data.anos[i].values
       innerObj.date_range = data.anos[i].date_range
@@ -116,24 +114,19 @@ const Favorites = (props) => {
 
   const setTabValue = (tab) => {
     setIsLoading(true)
-    responseList = []
     setTabName(tab.id)
-    setAnosList(new Map())
-    inSightsList(tab.id, 0)
+    setEmptyList(tab.id, true)
   }
 
-  const fillTemplate = (template, vars = {}) => {
-    template = template.replace(/\${/g, '<b>${').replace(/}/g, '}</b>')
-    const handler = new Function('vars', [
-      'const tagged = ( ' + Object.keys(vars).join(', ') + ' ) =>',
-      '`' + template + '`',
-      'return tagged(...Object.values(vars))'
-    ].join('\n'))
-    return handler(vars)
+  const setEmptyList = (tabName, isRequestFlag) => {
+    responseList = []
+    setAnosList(new Map())
+    if (isRequestFlag) {
+      inSightsList(tabName, 0)
+    }
   }
 
   const iconPressed = (item, action) => {
-    setIsLoading(true)
     if ((action === 'favorites' && item.isFavorite) || (action !== 'favorites' && tabName === 'hiddens')) {
       deleteAction(action, item.narrative_id)
     } else {
@@ -150,7 +143,7 @@ const Favorites = (props) => {
     }
     NetworkManager.putAnosIconAction(params).then(response => {
       if (response.status === 200) {
-        inSightsList(tabName, 0)
+        setEmptyList(tabName, true)
       }
     })
       .catch(error => {
@@ -171,7 +164,7 @@ const Favorites = (props) => {
     }
     NetworkManager.deleteAnosIconAction(params).then(response => {
       if (response.status === 200) {
-        inSightsList(tabName, 0)
+        setEmptyList(tabName, true)
       }
     })
       .catch(error => {
@@ -207,7 +200,7 @@ const Favorites = (props) => {
         </h2>
         { categoryList.map((subvalue, subKey) => {
           const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS
-          const outputvalueCheck = subvalue.value.map(item => `${fillTemplate(item.output, item)}`.toLowerCase().includes(searchValue.toLowerCase()))
+          const outputvalueCheck = subvalue.value.map(item => `${item.formattedNarrativeOutput}`.toLowerCase().includes(searchValue.toLowerCase()))
           if (!searchValue !== '' && (`${subvalue.name}`.toLowerCase().includes(searchValue.toLowerCase()) || outputvalueCheck.includes(true))) {
             return <React.Fragment> <div className="col-lg-3 col-xl-2">
               <h3 className="insightTitle">
@@ -216,12 +209,12 @@ const Favorites = (props) => {
             </div>
             <div className="col-lg-9 col-xl-10">
             { subvalue.value.map((subvalueItem, anosIndex) => {
-              if (!searchValue !== '' && `${fillTemplate(subvalueItem.output, subvalueItem)}`.toLowerCase().includes(searchValue.toLowerCase()) || `${subvalue.name}`.includes(searchValue)) {
+              if (!searchValue !== '' && `${subvalueItem.formattedNarrativeOutput}`.toLowerCase().includes(searchValue.toLowerCase()) || `${subvalue.name}`.includes(searchValue)) {
                 return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className="listing-item">
                   <div className="align-items-center gy-2 row">
                     <div className="col-xl-11">
                       <div className="insightStatus-content">
-                        <span dangerouslySetInnerHTML={ {__html: fillTemplate(subvalueItem.output, subvalueItem) }} />
+                      <span dangerouslySetInnerHTML={ {__html: subvalueItem.formattedNarrativeOutput}} />
                       </div>
                     </div>
                     <div className="col-xl-1">
@@ -237,14 +230,14 @@ const Favorites = (props) => {
                   </div>
                 </div>
               } else {
-                return null
+                return <span>No category found</span>
               }
             })
             }
             </div>
             </React.Fragment>
           } else {
-            return null
+            return <span>No records found</span>
           }
         })}
          </div>
