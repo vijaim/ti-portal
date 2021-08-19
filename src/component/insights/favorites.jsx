@@ -230,14 +230,14 @@ const Favorites = (props) => {
                   </div>
                 </div>
               } else {
-                return <span>No category found</span>
+                return null
               }
             })
             }
             </div>
             </React.Fragment>
           } else {
-            return <span>No records found</span>
+            return null
           }
         })}
          </div>
