@@ -70,7 +70,7 @@ const Header = (props) => {
           <header>
             <nav className="bg-white navbar navbar-expand-lg pb-lg-3 pt-lg-3">
               <div className="container">
-                <Link to="#" className="navbar-brand text-primary">
+                <Link to="/signin" className="navbar-brand text-primary">
                   <img src={IMAGE_URL.TRUEINSIGHTS_LOGO} alt="Trueinsight logo" width={132} height={29} />
                 </Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,7 +103,7 @@ const Header = (props) => {
             <header>
               <nav className="bg-white navbar navbar-expand-lg pb-lg-3 pt-lg-3">
                 <div className="container">
-                  <Link to="#" className="navbar-brand text-primary">
+                  <Link to="/home" className="navbar-brand text-primary">
                     <img src={IMAGE_URL.TRUEINSIGHTS_LOGO} alt="Trueinsight logo" width={132} height={29} />
                   </Link>
                   <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">

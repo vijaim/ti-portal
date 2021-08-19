@@ -1,5 +1,5 @@
 /* eslint-disable no-empty */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
 import GoogleSignIn from './google-signin'
@@ -10,11 +10,20 @@ import { setEmail } from './signin-actions'
 import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { getCookie } from '../../functions/cookie-functions'
 
 const SignIn = (props) => {
-  const { VERIFY_CODE, SIGN_UP, SIGN_IN } = ROUTES_PATH_NAME
+  const { VERIFY_CODE, SIGN_UP, SIGN_IN, HOME } = ROUTES_PATH_NAME
   const { SIGN_IN: signin } = HEADING_TITLE
   const { setEmail } = props
+
+  const { cookie } = props
+
+  useEffect(() => {
+    if (getCookie('trueinsights-cookie')) {
+      props.history.push(HOME)
+    }
+  }, [cookie])
 
   const otpGenerate = () => {
     const payload = {
@@ -85,7 +94,8 @@ const SignIn = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    email: state.signIn.email
+    email: state.signIn.email,
+    cookie: state.signIn.cookie
   }
 }
 
