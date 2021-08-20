@@ -20,10 +20,10 @@ const AddBusiness = (props) => {
 
   const addBusiness = () => {
     const payload = {
-      name: values.businessName,
-      url: values.urlPath,
-      vertical_id: values.businessCategory,
-      platform_id: values.platform
+      name: values.name,
+      url: values.url,
+      vertical_id: values.vertical_id,
+      platform_id: values.platform_id
     }
     NetworkManager.addBusiness(payload, loginCookie).then(response => {
       if (response.status === 200) {
@@ -46,7 +46,7 @@ const AddBusiness = (props) => {
     }
   }
 
-  const { values, handleChange } = useForms({ businessName: '', businessCategory: '', platform: '', urlPath: '' }, AddBusinessValidateForm)
+  const { values, handleChange } = useForms({ name: '', vertical_id: '', platform_id: '', url: '' }, AddBusinessValidateForm)
 
   useEffect(() => {
     const fetchList = async () => {
@@ -63,42 +63,42 @@ const AddBusiness = (props) => {
         ? (
           <div className="mb-12">
             <label htmlFor="businessName" className="form-label fw-bold">Name</label>
-            <input type="text" className="form-control" onChange={handleChange} value={values.businessName || ''} name="businessName" placeholder="Name"/>
-            {errors.businessName && (
-              <div className="text-danger">{errors.businessName}</div>
+            <input type="text" className="form-control" onChange={handleChange} value={values.name || ''} name="name" placeholder="Name"/>
+            {errors.name && (
+              <div className="text-danger">{errors.name}</div>
             )}
           </div>
           )
         : ''}
       <div className="mb-12">
         <label htmlFor="businessCategory" className="form-label fw-bold">Business category</label>
-        <select className="form-select" aria-label="Business category" name="businessCategory" onChange={handleChange} value={values.businessCategory || ''} >
+        <select className="form-select" aria-label="Business category" name="vertical_id" onChange={handleChange} value={values.vertical_id || ''} >
           <option value=''>Select a category</option>
             {verticalList && verticalList.map((vertical) => (
               <option value={vertical.id} key={vertical.id} label={vertical.name}></option>
             ))}
         </select>
-        {errors.businessCategory && (
-          <div className="text-danger">{errors.businessCategory}</div>
+        {errors.vertical_id && (
+          <div className="text-danger">{errors.vertical_id}</div>
         )}
       </div>
       <div className="mb-12">
         <label htmlFor="platform" className="form-label fw-bold">App platform</label>
-        <select className="form-select" aria-label="Business category" onChange={handleChange} value={values.platform || ''} name="platform">
+        <select className="form-select" aria-label="Business category" onChange={handleChange} value={values.platform_id || ''} name="platform_id">
           <option value=''>Select a category</option>
             {platformList && platformList.map((platform) => (
               <option value={platform.id} key={platform.id} label={platform.name}></option>
             ))}
         </select>
-        {errors.platform && (
-          <div className="text-danger">{errors.platform}</div>
+        {errors.platform_id && (
+          <div className="text-danger">{errors.platform_id}</div>
         )}
       </div>
       <div className="mb-12">
         <label htmlFor="urlPath" className="form-label fw-bold">URL</label>
-        <input type="url" className="form-control" name="urlPath" onChange={handleChange} value={values.urlPath || ''} placeholder="https://"/>
-        {errors.urlPath && (
-          <div className="text-danger">{errors.urlPath}</div>
+        <input type="url" className="form-control" name="url" onChange={handleChange} value={values.url || ''} placeholder="https://"/>
+        {errors.url && (
+          <div className="text-danger">{errors.url}</div>
         )}
       </div>
       {(routePath === SETTINGS_BUSINESS)
@@ -109,54 +109,6 @@ const AddBusiness = (props) => {
               <textarea className="form-control" id="inputTrackingCode" rows={5} placeholder="Copy" readOnly defaultValue="Copy" />
               <div className="form-text text-end mt-2">
                 <Link to="/#">Copy tracking code</Link>
-              </div>
-            </div>
-            <div className="mb-40">
-              <label className="form-label fw-bold">Notification</label>
-              <div className="mb-20">
-                <span className="me-3">Send by</span>
-                <div className="form-check form-check-inline">
-                  <input className="form-check-input" type="checkbox" name="emailNotification" defaultValue defaultChecked />
-                  <label className="form-check-label" htmlFor="checkboxEmail">Email</label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input className="form-check-input" type="checkbox" name="smsNotification" defaultValue />
-                  <label className="form-check-label" htmlFor="checkboxSMS">SMS</label>
-                </div>
-              </div>
-              <div>
-                <p className="mb-2">Frequency</p>
-                <div className="row g-2 align-items-center">
-                  <div className="col-sm-auto">
-                    <select defaultValue="Once a day" className="form-select" aria-label="Frequency period" id="inputFrqPeriod">
-                      <option value>Once a day</option>
-                      <option value>Once a week</option>
-                      <option value>Once a month</option>
-                    </select>
-                  </div>
-                  <div className="col-6 col-sm-auto">
-                    <select defaultValue={1} className="form-select" aria-label="Frequency hour" id="inputFrqHour">
-                      <option value={1}>1</option>
-                      <option value={2}>2</option>
-                      <option value={3}>3</option>
-                      <option value={4}>4</option>
-                      <option value={5}>5</option>
-                      <option value={6}>6</option>
-                      <option value={7}>7</option>
-                      <option value={8}>8</option>
-                      <option value={9}>9</option>
-                      <option value={10}>10</option>
-                      <option value={11}>11</option>
-                      <option value={12}>12</option>
-                    </select>
-                  </div>
-                  <div className="col-6 col-sm-auto">
-                    <select defaultValue="am" className="form-select" aria-label="Frequency AM/PM" id="inputFrqAMPM">
-                      <option value="am">am</option>
-                      <option value="pm">pm</option>
-                    </select>
-                  </div>
-                </div>
               </div>
             </div>
           </>

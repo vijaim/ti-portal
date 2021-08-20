@@ -88,7 +88,8 @@ export const ROOT = {
   GET_ALL_PLATFORMS: `${API_ROOT}lookup/platforms`,
   COPY_TRACK_CODE: `${API_ROOT}apps/`,
   UPDATE_USER_PROFILE: `${API_ROOT}users/`,
-  GET_ALL_USERS: `${API_ROOT}users/`
+  GET_ALL_USERS: `${API_ROOT}users/`,
+  UPDATE_BUSINESS: `${API_ROOT}apps/`
 }
 
 export const BUSINESSKEYS = {

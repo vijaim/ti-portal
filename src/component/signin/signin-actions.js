@@ -34,3 +34,10 @@ export const setSearchBar = (value) => {
     payload: value
   }
 }
+
+export const setBusinessById = (businessList) => {
+  return {
+    type: Actions.SET_BUSINESS_BY_ID,
+    payload: businessList
+  }
+}

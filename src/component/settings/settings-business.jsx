@@ -1,33 +1,78 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Tabs, TabPanel, TabList, Tab } from 'react-tabs'
 import InsightsHeader from '../insights/insights-header'
 import NavigationTab from './navigation-tab'
-import AddBusiness from '../signup/add-business'
-import { HEADING_TITLE } from '../../utils/constants'
+import UpdateBusiness from '../settings/update-business'
+import { HEADING_TITLE, BUSINESSKEYS } from '../../utils/constants'
+import NetworkManager from '../../network-manager/network-config'
+import { connect } from 'react-redux'
+import { setBusinessById } from '../signin/signin-actions'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-const SettingsBusiness = () => {
+const SettingsBusiness = (props) => {
   const [state, setState] = useState({
     selectedIndex: 0,
-    buttonActive: 0
+    buttonActive: 0,
+    businessObj: {},
+    businessData: [],
+    businessId: ''
   })
-  const { selectedIndex, buttonActive } = state
+  const { selectedIndex, buttonActive, businessObj, businessData, businessId } = state
   const { SETTINGS } = HEADING_TITLE
+  const { APPS } = BUSINESSKEYS
+  const { setBusinessById } = props
+  const loginCookie = localStorage.getItem('localLoginCookie')
 
   const handleBusinessSelect = (index) => {
     setState(() => ({ selectedIndex: index }))
   }
 
-  const handleBusiness1 = () => {
-    setState(() => ({ selectedIndex: 0, buttonActive: 0 }))
+  const handleBusiness = (id) => {
+    setState(() => ({ selectedIndex: 0, buttonActive: id, businessObj: businessObj }))
+    getBusinessById(id)
   }
 
-  const handleBusiness2 = () => {
-    setState(() => ({ selectedIndex: 1, buttonActive: 1 }))
+  const businessLists = () => {
+    const loginCookie = localStorage.getItem('localLoginCookie')
+    NetworkManager.getBusiness(loginCookie).then(response => {
+      if (response.data.response_objects.app_ids === null) {
+        setState(() => ({ businessObj: {}, selectedIndex: 0 }))
+      } else {
+        setState(() => ({ businessObj: response.data.response_objects, selectedIndex: 0, businessId: response.data.response_objects.app_ids[0] }))
+      }
+    })
+      .catch(error => {
+        toast(error.response, {
+          position: toast.POSITION.TOP_CENTER
+        })
+      })
   }
 
-  const handleBusiness3 = () => {
-    setState(() => ({ selectedIndex: 2, buttonActive: 2 }))
+  const getBusinessById = (id) => {
+    const payload = {
+      id: id
+    }
+    NetworkManager.copyTrackCode(payload, loginCookie).then(response => {
+      if (response.status === 200) {
+        if (response.data.response_objects === null) {
+          setState(() => ({ businessData: [] }))
+        } else {
+          setState(() => ({ businessData: response.data.response_objects, selectedIndex: 0, businessObj: businessObj, buttonActive: id }))
+          setBusinessById(response.data.response_objects)
+        }
+      }
+    })
+      .catch(error => {
+        if (error.response) {
+          // console.log(error.response)
+        }
+      })
   }
+
+  useEffect(() => {
+    businessLists()
+  }, [])
 
   return (
     <>
@@ -42,11 +87,18 @@ const SettingsBusiness = () => {
           <div className="container pb-40 pt-40">
             <div className="gy-3 mb-40 row">
               <div className="col-md-4 col-lg-3">
-                <div className="nav flex-column nav-pills me-3 business-tabs" id="business-tab" role="tablist" aria-orientation="vertical">
-                  <button className={((buttonActive === 0) ? 'nav-link active' : 'nav-link')} onClick={handleBusiness1}>Business Name 1</button>
-                  <button className={((buttonActive === 1) ? 'nav-link active' : 'nav-link')} onClick={handleBusiness2}>Business Name 2</button>
-                  <button className={((buttonActive === 2) ? 'nav-link active' : 'nav-link')} onClick={handleBusiness3}>Business Name 3</button>
-                </div>
+                {businessObj &&
+                  (Object.entries(businessObj).map(([key, value]) => (
+                    key === APPS && (
+                      businessObj[APPS].map(business => (
+                  <div key={business.id} className="nav flex-column nav-pills me-3 business-tabs" id="business-tab" role="tablist" aria-orientation="vertical">
+                    <button className={((buttonActive ? buttonActive === business.id : businessId === business.id) ? 'nav-link active' : 'nav-link')} onClick={() => handleBusiness(business.id)}>{business.name}</button>
+                  </div>
+                      ))
+                    )
+                  ))
+                  )
+                }
               </div>
               <div className="col-md-8 col-lg-9">
                 <Tabs className="tab-content" selectedIndex={selectedIndex} onSelect={handleBusinessSelect}>
@@ -54,7 +106,7 @@ const SettingsBusiness = () => {
                     <div className="listing-item pt-20 pb-20">
                       <div className="row">
                         <div className="col-xl-8">
-                          <AddBusiness className="btn btn-primary" buttonTitle="Save" />
+                          <UpdateBusiness className="btn btn-primary" buttonTitle="Save" businessData= {businessData} />
                         </div>
                       </div>
                     </div>
@@ -76,4 +128,12 @@ const SettingsBusiness = () => {
   )
 }
 
-export default SettingsBusiness
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setBusinessById: (businessList) => {
+      dispatch(setBusinessById(businessList))
+    }
+  }
+}
+
+export default connect(null, mapDispatchToProps)(SettingsBusiness)
