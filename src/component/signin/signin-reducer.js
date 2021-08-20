@@ -5,7 +5,8 @@ const initialState = {
   cookie: '',
   path: '',
   userId: '',
-  searchValue: ''
+  searchValue: '',
+  businessList: []
 }
 const setEmailDetail = (state, payload) => {
   return {
@@ -42,6 +43,13 @@ const setSearch = (state, payload) => {
   }
 }
 
+const setBusiness = (state, payload) => {
+  return {
+    ...state,
+    businessList: payload
+  }
+}
+
 const SignInReducer = (state = initialState, action) => {
   switch (action.type) {
     case Actions.SET_EMAIL:
@@ -54,6 +62,8 @@ const SignInReducer = (state = initialState, action) => {
       return setUserId(state, action.payload)
     case Actions.SET_SEARCH_VALUE:
       return setSearch(state, action.payload)
+    case Actions.SET_BUSINESS_BY_ID:
+      return setBusiness(state, action.payload)
     default:
       return state
   }

@@ -4,7 +4,7 @@ import { ROOT } from '../utils/constants'
 
 const {
   OTP_GENERATE, LOGIN, SIGNUP, GET_BUSINESS, ADD_BUSINESS, GET_ALL_PLATFORMS, GET_ALL_VERTICALS,
-  COPY_TRACK_CODE, UPDATE_USER_PROFILE, GET_ALL_USERS
+  COPY_TRACK_CODE, UPDATE_USER_PROFILE, GET_ALL_USERS, UPDATE_BUSINESS
 } = ROOT
 
 const config = (cookie) => {
@@ -57,6 +57,10 @@ const NetworkManager = {
 
   getAllUsers: (params, cookie) => {
     return axios.get(`${GET_ALL_USERS}${params.id}`, config(cookie))
+  },
+
+  updateBusiness: (id, params, cookie) => {
+    return axios.put(`${UPDATE_BUSINESS}${id}`, params, config(cookie))
   },
 
   // ANOS SERVICES

@@ -8,8 +8,13 @@ const useForm = (initialValues) => {
     setValues(values => ({ ...values, [event.target.name]: event.target.value }))
   }
 
+  const handleClear = (event) => {
+    setTimeout(() => setValues(values => ({ values: '' })), 1000)
+  }
+
   return {
     handleChange,
+    handleClear,
     values
   }
 }
