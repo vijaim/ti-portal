@@ -83,7 +83,7 @@ const Favorites = (props) => {
       innerObj.created_at = `${data.anos[i].created_at}`.split('T')[0]
       innerObj.category_name = narrative.category_name
       innerObj.category_image_url = narrative.category_image_url
-      innerObj.ouptutHtml = narrative.output_html
+      innerObj.output_html = narrative.output_html
       innerObj.narrative_id = narrative.narrative_id
       innerObj.values = data.anos[i].values
       innerObj.date_range = data.anos[i].date_range
@@ -200,7 +200,7 @@ const Favorites = (props) => {
         </h2>
         { categoryList.map((subvalue, subKey) => {
           const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS
-          const outputvalueCheck = subvalue.value.map(item => `${item.outputHtml}`.toLowerCase().includes(searchValue.toLowerCase()))
+          const outputvalueCheck = subvalue.value.map(item => `${item.output_html}`.toLowerCase().includes(searchValue.toLowerCase()))
           if (!searchValue !== '' && (`${subvalue.name}`.toLowerCase().includes(searchValue.toLowerCase()) || outputvalueCheck.includes(true))) {
             return <React.Fragment> <div className="col-lg-3 col-xl-2">
               <h3 className="insightTitle">
@@ -209,12 +209,12 @@ const Favorites = (props) => {
             </div>
             <div className="col-lg-9 col-xl-10">
             { subvalue.value.map((subvalueItem, anosIndex) => {
-              if (!searchValue !== '' && `${subvalueItem.outputHtml}`.toLowerCase().includes(searchValue.toLowerCase()) || `${subvalue.name}`.includes(searchValue)) {
+              if (!searchValue !== '' && `${subvalueItem.output_html}`.toLowerCase().includes(searchValue.toLowerCase()) || `${subvalue.name}`.includes(searchValue)) {
                 return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className="listing-item">
                   <div className="align-items-center gy-2 row">
                     <div className="col-xl-11">
                       <div className="insightStatus-content">
-                      <span dangerouslySetInnerHTML={ {__html: subvalueItem.outputHtml}} />
+                      <span dangerouslySetInnerHTML={ {__html: subvalueItem.output_html}} />
                       </div>
                     </div>
                     <div className="col-xl-1">
