@@ -15,8 +15,8 @@ export const ROUTES_PATH_NAME = {
 }
 
 export const NAVIGATION_TABS = [
-  { id: 'favorites', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Favorites', type: 'home', isNavigation: false },
   { id: 'all', routePath: ROUTES_PATH_NAME.SALES, name: 'All', type: 'home', isNavigation: false },
+  { id: 'favorites', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Favorites', type: 'home', isNavigation: false },
   { id: 'hiddens', routePath: ROUTES_PATH_NAME.SALES, name: 'Hidden', type: 'home', isNavigation: false },
   { id: 'businesses', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Businesses', type: 'settings', isNavigation: true },
   { id: 'profile', routePath: ROUTES_PATH_NAME.SETTINGS_PROFILE, name: 'Profile', type: 'settings', isNavigation: true }

@@ -130,7 +130,7 @@ const Header = (props) => {
                 </div>
               </nav>
             </header>
-            { isHeaderShow
+            { (isHeaderShow && routePath === FAVORITES)
               ? (
                 <div className="container">
                   <form className="mb-60">
