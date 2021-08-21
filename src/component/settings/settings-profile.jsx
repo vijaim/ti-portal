@@ -1,16 +1,20 @@
 /* eslint-disable no-empty */
-import React from 'react'
+/* eslint-disable no-return-assign */
+import React, { useEffect } from 'react'
 import InsightsHeader from '../insights/insights-header'
 import NavigationTab from './navigation-tab'
 import { HEADING_TITLE } from '../../utils/constants'
 import NetworkManager from '../../network-manager/network-config'
 import useForm from '../validation/use-form'
 import validateForm from '../validation/validate-form'
+import { connect } from 'react-redux'
+import { setUser } from '../signin/signin-actions'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-const SettingsProfile = () => {
+const SettingsProfile = (props) => {
   const { SETTINGS } = HEADING_TITLE
+  const { setUser, user } = props
   const loginCookie = localStorage.getItem('localLoginCookie')
   const userId = localStorage.getItem('userId')
 
@@ -36,13 +40,43 @@ const SettingsProfile = () => {
       })
   }
 
+  const getUser = () => {
+    const payload = {
+      id: userId
+    }
+    NetworkManager.getAllUsers(payload, loginCookie).then(response => {
+      if (response.status === 200) {
+        setUser(response.data.response_objects.users)
+      }
+    })
+      .catch(error => {
+        if (error.response) {
+        }
+      })
+  }
+
+  const handleUserNameChange = (event) => {
+    const newUserName = JSON.parse(JSON.stringify(user))
+    newUserName[event.target.name] = event.target.value
+    setUser(newUserName)
+  }
+
+  const handleEmailNameChange = (event) => {
+    const newEmail = JSON.parse(JSON.stringify(user))
+    newEmail[event.target.name] = event.target.value
+    setUser(newEmail)
+  }
+
   const {
     values,
     errors,
-    handleChange,
     handleSubmit,
     handleClear
   } = useForm({ email: '', name: '' }, validateForm)
+
+  useEffect(() => {
+    getUser()
+  }, [])
 
   return (
     <>
@@ -63,14 +97,14 @@ const SettingsProfile = () => {
                       <form onSubmit={handleSubmit} noValidate>
                         <div className="mb-20">
                           <label htmlFor="inputEmail" className="form-label fw-bold">Email</label>
-                          <input type="email" className="form-control" name="email" onChange={handleChange} value={values.email || ''} placeholder="Email" required />
+                          <input type="email" className="form-control" name="email" onChange={handleEmailNameChange} value={values.email = user.email || ''} placeholder="Email" required />
                           {errors.email && (
                           <div className="text-danger">{errors.email}</div>
                           )}
                         </div>
                         <div className="mb-20">
                           <label htmlFor="inputName" className="form-label fw-bold">Name</label>
-                          <input type="text" className="form-control" name="name" maxLength="25" onChange={handleChange} value={values.name || ''} placeholder="Name" required />
+                          <input type="text" className="form-control" name="name" maxLength="25" onChange={handleUserNameChange} value={values.name = user.name || ''} placeholder="Name" required />
                           {errors.name && (
                           <div className="text-danger">{errors.name}</div>
                           )}
@@ -89,4 +123,18 @@ const SettingsProfile = () => {
   )
 }
 
-export default SettingsProfile
+const mapStateToProps = (state) => {
+  return {
+    user: state.signIn.user
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (user) => {
+      dispatch(setUser(user))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsProfile)
