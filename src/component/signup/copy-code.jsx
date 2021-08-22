@@ -25,7 +25,6 @@ const CopyCode = (props) => {
     })
       .catch(error => {
         if (error.response) {
-          // console.log(error.response)
         }
       })
   }
@@ -35,8 +34,8 @@ const CopyCode = (props) => {
     document.execCommand('copy')
     setState(() => ({ copySuccessText: 'Copied' }))
     setTimeout(function () {
-      setState(() => ({ copySuccessText: 'Copy' }))
-    }, 10000)
+      props.onClick()
+    }, 1500)
   }
 
   useEffect(() => {

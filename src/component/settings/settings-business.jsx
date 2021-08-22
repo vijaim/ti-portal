@@ -15,10 +15,9 @@ const SettingsBusiness = (props) => {
     selectedIndex: 0,
     buttonActive: 0,
     businessObj: {},
-    businessData: [],
-    businessId: ''
+    businessData: []
   })
-  const { selectedIndex, buttonActive, businessObj, businessData, businessId } = state
+  const { selectedIndex, buttonActive, businessObj, businessData } = state
   const { SETTINGS } = HEADING_TITLE
   const { APPS } = BUSINESSKEYS
   const { setBusinessById } = props
@@ -30,7 +29,7 @@ const SettingsBusiness = (props) => {
 
   const handleBusiness = (id) => {
     setState(() => ({ selectedIndex: 0, buttonActive: id, businessObj: businessObj }))
-    getBusinessById(id)
+    getBusinessById(id, businessObj)
   }
 
   const businessLists = () => {
@@ -39,7 +38,8 @@ const SettingsBusiness = (props) => {
       if (response.data.response_objects.app_ids === null) {
         setState(() => ({ businessObj: {}, selectedIndex: 0 }))
       } else {
-        setState(() => ({ businessObj: response.data.response_objects, selectedIndex: 0, businessId: response.data.response_objects.app_ids[0] }))
+        setState(() => ({ businessObj: response.data.response_objects, selectedIndex: 0 }))
+        getBusinessById(response.data.response_objects.app_ids[0], response.data.response_objects)
       }
     })
       .catch(error => {
@@ -49,7 +49,7 @@ const SettingsBusiness = (props) => {
       })
   }
 
-  const getBusinessById = (id) => {
+  const getBusinessById = (id, businessObj) => {
     const payload = {
       id: id
     }
@@ -92,7 +92,7 @@ const SettingsBusiness = (props) => {
                     key === APPS && (
                       businessObj[APPS].map(business => (
                   <div key={business.id} className="nav flex-column nav-pills me-3 business-tabs" id="business-tab" role="tablist" aria-orientation="vertical">
-                    <button className={((buttonActive ? buttonActive === business.id : businessId === business.id) ? 'nav-link active' : 'nav-link')} onClick={() => handleBusiness(business.id)}>{business.name}</button>
+                    <button className={((buttonActive ? buttonActive === business.id : '') ? 'nav-link active' : 'nav-link')} onClick={() => handleBusiness(business.id)}>{business.name}</button>
                   </div>
                       ))
                     )
@@ -105,9 +105,9 @@ const SettingsBusiness = (props) => {
                   <TabPanel className="tab-pane fade show active">
                     <div className="listing-item pt-20 pb-20">
                       <div className="row">
-                        <div className="col-xl-8">
-                          <UpdateBusiness className="btn btn-primary" buttonTitle="Save" businessData= {businessData} />
-                        </div>
+                          <div className="col-xl-8">
+                            <UpdateBusiness className="btn btn-primary" buttonTitle="Save" businessData= {businessData} onClick= {businessLists} />
+                          </div>
                       </div>
                     </div>
                   </TabPanel>

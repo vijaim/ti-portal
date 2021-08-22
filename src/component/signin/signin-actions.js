@@ -41,3 +41,10 @@ export const setBusinessById = (businessList) => {
     payload: businessList
   }
 }
+
+export const setUser = (user) => {
+  return {
+    type: Actions.SET_USER,
+    payload: user
+  }
+}
