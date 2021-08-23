@@ -91,17 +91,16 @@ const UpdateBusiness = (props) => {
   const handleCopyTrackCode = (e) => {
     textAreaRef.current.select()
     document.execCommand('copy')
-    fetchList()
-    setState(() => ({ copySuccessText: 'Copied' }))
+    setState(() => ({ copySuccessText: 'Copied', verticalList: verticalList, platformList: platformList }))
+    setTimeout(function () {
+      setState(() => ({ copySuccessText: 'Copy tracking code', verticalList: verticalList, platformList: platformList }))
+    }, 2000)
   }
 
   const fetchList = async () => {
     const getVerticalList = await NetworkManager.getAllVerticals(loginCookie)
     const getPlatformList = await NetworkManager.getAllPlatforms(loginCookie)
     setState(() => ({ verticalList: getVerticalList.data.response_objects, platformList: getPlatformList.data.response_objects }))
-    if (copySuccessText === 'Copied') {
-      setState(() => ({ copySuccessText: 'Copied' }))
-    }
   }
 
   useEffect(() => {
@@ -157,7 +156,7 @@ const UpdateBusiness = (props) => {
           <>
             <div className="mb-12">
               <label htmlFor="inputTrackingCode" className="form-label fw-bold">Tracking Code</label>
-              <textarea ref={textAreaRef} className="form-control" id="inputTrackingCode" rows={5} placeholder="Copy" readOnly disabled={true} name= "tracking_code" value={businessList ? businessList.tracking_code : ''} />
+              <textarea ref={textAreaRef} className="form-control" id="inputTrackingCode" rows={5} placeholder="Copy" readOnly name= "tracking_code" value={businessList ? businessList.tracking_code : ''} />
               <div className="form-text text-end mt-2">
                 <Link to="#" style={!businessList.tracking_code ? { pointerEvents: 'none' } : null} onClick= {handleCopyTrackCode}>{copySuccessText === 'Copied' ? 'Copied' : 'Copy tracking code' }</Link>
               </div>
