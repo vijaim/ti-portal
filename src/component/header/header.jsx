@@ -1,12 +1,11 @@
 /* eslint-disable no-unneeded-ternary */
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import SearchBar from '../header/search-bar'
 import { ROUTES_PATH_NAME, HEADER_NAVIGATION, IMAGE_URL } from '../../utils/constants'
 import { GetRoutesPathName } from '../../utils/util-methods'
 import { deleteCookie, getCookie } from '../../functions/cookie-functions'
 import { connect } from 'react-redux'
-import { setLoginCookie, setSearchBar } from '../signin/signin-actions'
+import { setLoginCookie } from '../signin/signin-actions'
 
 const Header = (props) => {
   const routePath = GetRoutesPathName()
@@ -17,9 +16,8 @@ const Header = (props) => {
   const [state, setState] = useState({
     cookieHeader: false
   })
-  const [searchValue, setSearchValue] = useState('')
   const { isHeaderShow } = state
-  const { cookie, setLoginCookie, path, setSearchBarValue } = props
+  const { cookie, setLoginCookie, path } = props
 
   useEffect(() => {
     const loginCookie = getCookie('trueinsights-cookie')
@@ -55,11 +53,6 @@ const Header = (props) => {
     setLoginCookie(null)
     localStorage.clear()
     deleteCookie('trueinsights-cookie')
-  }
-
-  const onSearchValueChange = (e) => {
-    setSearchBarValue(e.target.value)
-    setSearchValue(e.target.value)
   }
 
   return (
@@ -130,15 +123,6 @@ const Header = (props) => {
                 </div>
               </nav>
             </header>
-            { (isHeaderShow && routePath === FAVORITES)
-              ? (
-                <div className="container">
-                  <form className="mb-60">
-                    <SearchBar searchValue = {searchValue} onSearchValueChange = {(e) => onSearchValueChange(e)}/>
-                  </form>
-                </div>
-                )
-              : '' }
           </>
           )
         }
@@ -157,9 +141,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setLoginCookie: (cookie) => {
       dispatch(setLoginCookie(cookie))
-    },
-    setSearchBarValue: (value) => {
-      dispatch(setSearchBar(value))
     }
   }
 }

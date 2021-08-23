@@ -355,6 +355,10 @@ nav.page-tabs .nav-link:hover {
     box-shadow: 0px 2px 4px rgba(15, 42, 66, 0.1);
 }
 
+.loadedNewItem_list{
+    background-color: #fffcda;
+}
+
 a.business-item {
     color: inherit;
     display: block;

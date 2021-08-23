@@ -11,11 +11,12 @@ import React, { useState, useEffect } from 'react'
 import InsightsHeader from '../insights/insights-header'
 import NavigationTab from '../settings/navigation-tab'
 // import { Link } from 'react-router-dom'
-import { IMAGE_URL, HEADING_TITLE, anosHiddenListFirstFive } from '../../utils/constants'
+import { ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, anosHiddenListFirstFive } from '../../utils/constants'
 import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import { connect } from 'react-redux'
 import { setSearchBar } from '../signin/signin-actions'
+import { Link } from 'react-router-dom'
 
 let responseList = []
 const Favorites = (props) => {
@@ -33,6 +34,8 @@ const Favorites = (props) => {
   const { cookie, userId, searchValue, setSearchBarValue} = props
   const loginCookie = localStorage.getItem('localLoginCookie')
   const user_Id = localStorage.getItem('userId')
+  const anosListContainerRef = React.createRef()
+  const scrollToRef = (ref) => window.scrollTo(0, ref.current.offsetTop)
   useEffect(() => {
     setIsLoading(true)
     inSightsList(tabName, 0)
@@ -56,13 +59,13 @@ const Favorites = (props) => {
     NetworkManager.getAnos(params).then(response => {
       setIsLoading(false)
       if (response.status === 200 && response.data.response_objects && response.data.response_objects.narratives) {
-        const responseLists = response.data.response_objects
+        const newResponseList = response.data.response_objects
         if (response.data.response_objects.narratives.length >= limit) {
           setIsLoadMore(true)
         } else {
           setIsLoadMore(false)
         }
-        const result = getConstructFormat(responseLists, path)
+        const result = getConstructFormat(newResponseList, path)
         setAnosList(result)
       }
     })
@@ -76,7 +79,11 @@ const Favorites = (props) => {
   }
 
   const getConstructFormat = (data, tab) => {
-    const responseObject = []
+    const responseObject = [];
+    (responseList.length > 0) && responseList.map(item => {
+      item.isNew = false
+      return item
+    })
     for (let i = 0; i < data.narratives.length; i++) {
       const narrative = data.narratives[i]
       const innerObj = {}
@@ -87,6 +94,7 @@ const Favorites = (props) => {
       innerObj.narrative_id = narrative.narrative_id
       innerObj.values = data.anos[i].values
       innerObj.date_range = data.anos[i].date_range
+      innerObj.isNew = (responseList.length > limit - 1)
       innerObj.isFavorite = tab === 'favorites' ? true : (data.favourite_ids) ? data.favourite_ids.includes(narrative.narrative_id) : false
       innerObj.isHidden = (tab === 'hiddens')
       responseObject.push(innerObj)
@@ -179,6 +187,7 @@ const Favorites = (props) => {
   const loadMoreData = (pageNo) => {
     setIsLoading(true)
     inSightsList(tabName, pageNo + 1)
+    scrollToRef(anosListContainerRef)
   }
 
   const displayDateFormat = (date) => {
@@ -193,7 +202,7 @@ const Favorites = (props) => {
     const anosListValues = Array.from(anosList, ([name, value]) => ({ name, value }))
     return anosListValues.map((value, key) => {
       const categoryList = Array.from(value.value, ([name, value]) => ({ name, value }))
-      return <div key={`${value.name}_key_`} className="container pb-20 pt-10">
+      return <div ref={ anosListContainerRef } key={`${value.name}_key_`} className="container pb-20 pt-10">
         <div className=" gy-3 mb-40 row">
         <h2 className="fw-bold h4 mb-40 text-center text-dark">{displayDateFormat(value.name)}
           <img src={TODAY} width={24} height={24} alt="Computer" className="ms-3 icon-base" />
@@ -202,7 +211,7 @@ const Favorites = (props) => {
           const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS
           const outputvalueCheck = subvalue.value.map(item => `${item.output_html}`.toLowerCase().includes(searchValue.toLowerCase()))
           if (!searchValue !== '' && (`${subvalue.name}`.toLowerCase().includes(searchValue.toLowerCase()) || outputvalueCheck.includes(true))) {
-            return <React.Fragment> <div className="col-lg-3 col-xl-2">
+            return <React.Fragment key={`${subvalue.name}_key_`}> <div className="col-lg-3 col-xl-2">
               <h3 className="insightTitle">
                 <img src={categoryTypeImage} width={24} height={24} alt="Computer" className="me-2 icon-base" />{`${subvalue.name}`}
               </h3>
@@ -210,7 +219,7 @@ const Favorites = (props) => {
             <div className="col-lg-9 col-xl-10">
             { subvalue.value.map((subvalueItem, anosIndex) => {
               if (!searchValue !== '' && `${subvalueItem.output_html}`.toLowerCase().includes(searchValue.toLowerCase()) || `${subvalue.name}`.includes(searchValue)) {
-                return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className="listing-item">
+                return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className={`${subvalueItem.isNew ? 'loadedNewItem_list listing-item' : 'listing-item'}`}>
                   <div className="align-items-center gy-2 row">
                     <div className="col-xl-11">
                       <div className="insightStatus-content">
@@ -254,10 +263,17 @@ const Favorites = (props) => {
           </div>
         </section>
         <section className="bg-section">
-          <NavigationTab currentTab={tabName} navType="home" tabRender={setTabValue} />
+          <NavigationTab appId={apps.id} currentTab={tabName} navType="home" tabRender={setTabValue} />
             <div className="container pb-40 pt-40">
               {/* Insights Data */}
-              { anosList.size > 0 && renderTabContent(tabName)}
+              { anosList.size > 0 ? renderTabContent(tabName) : (tabName === 'favorites' && !isLoading) ? <div className="d-flex flex-column align-items-center justify-content-center">
+              <h5 className="fw-bolder">No favorites yet</h5>
+              <img className="insightAction-icon my-1" src={STAR} alt="Icon Star" height={200} width={200} />
+               <span>Your favorites insights will show up here after you add them to your favorites</span>
+               <Link className="text-center pt-20 pb-20" onClick={() => setTabValue({id: 'all'})} to={`${ROUTES_PATH_NAME.FAVORITES}/${apps.id}/all`}>
+                <span className="btn btn-primary disabled-link">Add insights to favorites</span>
+              </Link>
+               </div> : null }
               {/* Insights Data end */}
               {isLoading && <div className="d-flex justify-content-center align-items-center" >
                 <div className="spinner-border text-primary" role="status">

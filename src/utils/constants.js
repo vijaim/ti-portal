@@ -4,10 +4,10 @@ export const ROUTES_PATH_NAME = {
   SIGN_UP: '/signUp',
   VERIFY_CODE: '/verifyCode',
   PASSWORD: '/password',
-  BUSINESS: '/business',
+  BUSINESS: '/businesses',
   TRACK_CODE: '/trackCode',
   HOME: '/home',
-  FAVORITES: '/favorites',
+  FAVORITES: '/business',
   SALES: '/sales',
   TRACKING: '/tracking',
   SETTINGS_BUSINESS: '/settingsBusiness',
@@ -15,9 +15,9 @@ export const ROUTES_PATH_NAME = {
 }
 
 export const NAVIGATION_TABS = [
-  { id: 'all', routePath: ROUTES_PATH_NAME.SALES, name: 'All', type: 'home', isNavigation: false },
-  { id: 'favorites', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Favorites', type: 'home', isNavigation: false },
-  { id: 'hiddens', routePath: ROUTES_PATH_NAME.SALES, name: 'Hidden', type: 'home', isNavigation: false },
+  { id: 'all', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'All', type: 'home', isNavigation: true },
+  { id: 'favorites', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Favorites', type: 'home', isNavigation: true },
+  { id: 'hiddens', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Hidden', type: 'home', isNavigation: true },
   { id: 'businesses', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Businesses', type: 'settings', isNavigation: true },
   { id: 'profile', routePath: ROUTES_PATH_NAME.SETTINGS_PROFILE, name: 'Profile', type: 'settings', isNavigation: true }
 ]
@@ -37,9 +37,9 @@ export const IMAGES = {
 }
 
 export const IMAGE_URL = {
-  TRUEINSIGHTS_LOGO: `${IMAGES.IMAGE_PATH}${'trueInsights-logo.png'}`,
-  TODAY: `${IMAGES.IMAGE_PATHS}${'icon-today.png'}`,
-  ORDERS: `${IMAGES.IMAGE_PATHS}${'icon-orders.png'}`,
+  TRUEINSIGHTS_LOGO: `../../${IMAGES.IMAGE_PATH}${'trueInsights-logo.png'}`,
+  TODAY: `../../${IMAGES.IMAGE_PATHS}${'icon-today.png'}`,
+  ORDERS: `../../${IMAGES.IMAGE_PATHS}${'icon-orders.png'}`,
   TRANSACTIONS: `${IMAGES.IMAGE_PATHS}${'icon-transactions.png'}`,
   CUSTOMERS: `${IMAGES.IMAGE_PATHS}${'icon-customers.png'}`,
   PRODUCTS: `${IMAGES.IMAGE_PATHS}${'icon-products.png'}`,
@@ -50,15 +50,15 @@ export const IMAGE_URL = {
   LIKE_ACTIVE: `${IMAGES.IMAGE_PATHS}${'icon-like-active.png'}`,
   DISLIKE: `${IMAGES.IMAGE_PATHS}${'icon-dislike.png'}`,
   DISLIKE_ACTIVE: `${IMAGES.IMAGE_PATHS}${'icon-dislike-active.png'}`,
-  STAR: `${IMAGES.IMAGE_PATHS}${'icon-star.png'}`,
-  STAR_ACTIVE: `${IMAGES.IMAGE_PATHS}${'icon-star-active.png'}`,
-  ARROW_LEFT: `${IMAGES.IMAGE_PATHS}${'icon-arrow-left.png'}`,
+  STAR: `../../${IMAGES.IMAGE_PATHS}${'icon-star.png'}`,
+  STAR_ACTIVE: `../../${IMAGES.IMAGE_PATHS}${'icon-star-active.png'}`,
+  ARROW_LEFT: `../../${IMAGES.IMAGE_PATHS}${'icon-arrow-left.png'}`,
   COMPUTER: `${IMAGES.IMAGE_PATHS}${'icon-computer.png'}`,
   MOBILE: `${IMAGES.IMAGE_PATHS}${'icon-mobile.png'}`,
   ARROW_LEFT_BLUE: `${IMAGES.IMAGE_PATHS}${'icon-arrow-left-blue.png'}`,
   GOOGLE_SIGN_IN: `${IMAGES.IMAGE_PATH}${'sign-in-with-google.jpg'}`,
-  VISIBLE: `${IMAGES.IMAGE_PATHS}${'visible.jpeg'}`,
-  HIDDEN: `${IMAGES.IMAGE_PATHS}${'hidden.jpeg'}`
+  VISIBLE: `../../${IMAGES.IMAGE_PATHS}${'visible.jpeg'}`,
+  HIDDEN: `../../${IMAGES.IMAGE_PATHS}${'hidden.jpeg'}`
 }
 
 export const HEADING_TITLE = {
