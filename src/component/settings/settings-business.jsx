@@ -1,8 +1,9 @@
+/* eslint-disable no-empty */
 import React, { useState, useEffect } from 'react'
 import { Tabs, TabPanel, TabList, Tab } from 'react-tabs'
 import InsightsHeader from '../insights/insights-header'
 import NavigationTab from './navigation-tab'
-import UpdateBusiness from '../settings/update-business'
+import AddBusiness from '../signup/add-business'
 import { HEADING_TITLE, BUSINESSKEYS } from '../../utils/constants'
 import NetworkManager from '../../network-manager/network-config'
 import { connect } from 'react-redux'
@@ -65,13 +66,15 @@ const SettingsBusiness = (props) => {
     })
       .catch(error => {
         if (error.response) {
-          // console.log(error.response)
         }
       })
   }
 
   useEffect(() => {
     businessLists()
+    return () => {
+      setState({})
+    }
   }, [])
 
   return (
@@ -100,26 +103,29 @@ const SettingsBusiness = (props) => {
                   )
                 }
               </div>
-              <div className="col-md-8 col-lg-9">
-                <Tabs className="tab-content" selectedIndex={selectedIndex} onSelect={handleBusinessSelect}>
-                  <TabPanel className="tab-pane fade show active">
-                    <div className="listing-item pt-20 pb-20">
-                      <div className="row">
-                          <div className="col-xl-8">
-                            <UpdateBusiness className="btn btn-primary" buttonTitle="Save" businessData= {businessData} onClick= {businessLists} />
-                          </div>
+              {businessObj &&
+                (Object.entries(businessObj).map(([key, value]) => (
+                  key === APPS && (
+                <div className="col-md-8 col-lg-9">
+                  <Tabs className="tab-content" selectedIndex={selectedIndex} onSelect={handleBusinessSelect}>
+                    <TabPanel className="tab-pane fade show active">
+                      <div className="listing-item pt-20 pb-20">
+                        <div className="row">
+                            <div className="col-xl-8">
+                              <AddBusiness className="btn btn-primary" buttonTitle="Save" businessData= {businessData} onClick= {businessLists} />
+                            </div>
+                        </div>
                       </div>
-                    </div>
-                  </TabPanel>
-                  <TabPanel className="tab-pane fade show active">Tabs 2</TabPanel>
-                  <TabPanel className="tab-pane fade show active">Tabs 3</TabPanel>
-                  <TabList className="disable">
-                    <Tab />
-                    <Tab />
-                    <Tab />
-                  </TabList>
-                </Tabs>
-              </div>
+                    </TabPanel>
+                    <TabList className="disable">
+                      <Tab />
+                    </TabList>
+                  </Tabs>
+                </div>
+                  )
+                ))
+                )
+              }
             </div>
           </div>
         </section>

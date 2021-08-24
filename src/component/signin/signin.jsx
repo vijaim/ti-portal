@@ -15,9 +15,7 @@ import { getCookie } from '../../functions/cookie-functions'
 const SignIn = (props) => {
   const { VERIFY_CODE, SIGN_UP, SIGN_IN, HOME } = ROUTES_PATH_NAME
   const { SIGN_IN: signin } = HEADING_TITLE
-  const { setEmail } = props
-
-  const { cookie } = props
+  const { setEmail, cookie } = props
 
   useEffect(() => {
     if (getCookie('trueinsights-cookie')) {
