@@ -7,7 +7,8 @@ const initialState = {
   userId: '',
   searchValue: '',
   businessList: {},
-  user: {}
+  user: {},
+  businessId: ''
 }
 const setEmailDetail = (state, payload) => {
   return {
@@ -58,6 +59,13 @@ const setUser = (state, payload) => {
   }
 }
 
+const setBusinessId = (state, payload) => {
+  return {
+    ...state,
+    businessId: payload
+  }
+}
+
 const SignInReducer = (state = initialState, action) => {
   switch (action.type) {
     case Actions.SET_EMAIL:
@@ -74,6 +82,8 @@ const SignInReducer = (state = initialState, action) => {
       return setBusiness(state, action.payload)
     case Actions.SET_USER:
       return setUser(state, action.payload)
+    case Actions.SET_BUSINESS_ID:
+      return setBusinessId(state, action.payload)
     default:
       return state
   }

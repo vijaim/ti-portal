@@ -48,3 +48,10 @@ export const setUser = (user) => {
     payload: user
   }
 }
+
+export const setBusinessId = (businessId) => {
+  return {
+    type: Actions.SET_BUSINESS_ID,
+    payload: businessId
+  }
+}

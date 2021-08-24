@@ -92,7 +92,7 @@ const InSightsBusiness = (props) => {
               businessObj && Object.entries(businessObj).map(([key, value]) => (
                 key === APPS && (
                   businessObj[APPS].map(business => (
-                  <Link className="business-item" onClick={() => selectedBusiness(business)} to={FAVORITES} key={business.id}>
+                  <Link className="business-item" onClick={() => selectedBusiness(business)} to={`${FAVORITES}/${business.id}/all`} key={business.id}>
                     <div className="listing-item">
                       <div className="align-items-center gy-3 row">
                         <div className="col-xl-4">

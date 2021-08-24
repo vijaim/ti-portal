@@ -11,9 +11,10 @@ import NetworkManager from '../../network-manager/network-config'
 import 'react-toastify/dist/ReactToastify.css'
 
 const VerifyCode = (props) => {
-  const { HOME } = ROUTES_PATH_NAME
+  const { BUSINESS, SIGN_IN, HOME } = ROUTES_PATH_NAME
   const { VERIFICATION_CODE } = HEADING_TITLE
   const { setLoginCookie, email, setPreviousPath, setUserId } = props
+  const previousPath = props.history.location.state.from
 
   const verificationCode = () => {
     const payload = {
@@ -28,7 +29,11 @@ const VerifyCode = (props) => {
         setUserId(response.data.response_objects.user_id)
         localStorage.setItem('localLoginCookie', loginCookie)
         localStorage.setItem('userId', response.data.response_objects.user_id)
-        props.history.push(HOME)
+        if (previousPath === SIGN_IN) {
+          props.history.push(HOME)
+        } else {
+          props.history.push(BUSINESS)
+        }
       }
     })
       .catch(error => {
@@ -49,7 +54,6 @@ const VerifyCode = (props) => {
   } = useForm({ code: '' }, validateForm)
 
   useEffect(() => {
-    const previousPath = props.history.location.state.from
     setPreviousPath(previousPath)
   }, [])
 

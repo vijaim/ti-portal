@@ -52,7 +52,9 @@ const Routes = (props) => {
         <Route exact path={BUSINESS} component={Business} />
         <Route exact path={TRACK_CODE} component={TrackCode} />
         {isLoggedIn && <Route exact path={HOME} component={InSightsBusiness} /> }
-        {isLoggedIn && <Route exact path={FAVORITES} component={Favorites} /> }
+        {isLoggedIn && <Route exact path={`${FAVORITES}/:id/all`} component={Favorites} /> }
+        {isLoggedIn && <Route exact path={`${FAVORITES}/:id/favorites`} component={Favorites} /> }
+        {isLoggedIn && <Route exact path={`${FAVORITES}/:id/hiddens`} component={Favorites} /> }
         {isLoggedIn && <Route exact path={SALES} component={Sales} /> }
         {isLoggedIn && <Route exact path={TRACKING} component={Tracking} /> }
         {isLoggedIn && <Route exact path={SETTINGS_BUSINESS} component={SettingsBusiness} /> }
