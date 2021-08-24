@@ -57,8 +57,8 @@ export const IMAGE_URL = {
   MOBILE: `${IMAGES.IMAGE_PATHS}${'icon-mobile.png'}`,
   ARROW_LEFT_BLUE: `${IMAGES.IMAGE_PATHS}${'icon-arrow-left-blue.png'}`,
   GOOGLE_SIGN_IN: `${IMAGES.IMAGE_PATH}${'sign-in-with-google.jpg'}`,
-  VISIBLE: `../../${IMAGES.IMAGE_PATHS}${'visible.jpeg'}`,
-  HIDDEN: `../../${IMAGES.IMAGE_PATHS}${'hidden.jpeg'}`
+  VISIBLE: `../../${IMAGES.IMAGE_PATHS}${'icon-visible.svg'}`,
+  HIDDEN: `../../${IMAGES.IMAGE_PATHS}${'icon-hidden.svg'}`
 }
 
 export const HEADING_TITLE = {
