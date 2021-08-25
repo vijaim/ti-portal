@@ -7,7 +7,7 @@ import GoogleSignIn from '../signin/google-signin'
 import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
-import { setEmail } from '../signin/signin-actions'
+import { setEmail, setLoginCookie, setUserId } from '../signin/signin-actions'
 import { connect } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -56,6 +56,12 @@ const SignUp = (props) => {
       })
   }
 
+  const onGoogleSignPressed = async (googleSignInInfo) => {
+    values.email = googleSignInInfo.profileObj.email
+    values.name = googleSignInInfo.profileObj.name
+    signUp()
+  }
+
   const {
     values,
     errors,
@@ -76,21 +82,21 @@ const SignUp = (props) => {
                     <label htmlFor="inputSignUpEmail" className="form-label fw-bold">Email</label>
                     <input type="email" className="form-control" name="email" onChange={handleChange} value={values.email || ''} placeholder="Email" required />
                     {errors.email && (
-                    <div className="text-danger">{errors.email}</div>
+                      <div className="text-danger">{errors.email}</div>
                     )}
                   </div>
                   <div className="mb-12">
                     <label htmlFor="inputName" className="form-label fw-bold">Name</label>
                     <input type="text" className="form-control" name="name" maxLength="25" onChange={handleChange} value={values.name || ''} placeholder="Name" required />
                     {errors.name && (
-                    <div className="text-danger">{errors.name}</div>
+                      <div className="text-danger">{errors.name}</div>
                     )}
                   </div>
                   <button type="submit" onClick={signUp} className="btn btn-primary d-block mt-20 w-100">Continue</button>
                 </form>
                 <div className="text-center">
                   <p>Or,</p>
-                  <GoogleSignIn />
+                  <GoogleSignIn btnName={'Sign up with Google'} onGoogleSignPressed={onGoogleSignPressed} />
                   <p>Have an account? <Link to={SIGN_IN}>Sign in</Link></p>
                 </div>
               </div>
@@ -104,7 +110,8 @@ const SignUp = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    email: state.signIn.email
+    email: state.signIn.email,
+    cookie: state.signIn.cookie
   }
 }
 
@@ -112,6 +119,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setEmail: (email) => {
       dispatch(setEmail(email))
+    },
+    setLoginCookie: (cookie) => {
+      dispatch(setLoginCookie(cookie))
+    },
+    setUserId: (userId) => {
+      dispatch(setUserId(userId))
     }
   }
 }

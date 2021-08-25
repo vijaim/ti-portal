@@ -28,7 +28,7 @@ const Favorites = (props) => {
   const [tabName, setTabName] = useState('all')
   const [anosList, setAnosList] = useState(new Map())
   const [pageNo, setPageNo] = useState(1)
-  const [limit, setLimit] = useState(10)
+  const [limit, setLimit] = useState(30)
   const [isLoadMore, setIsLoadMore] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { cookie, userId, searchValue, setSearchBarValue} = props
@@ -43,6 +43,7 @@ const Favorites = (props) => {
       // componentWillUnmount events
       setSearchBarValue('')
       setEmptyList(null, false)
+      localStorage.setItem('prevPath', '')
     }
   }, [])
 
@@ -57,6 +58,7 @@ const Favorites = (props) => {
     setIsLoadMore(false)
     setPageNo(offSet)
     NetworkManager.getAnos(params).then(response => {
+      localStorage.setItem('prevPath', props.history.location.pathname)
       setIsLoading(false)
       if (response.status === 200 && response.data.response_objects && response.data.response_objects.narratives) {
         const newResponseList = response.data.response_objects
@@ -204,9 +206,9 @@ const Favorites = (props) => {
       const categoryList = Array.from(value.value, ([name, value]) => ({ name, value }))
       return <div ref={ anosListContainerRef } key={`${value.name}_key_`} className="container pb-20 pt-10">
         <div className=" gy-3 mb-40 row">
-        <h2 className="fw-bold h4 mb-40 text-center text-dark">{displayDateFormat(value.name)}
+       { searchValue === '' && <h2 className="fw-bold h4 mb-40 text-center text-dark">{displayDateFormat(value.name)}
           <img src={TODAY} width={24} height={24} alt="Computer" className="ms-3 icon-base" />
-        </h2>
+        </h2>}
         { categoryList.map((subvalue, subKey) => {
           const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS
           const outputvalueCheck = subvalue.value.map(item => `${item.output_html}`.toLowerCase().includes(searchValue.toLowerCase()))
@@ -228,10 +230,12 @@ const Favorites = (props) => {
                     </div>
                     <div className="col-xl-1">
                       <div className="insightAction d-flex justify-content-start align-items-center">
-                        <span className="insightAction-link inSightAction-PaddingRight mr-5" onClick={() => iconPressed(subvalueItem, 'hiddens')}>
+                        <span className="insightAction-link inSightAction-PaddingRight mr-5 form-check-label" onClick={() => iconPressed(subvalueItem, 'hiddens')}>
+                          <img className="insightAction-icon icon-active" src={!subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
                           <img className="insightAction-icon mt-1" src={subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
                         </span>
-                        <span className={`insightAction-link  ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
+                        <span className={`insightAction-link form-check-label ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
+                          <img className="insightAction-icon icon-active" src={!subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
                           <img className="insightAction-icon" src={subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
                         </span>
                       </div>

@@ -89,7 +89,8 @@ export const ROOT = {
   COPY_TRACK_CODE: `${API_ROOT}apps/`,
   UPDATE_USER_PROFILE: `${API_ROOT}users/`,
   GET_ALL_USERS: `${API_ROOT}users/`,
-  UPDATE_BUSINESS: `${API_ROOT}apps/`
+  UPDATE_BUSINESS: `${API_ROOT}apps/`,
+  GOOGLE_SIGNIN: `${API_ROOT}users/google_oauth_login`
 }
 
 export const BUSINESSKEYS = {

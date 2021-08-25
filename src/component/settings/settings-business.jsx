@@ -35,6 +35,7 @@ const SettingsBusiness = (props) => {
 
   const businessLists = () => {
     const loginCookie = localStorage.getItem('localLoginCookie')
+    localStorage.setItem('prevPath', props.history.location.pathname)
     NetworkManager.getBusiness(loginCookie).then(response => {
       if (response.data.response_objects.app_ids === null) {
         setState(() => ({ businessObj: {}, selectedIndex: 0 }))
