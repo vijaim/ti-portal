@@ -2,7 +2,6 @@ import React from 'react'
 import { GoogleLogin } from 'react-google-login'
 
 const GoogleSignIn = ({ onGoogleSignPressed, btnName }) => {
-
   return (
     <GoogleLogin
       className="mb-40"
