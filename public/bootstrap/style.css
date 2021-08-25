@@ -409,14 +409,29 @@ a.business-item:hover .listing-item{
     opacity: 0;
 }
 
-.insightAction-link:hover .insightAction-icon.icon-active,
-.insightAction-link.active .insightAction-icon.icon-active {
+.insightAction-link:hover .insightAction-icon.icon-active{
     visibility: visible;
     opacity: 1;
 }
 
 .insightAction-link.active:hover .insightAction-icon.icon-active {
     visibility: hidden;
+    opacity: 0;
+}
+
+.insightAction-link.active .insightAction-icon.icon-active,
+.insightAction-link .insightAction-icon.icon-active {
+    visibility: hidden;
+    opacity: 1;
+}
+.insightAction-link.active:hover .insightAction-icon.icon-active,
+.insightAction-link:hover .insightAction-icon.icon-active {
+    visibility: visible;
+    opacity: 1;
+}
+.insightAction-link.active:hover .insightAction-icon,
+ .insightAction-link:hover .insightAction-icon  {
+    visibility: visible;
     opacity: 0;
 }
 

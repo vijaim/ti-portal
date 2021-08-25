@@ -4,7 +4,7 @@ import { ROOT } from '../utils/constants'
 
 const {
   OTP_GENERATE, LOGIN, SIGNUP, GET_BUSINESS, ADD_BUSINESS, GET_ALL_PLATFORMS, GET_ALL_VERTICALS,
-  COPY_TRACK_CODE, UPDATE_USER_PROFILE, GET_ALL_USERS, UPDATE_BUSINESS
+  COPY_TRACK_CODE, UPDATE_USER_PROFILE, GET_ALL_USERS, UPDATE_BUSINESS, GOOGLE_SIGNIN
 } = ROOT
 
 const config = (cookie) => {
@@ -75,6 +75,11 @@ const NetworkManager = {
   deleteAnosIconAction: (params) => {
     const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
     return axios.delete(`${GET_ALL_USERS}/${params.userId}/apps/${apps.id}/narratives/${params.narrativeId}${params.type}`, config(params.cookie))
+  },
+
+  // google signin
+  googleSignIn: (params) => {
+    return axios.post(GOOGLE_SIGNIN, params)
   }
 }
 

@@ -43,6 +43,7 @@ const Favorites = (props) => {
       // componentWillUnmount events
       setSearchBarValue('')
       setEmptyList(null, false)
+      localStorage.setItem('prevPath', '')
     }
   }, [])
 
@@ -57,6 +58,7 @@ const Favorites = (props) => {
     setIsLoadMore(false)
     setPageNo(offSet)
     NetworkManager.getAnos(params).then(response => {
+      localStorage.setItem('prevPath', props.history.location.pathname)
       setIsLoading(false)
       if (response.status === 200 && response.data.response_objects && response.data.response_objects.narratives) {
         const newResponseList = response.data.response_objects
@@ -229,9 +231,11 @@ const Favorites = (props) => {
                     <div className="col-xl-1">
                       <div className="insightAction d-flex justify-content-start align-items-center">
                         <span className="insightAction-link inSightAction-PaddingRight mr-5 form-check-label" onClick={() => iconPressed(subvalueItem, 'hiddens')}>
+                          <img className="insightAction-icon icon-active" src={!subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
                           <img className="insightAction-icon mt-1" src={subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
                         </span>
                         <span className={`insightAction-link form-check-label ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
+                          <img className="insightAction-icon icon-active" src={!subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
                           <img className="insightAction-icon" src={subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
                         </span>
                       </div>

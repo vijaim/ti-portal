@@ -7,7 +7,7 @@ import GoogleSignIn from '../signin/google-signin'
 import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
-import { setEmail } from '../signin/signin-actions'
+import { setEmail, setLoginCookie, setUserId } from '../signin/signin-actions'
 import { connect } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -56,6 +56,12 @@ const SignUp = (props) => {
       })
   }
 
+  const onGoogleSignPressed = async (googleSignInInfo) => {
+    values.email = googleSignInInfo.profileObj.email
+    values.name = googleSignInInfo.profileObj.name
+    signUp()
+  }
+
   const {
     values,
     errors,
@@ -90,7 +96,7 @@ const SignUp = (props) => {
                 </form>
                 <div className="text-center">
                   <p>Or,</p>
-                  <GoogleSignIn />
+                  <GoogleSignIn btnName={'Sign up with Google'} onGoogleSignPressed = {onGoogleSignPressed}/>
                   <p>Have an account? <Link to={SIGN_IN}>Sign in</Link></p>
                 </div>
               </div>
@@ -104,7 +110,8 @@ const SignUp = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    email: state.signIn.email
+    email: state.signIn.email,
+    cookie: state.signIn.cookie
   }
 }
 
@@ -112,6 +119,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setEmail: (email) => {
       dispatch(setEmail(email))
+    },
+    setLoginCookie: (cookie) => {
+      dispatch(setLoginCookie(cookie))
+    },
+    setUserId: (userId) => {
+      dispatch(setUserId(userId))
     }
   }
 }

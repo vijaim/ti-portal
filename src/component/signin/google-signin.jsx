@@ -1,14 +1,18 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { IMAGE_URL } from '../../utils/constants'
+import { GoogleLogin } from 'react-google-login'
 
-const GoogleSignIn = () => {
-  const { GOOGLE_SIGN_IN } = IMAGE_URL
+const GoogleSignIn = ({ onGoogleSignPressed, btnName }) => {
 
   return (
-    <Link to="#" className="d-inline-block mb-40">
-      <img src={GOOGLE_SIGN_IN} alt="Sign in with Google" width={192} height={46} />
-    </Link>
+    <GoogleLogin
+      className="mb-40"
+      clientId={process.env.REACT_GOOGLE_SIGNIN_KEY}
+      buttonText={btnName}
+      theme="dark"
+      onSuccess={onGoogleSignPressed}
+      onFailure={onGoogleSignPressed}
+      cookiePolicy={'single_host_origin'}
+    />
   )
 }
 

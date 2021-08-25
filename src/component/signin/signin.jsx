@@ -6,20 +6,24 @@ import GoogleSignIn from './google-signin'
 import useForm from '../validation/use-form'
 import validateForm from '../validation/validate-form'
 import { connect } from 'react-redux'
-import { setEmail } from './signin-actions'
+import { setEmail, setLoginCookie, setUserId } from './signin-actions'
 import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { getCookie } from '../../functions/cookie-functions'
+import { getCookie, setCookies } from '../../functions/cookie-functions'
 
 const SignIn = (props) => {
   const { VERIFY_CODE, SIGN_UP, SIGN_IN, HOME } = ROUTES_PATH_NAME
   const { SIGN_IN: signin } = HEADING_TITLE
-  const { setEmail, cookie } = props
+  const { setEmail, cookie, setLoginCookie, setUserId } = props
 
   useEffect(() => {
     if (getCookie('trueinsights-cookie')) {
-      props.history.push(HOME)
+      if (localStorage.getItem('prevPath')) {
+        props.history.push(localStorage.getItem('prevPath'))
+      } else {
+        props.history.push(HOME)
+      }
     }
   }, [cookie])
 
@@ -49,6 +53,28 @@ const SignIn = (props) => {
       })
   }
 
+  const onGoogleSignPressed = (googleSignInInfo) => {
+    const payload = {
+      id_token: googleSignInInfo.tokenObj.id_token
+    }
+    NetworkManager.googleSignIn(payload).then(async response => {
+      if (response.status === 200) {
+        setEmail(googleSignInInfo.profileObj.email)
+        setCookies('trueinsights-cookie', response.data.response_objects.token)
+        const loginCookie = getCookie('trueinsights-cookie')
+        localStorage.setItem('localLoginCookie', loginCookie)
+        setLoginCookie(loginCookie)
+        setUserId(response.data.response_objects.user_id)
+        localStorage.setItem('userId', response.data.response_objects.user_id)
+        props.history.push(HOME)
+      }
+    })
+      .catch(error => {
+        toast(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER
+        })
+      })
+  }
   const {
     values,
     errors,
@@ -76,7 +102,7 @@ const SignIn = (props) => {
                 </form>
                 <div className="text-center">
                   <p>Or,</p>
-                  <GoogleSignIn />
+                  <GoogleSignIn btnName={'Sign in with Google'} onGoogleSignPressed = {onGoogleSignPressed}/>
                   <p>Create an account?
                     <Link to={SIGN_UP}> Sign up</Link>
                   </p>
@@ -101,6 +127,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setEmail: (email) => {
       dispatch(setEmail(email))
+    },
+    setLoginCookie: (cookie) => {
+      dispatch(setLoginCookie(cookie))
+    },
+    setUserId: (userId) => {
+      dispatch(setUserId(userId))
     }
   }
 }
