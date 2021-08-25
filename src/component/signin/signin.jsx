@@ -95,14 +95,14 @@ const SignIn = (props) => {
                     <label htmlFor="inputSignUpEmail" className="form-label fw-bold">Email</label>
                     <input type="email" className="form-control" name="email" onChange={handleChange} value={values.email || ''} placeholder="Email" required />
                     {errors.email && (
-                    <div className="text-danger">{errors.email}</div>
+                      <div className="text-danger">{errors.email}</div>
                     )}
                   </div>
                   <button type="submit" onClick={otpGenerate} className="btn btn-primary d-block mt-20 w-100">Continue</button>
                 </form>
                 <div className="text-center">
                   <p>Or,</p>
-                  <GoogleSignIn btnName={'Sign in with Google'} onGoogleSignPressed = {onGoogleSignPressed}/>
+                  <GoogleSignIn btnName={'Sign in with Google'} onGoogleSignPressed={onGoogleSignPressed} />
                   <p>Create an account?
                     <Link to={SIGN_UP}> Sign up</Link>
                   </p>
