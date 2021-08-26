@@ -29,8 +29,7 @@ const Header = (props) => {
       return isHeaderShow ? HOME : SIGN_IN
     } else if (routePath === SETTINGS_PROFILE) {
       return isHeaderShow ? SETTINGS_BUSINESS : SIGN_IN
-    } else if (routePath === PASSWORD || routePath === BUSINESS ||
-      routePath === TRACK_CODE) {
+    } else if (routePath === PASSWORD) {
       return SIGN_UP
     } else if (routePath === VERIFY_CODE) {
       return path === SIGN_UP ? SIGN_UP : SIGN_IN
@@ -63,7 +62,7 @@ const Header = (props) => {
           <header>
             <nav className="bg-white navbar navbar-expand-lg pb-lg-3 pt-lg-3">
               <div className="container">
-                <Link to="/signin" className="navbar-brand text-primary">
+                <Link to={SIGN_IN} className="navbar-brand text-primary">
                   <img src={IMAGE_URL.TRUEINSIGHTS_LOGO} alt="Trueinsight logo" width={132} height={29} />
                 </Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +72,7 @@ const Header = (props) => {
                   <ul className="ms-auto navbar-nav mb-2 mb-lg-0">
                     {
                       HEADER_NAVIGATION.map((headerNav) => (
-                        headerNav.type === 'auth' && (
+                        headerNav.type === (isHeaderShow ? '' : 'auth') && (
                           <li key={headerNav.id} className="nav-item">
                             <Link
                               className={setRoutesPath(routePath) === headerNav.routePath ? 'btn btn-primary ms-lg-3' : 'nav-link'}

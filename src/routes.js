@@ -36,7 +36,7 @@ const Routes = (props) => {
     const loginCookie = getCookie('trueinsights-cookie')
     setState(() => ({ isLoggedIn: loginCookie !== undefined && loginCookie !== '' && loginCookie !== null ? true : false }))
     if (isLoggedIn && (SIGN_IN || SIGN_UP || VERIFY_CODE || PASSWORD)) {
-      history.push(HOME)
+      history.push(SIGN_IN)
     }
   }, [cookie])
 
