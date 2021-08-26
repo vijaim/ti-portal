@@ -136,7 +136,7 @@ const AddBusiness = (props) => {
     <form onSubmit={handleSubmit} noValidate>
       <div className="mb-12">
         <label htmlFor="businessName" className="form-label fw-bold">Name</label>
-        <input type="text" className="form-control" onChange={!props.businessData ? handleChange : handleBusinessNameChange} value={!props.businessData ? values.name || '' : values.name = businessList.name || ''} name="name" placeholder="Name"/>
+        <input type="text" className="form-control" maxLength="25" onChange={!props.businessData ? handleChange : handleBusinessNameChange} value={!props.businessData ? values.name || '' : values.name = businessList.name || ''} name="name" placeholder="Name"/>
         {errors.name && (
           <div className="text-danger">{errors.name}</div>
         )}
