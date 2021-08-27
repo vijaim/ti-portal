@@ -83,6 +83,7 @@ export const ROOT = {
   LOGIN: `${API_ROOT}users/login`,
   SIGNUP: `${API_ROOT}users/signup`,
   GET_BUSINESS: `${API_ROOT}apps`,
+  GET_BUSINESS_BY_ID: `${API_ROOT}apps/`,
   ADD_BUSINESS: `${API_ROOT}apps`,
   GET_ALL_VERTICALS: `${API_ROOT}lookup/verticals`,
   GET_ALL_PLATFORMS: `${API_ROOT}lookup/platforms`,

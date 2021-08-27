@@ -4,7 +4,7 @@ import { ROOT } from '../utils/constants'
 
 const {
   OTP_GENERATE, LOGIN, SIGNUP, GET_BUSINESS, ADD_BUSINESS, GET_ALL_PLATFORMS, GET_ALL_VERTICALS,
-  COPY_TRACK_CODE, UPDATE_USER_PROFILE, GET_ALL_USERS, UPDATE_BUSINESS, GOOGLE_SIGNIN
+  COPY_TRACK_CODE, UPDATE_USER_PROFILE, GET_ALL_USERS, UPDATE_BUSINESS, GOOGLE_SIGNIN, GET_BUSINESS_BY_ID
 } = ROOT
 
 const config = (cookie) => {
@@ -33,6 +33,10 @@ const NetworkManager = {
 
   getBusiness: (cookie) => {
     return axios.get(GET_BUSINESS, config(cookie))
+  },
+
+  getBusinessById: (param) => {
+    return axios.get(`${GET_BUSINESS_BY_ID}${param.appId}`, config(param.cookie))
   },
 
   addBusiness: (params, cookie) => {

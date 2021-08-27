@@ -11,10 +11,11 @@ import NetworkManager from '../../network-manager/network-config'
 import 'react-toastify/dist/ReactToastify.css'
 
 const VerifyCode = (props) => {
-  const { BUSINESS, SIGN_IN, HOME } = ROUTES_PATH_NAME
+  const { BUSINESS, SIGN_IN, HOME, FAVORITES, SIGN_UP } = ROUTES_PATH_NAME
   const { VERIFICATION_CODE } = HEADING_TITLE
   const { setLoginCookie, email, setPreviousPath, setUserId } = props
   const previousPath = props.history.location.state.from
+  const prevActionPath = localStorage.getItem('prevActionPath')
 
   const verificationCode = () => {
     const payload = {
@@ -29,7 +30,9 @@ const VerifyCode = (props) => {
         setUserId(response.data.response_objects.user_id)
         localStorage.setItem('localLoginCookie', loginCookie)
         localStorage.setItem('userId', response.data.response_objects.user_id)
-        if (previousPath === SIGN_IN) {
+        if (prevActionPath != null && prevActionPath !== SIGN_UP && prevActionPath !== SIGN_IN) {
+          (prevActionPath.includes(FAVORITES)) ? getBussinessDetails(loginCookie) : props.history.push(HOME)
+        } else if (previousPath === SIGN_IN) {
           props.history.push(HOME)
         } else {
           props.history.push(BUSINESS)
@@ -43,6 +46,26 @@ const VerifyCode = (props) => {
             position: toast.POSITION.TOP_CENTER
           })
         }
+      })
+  }
+
+  const getBussinessDetails = (loginCookie) => {
+    const payload = {
+      cookie: localStorage.getItem('localLoginCookie'),
+      appId: prevActionPath.split('/')[2]
+    }
+    NetworkManager.getBusinessById(payload).then(response => {
+      if (response.status === 200) {
+        localStorage.setItem('selectedAppsInfo', JSON.stringify(response.data.response_objects))
+        setLoginCookie(loginCookie)
+        setTimeout(() => props.history.push(prevActionPath), 1000)
+      }
+    })
+      .catch(error => {
+        props.history.push(HOME)
+        toast(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER
+        })
       })
   }
 

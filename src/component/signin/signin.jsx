@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { getCookie, setCookies } from '../../functions/cookie-functions'
 
 const SignIn = (props) => {
-  const { VERIFY_CODE, SIGN_UP, SIGN_IN, HOME } = ROUTES_PATH_NAME
+  const { VERIFY_CODE, SIGN_UP, SIGN_IN, HOME, FAVORITES } = ROUTES_PATH_NAME
   const { SIGN_IN: signin } = HEADING_TITLE
   const { setEmail, cookie, setLoginCookie, setUserId } = props
 
@@ -28,6 +28,7 @@ const SignIn = (props) => {
   }, [cookie])
 
   const otpGenerate = () => {
+    localStorage.setItem('prevActionPath', window.location.pathname)
     const payload = {
       email: values.email
     }
@@ -54,6 +55,8 @@ const SignIn = (props) => {
   }
 
   const onGoogleSignPressed = (googleSignInInfo) => {
+    localStorage.setItem('prevActionPath', window.location.pathname)
+    const prevActionPath = localStorage.getItem('prevActionPath')
     const payload = {
       id_token: googleSignInInfo.tokenObj.id_token
     }
@@ -63,13 +66,44 @@ const SignIn = (props) => {
         setCookies('trueinsights-cookie', response.data.response_objects.token)
         const loginCookie = getCookie('trueinsights-cookie')
         localStorage.setItem('localLoginCookie', loginCookie)
-        setLoginCookie(loginCookie)
         setUserId(response.data.response_objects.user_id)
         localStorage.setItem('userId', response.data.response_objects.user_id)
-        props.history.push(HOME)
+        if (prevActionPath !== SIGN_IN) {
+          if (prevActionPath.includes(FAVORITES)) {
+            getBussinessDetails(loginCookie)
+          } else {
+            setLoginCookie(loginCookie)
+            props.history.push(HOME)
+          }
+        } else {
+          setLoginCookie(loginCookie)
+          props.history.push(HOME)
+        }
       }
     })
       .catch(error => {
+        toast(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER
+        })
+      })
+  }
+
+  const getBussinessDetails = (loginCookie) => {
+    const prevActionPath = localStorage.getItem('prevActionPath')
+    const payload = {
+      cookie: localStorage.getItem('localLoginCookie'),
+      appId: prevActionPath.split('/')[2]
+    }
+    NetworkManager.getBusinessById(payload).then(response => {
+      if (response.status === 200) {
+        localStorage.setItem('selectedAppsInfo', JSON.stringify(response.data.response_objects))
+        setLoginCookie(loginCookie)
+        props.history.push(prevActionPath)
+      }
+    })
+      .catch(error => {
+        setLoginCookie(loginCookie)
+        props.history.push(HOME)
         toast(error.response.data.message, {
           position: toast.POSITION.TOP_CENTER
         })
@@ -105,6 +139,7 @@ const SignIn = (props) => {
                   <GoogleSignIn btnName={'Sign in with Google'} onGoogleSignPressed={onGoogleSignPressed} />
                   <p>Create an account?
                     <Link to={SIGN_UP}> Sign up</Link>
+                    {/* <Link to={'businesses/20/all'}> click</Link> */}
                   </p>
                 </div>
               </div>
