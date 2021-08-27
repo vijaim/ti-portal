@@ -76,8 +76,10 @@ const SettingsProfile = (props) => {
   } = useForm({ email: '', name: '' }, validateForm)
 
   useEffect(() => {
-    localStorage.setItem('prevPath', '')
     getUser()
+    return () => {
+      localStorage.setItem('prevPath', '')
+    }
   }, [])
 
   return (
