@@ -11,7 +11,8 @@ export const ROUTES_PATH_NAME = {
   SALES: '/sales',
   TRACKING: '/tracking',
   SETTINGS_BUSINESS: '/settingsBusiness',
-  SETTINGS_PROFILE: '/settingsProfile'
+  SETTINGS_PROFILE: '/settingsProfile',
+  TERMS_OF_USE: 'https://www.trueinsights.co/'
 }
 
 export const NAVIGATION_TABS = [

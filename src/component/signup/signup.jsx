@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { getCookie, setCookies } from '../../functions/cookie-functions'
 
 const SignUp = (props) => {
-  const { VERIFY_CODE, SIGN_IN, SIGN_UP, BUSINESS } = ROUTES_PATH_NAME
+  const { VERIFY_CODE, SIGN_IN, SIGN_UP, BUSINESS, TERMS_OF_USE } = ROUTES_PATH_NAME
   const { SIGN_UP: signup } = HEADING_TITLE
   const { setEmail } = props
 
@@ -126,6 +126,9 @@ const SignUp = (props) => {
                   <p>Or,</p>
                   <GoogleSignIn btnName={'Sign up with Google'} onGoogleSignPressed={onGoogleSignPressed} />
                   <p>Have an account? <Link to={SIGN_IN}>Sign in</Link></p>
+                </div>
+                <div className="text-center">
+                  By signing up, you agree to <Link to={{ pathname: TERMS_OF_USE }} target="_blank" >terms of use</Link>
                 </div>
               </div>
             </div>
