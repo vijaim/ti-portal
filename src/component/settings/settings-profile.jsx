@@ -77,6 +77,9 @@ const SettingsProfile = (props) => {
 
   useEffect(() => {
     getUser()
+    return () => {
+      localStorage.setItem('prevPath', '')
+    }
   }, [])
 
   return (

@@ -74,6 +74,7 @@ const SettingsBusiness = (props) => {
   useEffect(() => {
     businessLists()
     return () => {
+      localStorage.setItem('prevPath', '')
       setState({})
     }
   }, [])

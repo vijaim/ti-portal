@@ -25,7 +25,7 @@ const Favorites = (props) => {
     // DECREASE, TRANSACTIONS, , CUSTOMERS, PRODUCTS, INCREASE, DISLIKE, LOCATION, LIKE, DISLIKE_ACTIVE, LIKE_ACTIVE,
   } = IMAGE_URL
   const { FAVORITES } = HEADING_TITLE
-  const [tabName, setTabName] = useState('all')
+  const [tabName, setTabName] = useState(props.history.location.pathname.split('/')[3])
   const [anosList, setAnosList] = useState(new Map())
   const [pageNo, setPageNo] = useState(1)
   const [limit, setLimit] = useState(30)

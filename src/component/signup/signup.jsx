@@ -10,9 +10,10 @@ import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
 import { setEmail, setLoginCookie, setUserId } from '../signin/signin-actions'
 import { connect } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css'
+import { getCookie, setCookies } from '../../functions/cookie-functions'
 
 const SignUp = (props) => {
-  const { VERIFY_CODE, SIGN_IN, SIGN_UP } = ROUTES_PATH_NAME
+  const { VERIFY_CODE, SIGN_IN, SIGN_UP, BUSINESS, TERMS_OF_USE } = ROUTES_PATH_NAME
   const { SIGN_UP: signup } = HEADING_TITLE
   const { setEmail } = props
 
@@ -37,17 +38,43 @@ const SignUp = (props) => {
       })
   }
 
-  const signUp = () => {
+  const signUp = (googleSignInInfo) => {
     const payload = {
       email: values.email,
       name: values.name
     }
     NetworkManager.signUp(payload).then(response => {
       if (response.status === 200) {
-        otpGenerate()
+        if (values.type && values.type === 1) {
+          const payload = {
+            id_token: googleSignInInfo.tokenObj.id_token
+          }
+          NetworkManager.googleSignIn(payload).then(async response => {
+            if (response.status === 200) {
+              setEmail(googleSignInInfo.profileObj.email)
+              setCookies('trueinsights-cookie', response.data.response_objects.token)
+              const loginCookie = getCookie('trueinsights-cookie')
+              setLoginCookie(loginCookie)
+              setUserId(response.data.response_objects.user_id)
+              localStorage.setItem('localLoginCookie', loginCookie)
+              localStorage.setItem('userId', response.data.response_objects.user_id)
+              props.history.push(BUSINESS)
+              window.location.reload()
+            }
+          })
+            .catch(error => {
+              toast(error.response.data.message, {
+                position: toast.POSITION.TOP_CENTER
+              })
+            })
+        } else {
+          otpGenerate()
+        }
       }
     })
       .catch(error => {
+        values.email = ''
+        values.name = ''
         if (error.response.data.message === 'You have already signed up. Please try using signin.') {
           toast(error.response.data.message, {
             position: toast.POSITION.TOP_CENTER
@@ -59,7 +86,8 @@ const SignUp = (props) => {
   const onGoogleSignPressed = async (googleSignInInfo) => {
     values.email = googleSignInInfo.profileObj.email
     values.name = googleSignInInfo.profileObj.name
-    signUp()
+    values.type = 1
+    signUp(googleSignInInfo)
   }
 
   const {
@@ -98,6 +126,9 @@ const SignUp = (props) => {
                   <p>Or,</p>
                   <GoogleSignIn btnName={'Sign up with Google'} onGoogleSignPressed={onGoogleSignPressed} />
                   <p>Have an account? <Link to={SIGN_IN}>Sign in</Link></p>
+                </div>
+                <div className="text-center">
+                  By signing up, you agree to <Link to={{ pathname: TERMS_OF_USE }} target="_blank" >terms of use</Link>
                 </div>
               </div>
             </div>
