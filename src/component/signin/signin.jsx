@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { getCookie, setCookies } from '../../functions/cookie-functions'
 
 const SignIn = (props) => {
-  const { VERIFY_CODE, SIGN_UP, SIGN_IN, HOME, FAVORITES } = ROUTES_PATH_NAME
+  const { VERIFY_CODE, SIGN_UP, SIGN_IN, HOME, FAVORITES, BUSINESS } = ROUTES_PATH_NAME
   const { SIGN_IN: signin } = HEADING_TITLE
   const { setEmail, cookie, setLoginCookie, setUserId } = props
 
@@ -68,16 +68,21 @@ const SignIn = (props) => {
         localStorage.setItem('localLoginCookie', loginCookie)
         setUserId(response.data.response_objects.user_id)
         localStorage.setItem('userId', response.data.response_objects.user_id)
-        if (prevActionPath !== SIGN_IN) {
-          if (prevActionPath.includes(FAVORITES)) {
-            getBussinessDetails(loginCookie)
+        if (!response.data.response_objects.is_new_user) {
+          if (prevActionPath !== SIGN_IN) {
+            if (prevActionPath.includes(FAVORITES)) {
+              getBussinessDetails(loginCookie)
+            } else {
+              setLoginCookie(loginCookie)
+              props.history.push(prevActionPath)
+            }
           } else {
             setLoginCookie(loginCookie)
-            props.history.push(HOME)
+            props.history.push(prevActionPath)
           }
         } else {
           setLoginCookie(loginCookie)
-          props.history.push(HOME)
+          props.history.push(BUSINESS)
         }
       }
     })

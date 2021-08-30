@@ -11,7 +11,7 @@ import NetworkManager from '../../network-manager/network-config'
 import 'react-toastify/dist/ReactToastify.css'
 
 const VerifyCode = (props) => {
-  const { BUSINESS, SIGN_IN, HOME, FAVORITES, SIGN_UP } = ROUTES_PATH_NAME
+  const { BUSINESS, SIGN_IN, HOME, FAVORITES, VERIFY_CODE } = ROUTES_PATH_NAME
   const { VERIFICATION_CODE } = HEADING_TITLE
   const { setLoginCookie, email, setPreviousPath, setUserId } = props
   const previousPath = props.history.location.state.from
@@ -30,8 +30,8 @@ const VerifyCode = (props) => {
         setUserId(response.data.response_objects.user_id)
         localStorage.setItem('localLoginCookie', loginCookie)
         localStorage.setItem('userId', response.data.response_objects.user_id)
-        if (prevActionPath != null && prevActionPath !== SIGN_UP && prevActionPath !== SIGN_IN) {
-          (prevActionPath.includes(FAVORITES)) ? getBussinessDetails(loginCookie) : props.history.push(HOME)
+        if (prevActionPath != null && prevActionPath !== VERIFY_CODE && prevActionPath !== SIGN_IN) {
+          (prevActionPath.includes(FAVORITES)) ? getBussinessDetails(loginCookie) : props.history.push(prevActionPath)
         } else if (previousPath === SIGN_IN) {
           props.history.push(HOME)
         } else {
