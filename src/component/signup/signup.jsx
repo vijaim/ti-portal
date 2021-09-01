@@ -58,31 +58,39 @@ const SignUp = (props) => {
   }
 
   const onGoogleSignPressed = (googleSignInInfo) => {
-    const payload = {
-      id_token: googleSignInInfo.tokenObj.id_token
-    }
-    NetworkManager.googleSignIn(payload).then(async response => {
-      if (response.status === 200) {
-        setEmail(googleSignInInfo.profileObj.email)
-        setCookies('trueinsights-cookie', response.data.response_objects.token)
-        const loginCookie = getCookie('trueinsights-cookie')
-        localStorage.setItem('localLoginCookie', loginCookie)
-        setLoginCookie(loginCookie)
-        setUserId(response.data.response_objects.user_id)
-        localStorage.setItem('userId', response.data.response_objects.user_id)
-        if (!response.data.response_objects.is_new_user) {
-          props.history.push(HOME)
-          window.location.reload()
-        } else {
-          props.history.push(BUSINESS)
-        }
+    if (!googleSignInInfo.error) {
+      const payload = {
+        id_token: googleSignInInfo.tokenObj.id_token
       }
-    })
-      .catch(error => {
-        toast(error.response.data.message, {
+      NetworkManager.googleSignIn(payload).then(async response => {
+        if (response.status === 200) {
+          setEmail(googleSignInInfo.profileObj.email)
+          setCookies('trueinsights-cookie', response.data.response_objects.token)
+          const loginCookie = getCookie('trueinsights-cookie')
+          localStorage.setItem('localLoginCookie', loginCookie)
+          setLoginCookie(loginCookie)
+          setUserId(response.data.response_objects.user_id)
+          localStorage.setItem('userId', response.data.response_objects.user_id)
+          if (!response.data.response_objects.is_new_user) {
+            props.history.push(HOME)
+            window.location.reload()
+          } else {
+            props.history.push(BUSINESS)
+          }
+        }
+      })
+        .catch(error => {
+          toast(error.response.data.message, {
+            position: toast.POSITION.TOP_CENTER
+          })
+        })
+    } else {
+      if (googleSignInInfo.error !== 'popup_closed_by_user') {
+        toast(googleSignInInfo.error, {
           position: toast.POSITION.TOP_CENTER
         })
-      })
+      }
+    }
   }
 
   const {
