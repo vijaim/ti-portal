@@ -57,40 +57,48 @@ const SignIn = (props) => {
   const onGoogleSignPressed = (googleSignInInfo) => {
     localStorage.setItem('prevActionPath', window.location.pathname)
     const prevActionPath = localStorage.getItem('prevActionPath')
-    const payload = {
-      id_token: googleSignInInfo.tokenObj.id_token
-    }
-    NetworkManager.googleSignIn(payload).then(async response => {
-      if (response.status === 200) {
-        setEmail(googleSignInInfo.profileObj.email)
-        setCookies('trueinsights-cookie', response.data.response_objects.token)
-        const loginCookie = getCookie('trueinsights-cookie')
-        localStorage.setItem('localLoginCookie', loginCookie)
-        setUserId(response.data.response_objects.user_id)
-        localStorage.setItem('userId', response.data.response_objects.user_id)
-        if (!response.data.response_objects.is_new_user) {
-          if (prevActionPath !== SIGN_IN) {
-            if (prevActionPath.includes(FAVORITES)) {
-              getBussinessDetails(loginCookie)
+    if (!googleSignInInfo.error) {
+      const payload = {
+        id_token: googleSignInInfo.tokenObj.id_token
+      }
+      NetworkManager.googleSignIn(payload).then(async response => {
+        if (response.status === 200) {
+          setEmail(googleSignInInfo.profileObj.email)
+          setCookies('trueinsights-cookie', response.data.response_objects.token)
+          const loginCookie = getCookie('trueinsights-cookie')
+          localStorage.setItem('localLoginCookie', loginCookie)
+          setUserId(response.data.response_objects.user_id)
+          localStorage.setItem('userId', response.data.response_objects.user_id)
+          if (!response.data.response_objects.is_new_user) {
+            if (prevActionPath !== SIGN_IN) {
+              if (prevActionPath.includes(FAVORITES)) {
+                getBussinessDetails(loginCookie)
+              } else {
+                setLoginCookie(loginCookie)
+                props.history.push(prevActionPath)
+              }
             } else {
               setLoginCookie(loginCookie)
               props.history.push(prevActionPath)
             }
           } else {
             setLoginCookie(loginCookie)
-            props.history.push(prevActionPath)
+            props.history.push(BUSINESS)
           }
-        } else {
-          setLoginCookie(loginCookie)
-          props.history.push(BUSINESS)
         }
-      }
-    })
-      .catch(error => {
-        toast(error.response.data.message, {
+      })
+        .catch(error => {
+          toast(error.response.data.message, {
+            position: toast.POSITION.TOP_CENTER
+          })
+        })
+    } else {
+      if (googleSignInInfo.error !== 'popup_closed_by_user') {
+        toast(googleSignInInfo.error, {
           position: toast.POSITION.TOP_CENTER
         })
-      })
+      }
+    }
   }
 
   const getBussinessDetails = (loginCookie) => {
