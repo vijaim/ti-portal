@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 /* eslint-disable no-empty */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-unneeded-ternary */
@@ -12,6 +14,8 @@ import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { setBusinessId, setBusinessById } from '../signin/signin-actions'
+import TagsInput from 'react-tagsinput'
+import 'react-tagsinput/react-tagsinput.css'
 
 const AddBusiness = (props) => {
   const routePath = GetRoutesPathName()
@@ -23,6 +27,7 @@ const AddBusiness = (props) => {
   })
   const { verticalList, platformList, copySuccessText } = state
   const { businessList, setBusinessById, setBusinessId } = props
+  const [tagsList, setTagList] = useState([])
   const loginCookie = localStorage.getItem('localLoginCookie')
   const [errors, setErrors] = useState({})
   const textAreaRef = useRef(null)
@@ -93,7 +98,8 @@ const AddBusiness = (props) => {
       name: values.name,
       url: values.url,
       vertical_id: values.vertical_id,
-      platform_id: values.platform_id
+      platform_id: values.platform_id,
+      users: tagsList
     }
     NetworkManager.updateBusiness(businessList.id, payload, loginCookie).then(response => {
       if (response.status === 200) {
@@ -130,7 +136,40 @@ const AddBusiness = (props) => {
 
   useEffect(() => {
     fetchList()
-  }, [])
+    if (props.businessData) {
+      setTagList([])
+      props.businessData.apps_users.map((item) => {
+        if (item.user_id !== parseInt(localStorage.getItem('userId'))) {
+          tagsList.push(item.email_id)
+        }
+        setTagList(tagsList)
+        return null
+      })
+    }
+    return () => {
+      setTagList([])
+    }
+  }, [props.businessData])
+
+  const handleTagList = (tags) => {
+    setTagList(tags)
+  }
+
+  const defaultRenderTag = (props) => {
+    const { tag, key, disabled, onRemove, classNameRemove, getTagDisplayValue, ...other } = props
+    return (
+      <span key={key} {...other}>
+        {getTagDisplayValue(tag)}
+        {!disabled &&
+          <a className={classNameRemove} onClick={(e) => removeTag(key, onRemove)} />
+        }
+      </span>
+    )
+  }
+
+  const removeTag = (key, onRemove) => {
+    onRemove(key)
+  }
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -181,6 +220,28 @@ const AddBusiness = (props) => {
               <div className="form-text text-end mt-2">
                 <Link to="#" style={!businessList.tracking_code ? { pointerEvents: 'none' } : null} onClick= {handleCopyTrackCode}>{copySuccessText === 'Copied' ? 'Copied' : 'Copy tracking code' }</Link>
               </div>
+            </div>
+            <div className="mb-20">
+              <TagsInput
+                value = {tagsList}
+                addKeys = {[13]}
+                removeKeys = {[]}
+                validationRegex = {/^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/}
+                onChange = {handleTagList}
+                renderTag = {defaultRenderTag}
+                handleRemove = {removeTag}
+                onChangeInput={filter => handleChangeInput(filter)}
+                inputProps={{
+                  className: 'react-tagsinput-input',
+                  placeholder: 'Add User'
+                }}
+                tagProps={{
+                  className: 'react-tagsinput-tag',
+                  classNameRemove: 'react-tagsinput-remove'
+                }}
+                onlyUnique
+                preventSubmit ={true}
+              />
             </div>
           </>
           )
