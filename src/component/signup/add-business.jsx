@@ -221,7 +221,8 @@ const AddBusiness = (props) => {
                 <Link to="#" style={!businessList.tracking_code ? { pointerEvents: 'none' } : null} onClick= {handleCopyTrackCode}>{copySuccessText === 'Copied' ? 'Copied' : 'Copy tracking code' }</Link>
               </div>
             </div>
-            <div className="mb-20">
+            <div className="mb-12">
+              <label htmlFor="inputTrackingCode" className="form-label fw-bold">Administrators</label>
               <TagsInput
                 value = {tagsList}
                 addKeys = {[13]}
@@ -233,7 +234,7 @@ const AddBusiness = (props) => {
                 onChangeInput={filter => handleChangeInput(filter)}
                 inputProps={{
                   className: 'react-tagsinput-input',
-                  placeholder: 'Add User'
+                  placeholder: 'Add Email Address'
                 }}
                 tagProps={{
                   className: 'react-tagsinput-tag',
