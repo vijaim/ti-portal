@@ -27,7 +27,7 @@ const AddBusiness = (props) => {
   })
   const { verticalList, platformList, copySuccessText } = state
   const { businessList, setBusinessById, setBusinessId } = props
-  const [tagsList, setTagList] = useState([])
+  const [adminsList, setAdminList] = useState([])
   const loginCookie = localStorage.getItem('localLoginCookie')
   const [errors, setErrors] = useState({})
   const textAreaRef = useRef(null)
@@ -99,7 +99,7 @@ const AddBusiness = (props) => {
       url: values.url,
       vertical_id: values.vertical_id,
       platform_id: values.platform_id,
-      users: tagsList
+      admins: adminsList
     }
     NetworkManager.updateBusiness(businessList.id, payload, loginCookie).then(response => {
       if (response.status === 200) {
@@ -137,22 +137,22 @@ const AddBusiness = (props) => {
   useEffect(() => {
     fetchList()
     if (props.businessData) {
-      setTagList([])
-      props.businessData.apps_users.map((item) => {
+      setAdminList([])
+      props.businessData.apps_admins.map((item) => {
         if (item.user_id !== parseInt(localStorage.getItem('userId'))) {
-          tagsList.push(item.email_id)
+          adminsList.push(item.email_id)
         }
-        setTagList(tagsList)
+        setAdminList(adminsList)
         return null
       })
     }
     return () => {
-      setTagList([])
+      setAdminList([])
     }
   }, [props.businessData])
 
-  const handleTagList = (tags) => {
-    setTagList(tags)
+  const handleAdminList = (tags) => {
+    setAdminList(tags)
   }
 
   const defaultRenderTag = (props) => {
@@ -224,11 +224,11 @@ const AddBusiness = (props) => {
             <div className="mb-12">
               <label htmlFor="inputTrackingCode" className="form-label fw-bold">Administrators</label>
               <TagsInput
-                value = {tagsList}
+                value = {adminsList }
                 addKeys = {[13]}
                 removeKeys = {[]}
                 validationRegex = {/^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/}
-                onChange = {handleTagList}
+                onChange = {handleAdminList}
                 renderTag = {defaultRenderTag}
                 handleRemove = {removeTag}
                 onChangeInput={filter => handleChangeInput(filter)}
