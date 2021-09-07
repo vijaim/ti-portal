@@ -33,7 +33,7 @@ const SignIn = (props) => {
   }, [cookie])
 
   const otpGenerate = () => {
-    if (!routePath.includes('utm_source=wordpress')) {
+    if (!routePath.includes(UTM_SOURCE_WORDPRESS)) {
       localStorage.setItem('prevActionPath', window.location.pathname)
     }
     const payload = {
