@@ -467,3 +467,34 @@ a.business-item:hover .listing-item{
     border: 1px solid #D9E1EC;
     font-weight: bold;
 }
+
+/* tag css */
+.react-tagsinput{
+    background-color: #e9ecef !important;
+    border-radius: .25rem !important;
+    border: 1px solid #ced4da !important;
+}
+.react-tagsinput-tag{
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    font-size: 1rem !important;
+    padding: 5px !important;
+    border-radius: .25rem !important;
+    border: none !important;
+    background-clip: padding-box !important;
+}
+.react-tagsinput--focused{
+    border-color: #2a46a3 !important;
+}
+
+.react-tagsinput-remove{
+    color: #000;  
+    font-size: 1.1rem;
+}
+.react-tagsinput-remove:hover{
+    color: #000;
+}
+.react-tagsinput-input{
+    font-size: 1rem !important;
+    width: 160px !important;
+}
