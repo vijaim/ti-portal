@@ -1,7 +1,7 @@
 /* eslint-disable no-empty */
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
+import { ROUTES_PATH_NAME, HEADING_TITLE, UTM_SOURCE_WORDPRESS } from '../../utils/constants'
 import GoogleSignIn from './google-signin'
 import useForm from '../validation/use-form'
 import validateForm from '../validation/validate-form'
@@ -11,11 +11,13 @@ import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { getCookie, setCookies } from '../../functions/cookie-functions'
+import { GetRoutesPathName } from '../../utils/util-methods'
 
 const SignIn = (props) => {
   const { VERIFY_CODE, SIGN_UP, SIGN_IN, HOME, FAVORITES, BUSINESS } = ROUTES_PATH_NAME
   const { SIGN_IN: signin } = HEADING_TITLE
   const { setEmail, cookie, setLoginCookie, setUserId } = props
+  const routePath = GetRoutesPathName()
 
   useEffect(() => {
     if (getCookie('trueinsights-cookie')) {
@@ -25,10 +27,15 @@ const SignIn = (props) => {
         props.history.push(HOME)
       }
     }
+    if (routePath.includes(UTM_SOURCE_WORDPRESS)) {
+      values.email = routePath.split('&')[1].split('=')[1]
+    }
   }, [cookie])
 
   const otpGenerate = () => {
-    localStorage.setItem('prevActionPath', window.location.pathname)
+    if (!routePath.includes('utm_source=wordpress')) {
+      localStorage.setItem('prevActionPath', window.location.pathname)
+    }
     const payload = {
       email: values.email
     }
@@ -147,14 +154,14 @@ const SignIn = (props) => {
                   </div>
                   <button type="submit" onClick={otpGenerate} className="btn btn-primary d-block mt-20 w-100">Continue</button>
                 </form>
-                <div className="text-center">
+                {!routePath.includes(UTM_SOURCE_WORDPRESS) && <div className="text-center">
                   <p>Or,</p>
                   <GoogleSignIn btnName={'Sign in with Google'} onGoogleSignPressed={onGoogleSignPressed} />
                   <p>Create an account?
                     <Link to={SIGN_UP}> Sign up</Link>
                     {/* <Link to={'businesses/20/all'}> click</Link> */}
                   </p>
-                </div>
+                </div>}
               </div>
             </div>
           </div>

@@ -138,7 +138,7 @@ const AddBusiness = (props) => {
     fetchList()
     if (props.businessData) {
       setAdminList([])
-      props.businessData.apps_admins.map((item) => {
+      props.businessData.admins.map((item) => {
         if (item.user_id !== parseInt(localStorage.getItem('userId'))) {
           adminsList.push(item.email_id)
         }
@@ -241,6 +241,7 @@ const AddBusiness = (props) => {
                   classNameRemove: 'react-tagsinput-remove'
                 }}
                 onlyUnique
+                addOnBlur={true}
                 preventSubmit ={true}
               />
             </div>
