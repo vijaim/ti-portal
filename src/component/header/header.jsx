@@ -1,7 +1,7 @@
 /* eslint-disable no-unneeded-ternary */
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ROUTES_PATH_NAME, HEADER_NAVIGATION, IMAGE_URL } from '../../utils/constants'
+import { ROUTES_PATH_NAME, HEADER_NAVIGATION, IMAGE_URL, EXPRESS_URL } from '../../utils/constants'
 import { GetRoutesPathName } from '../../utils/util-methods'
 import { deleteCookie, getCookie } from '../../functions/cookie-functions'
 import { connect } from 'react-redux'
@@ -105,7 +105,7 @@ const Header = (props) => {
                     <ul className="ms-auto navbar-nav mb-2 mb-lg-0">
                       {
                         HEADER_NAVIGATION.map((headerNav) => (
-                          headerNav.type === (isHeaderShow ? 'dashboard' : 'auth') && (
+                          (!routePath.includes(EXPRESS_URL) && headerNav.type === (isHeaderShow ? 'dashboard' : 'auth')) && (
                             <li key={headerNav.id} className="nav-item">
                               <Link
                                 className={setRoutesPath(routePath) === headerNav.routePath ? 'btn btn-primary ms-lg-3' : 'nav-link'}

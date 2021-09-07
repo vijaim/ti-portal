@@ -100,3 +100,5 @@ export const BUSINESSKEYS = {
   VERTICALS: 'verticals',
   PLATFORMS: 'platforms'
 }
+
+export const EXPRESS_URL = 'utm_source=wordpress'
