@@ -1,7 +1,7 @@
 /* eslint-disable no-empty */
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ROUTES_PATH_NAME, HEADING_TITLE, EXPRESS_URL } from '../../utils/constants'
+import { ROUTES_PATH_NAME, HEADING_TITLE, UTM_SOURCE_WORDPRESS } from '../../utils/constants'
 import GoogleSignIn from './google-signin'
 import useForm from '../validation/use-form'
 import validateForm from '../validation/validate-form'
@@ -27,7 +27,7 @@ const SignIn = (props) => {
         props.history.push(HOME)
       }
     }
-    if (routePath.includes(EXPRESS_URL)) {
+    if (routePath.includes(UTM_SOURCE_WORDPRESS)) {
       values.email = routePath.split('&')[1].split('=')[1]
     }
   }, [cookie])
@@ -154,7 +154,7 @@ const SignIn = (props) => {
                   </div>
                   <button type="submit" onClick={otpGenerate} className="btn btn-primary d-block mt-20 w-100">Continue</button>
                 </form>
-                {!routePath.includes(EXPRESS_URL) && <div className="text-center">
+                {!routePath.includes(UTM_SOURCE_WORDPRESS) && <div className="text-center">
                   <p>Or,</p>
                   <GoogleSignIn btnName={'Sign in with Google'} onGoogleSignPressed={onGoogleSignPressed} />
                   <p>Create an account?
