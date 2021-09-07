@@ -241,6 +241,7 @@ const AddBusiness = (props) => {
                   classNameRemove: 'react-tagsinput-remove'
                 }}
                 onlyUnique
+                addOnBlur={true}
                 preventSubmit ={true}
               />
             </div>
