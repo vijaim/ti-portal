@@ -7,7 +7,7 @@ export function setCookies (name, value, days) {
   } else {
     expires = ''
   }
-  document.cookie = name + '=' + value + expires + '; path=/;SameSite=none'
+  document.cookie = name + '=' + value + expires + '; path=/;secure;SameSite=none'
 }
 
 export function getCookie (name) {
