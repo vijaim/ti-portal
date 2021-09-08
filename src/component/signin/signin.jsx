@@ -11,13 +11,12 @@ import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { getCookie, setCookies } from '../../functions/cookie-functions'
-import { GetRoutesPathName } from '../../utils/util-methods'
 
 const SignIn = (props) => {
   const { VERIFY_CODE, SIGN_UP, SIGN_IN, HOME, FAVORITES, BUSINESS } = ROUTES_PATH_NAME
   const { SIGN_IN: signin } = HEADING_TITLE
   const { setEmail, cookie, setLoginCookie, setUserId } = props
-  const routePath = GetRoutesPathName()
+  const routePath = props.history.location.search
 
   useEffect(() => {
     if (getCookie('trueinsights-cookie')) {
@@ -28,7 +27,7 @@ const SignIn = (props) => {
       }
     }
     if (routePath.includes(UTM_SOURCE_WORDPRESS)) {
-      values.email = routePath.split('&')[1].split('=')[1]
+      values.email = new URLSearchParams(routePath).get('email')
     }
   }, [cookie])
 
