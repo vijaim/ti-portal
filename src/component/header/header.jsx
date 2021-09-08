@@ -65,6 +65,7 @@ const Header = (props) => {
                 <Link to={SIGN_IN} className="navbar-brand text-primary">
                   <img src={IMAGE_URL.TRUEINSIGHTS_LOGO} alt="Trueinsight logo" width={132} height={29} />
                 </Link>
+                {!props.history.location.search.includes(UTM_SOURCE_WORDPRESS) && <>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                   <span className="navbar-toggler-icon" />
                 </button>
@@ -85,7 +86,8 @@ const Header = (props) => {
                       ))
                     }
                   </ul>
-                </div>
+                </div></>
+                }
               </div>
             </nav>
           </header>
@@ -98,14 +100,14 @@ const Header = (props) => {
                   <Link to="/home" className="navbar-brand text-primary">
                     <img src={IMAGE_URL.TRUEINSIGHTS_LOGO} alt="Trueinsight logo" width={132} height={29} />
                   </Link>
-                  <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+                  { !props.history.location.search.includes(UTM_SOURCE_WORDPRESS) && <><button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon" />
                   </button>
                   <div className="collapse navbar-collapse" id="navbarToggler">
                     <ul className="ms-auto navbar-nav mb-2 mb-lg-0">
                       {
                         HEADER_NAVIGATION.map((headerNav) => (
-                          (!routePath.includes(UTM_SOURCE_WORDPRESS) && headerNav.type === (isHeaderShow ? 'dashboard' : 'auth')) && (
+                          headerNav.type === (isHeaderShow ? 'dashboard' : 'auth') && (
                             <li key={headerNav.id} className="nav-item">
                               <Link
                                 className={setRoutesPath(routePath) === headerNav.routePath ? 'btn btn-primary ms-lg-3' : 'nav-link'}
@@ -118,7 +120,8 @@ const Header = (props) => {
                         ))
                       }
                     </ul>
-                  </div>
+                  </div></>
+                  }
                 </div>
               </nav>
             </header>

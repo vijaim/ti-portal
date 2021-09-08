@@ -52,7 +52,7 @@ const Routes = (props) => {
 
   return (
     <Router history={history}>
-      <Header />
+      <Header history={history} />
       <ToastContainer />
       <Switch>
         <Route exact path={SIGN_IN} component={SignIn} />
