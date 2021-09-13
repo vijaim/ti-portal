@@ -16,6 +16,7 @@ import SettingsBusiness from './component/settings/settings-business'
 import SettingsProfile from './component/settings/settings-profile'
 import Header from './component/header/header'
 import SignIn from './component/signin/signin'
+import Tutorial from './component/insights/tutorial'
 import { connect } from 'react-redux'
 import { ROUTES_PATH_NAME } from './utils/constants'
 import { history } from './utils/util-methods'
@@ -25,7 +26,7 @@ import { ToastContainer } from 'react-toastify'
 const Routes = (props) => {
   const {
     SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES, SALES,
-    TRACKING, SETTINGS_BUSINESS, SETTINGS_PROFILE, SIGN_IN
+    TRACKING, SETTINGS_BUSINESS, SETTINGS_PROFILE, SIGN_IN, TUTORIAL
   } = ROUTES_PATH_NAME
   const [state, setState] = useState({
     isLoggedIn: false
@@ -69,6 +70,7 @@ const Routes = (props) => {
         {isLoggedIn && <Route exact path={TRACKING} component={Tracking} /> }
         {isLoggedIn && <Route exact path={SETTINGS_BUSINESS} component={SettingsBusiness} /> }
         {isLoggedIn && <Route exact path={SETTINGS_PROFILE} component={SettingsProfile} /> }
+        {isLoggedIn && <Route exact path={TUTORIAL} component={Tutorial} /> }
         {isLoggedIn && <Route exact path="*" component={InSightsBusiness} />}
         {!isLoggedIn && <Route exact path="*" component={SignIn} />}
       </Switch>

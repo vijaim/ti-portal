@@ -1,0 +1,36 @@
+/* .content {
+    background-color: '#ffffff';
+    font-family: 'var(--bs-font-sans-serif)';
+    font-size: '1rem';
+    font-weight: '400';
+    line-height: '1.5';
+  } */
+  
+.content > div {
+    min-height: 100vh;
+    padding-top: 180px;
+    padding-left: 50px;
+    padding-right: 300px;
+}
+
+.link {
+    justify-content: space-around;
+    height: 100%;
+    padding: 50px 59px 0px 60px;
+    position: fixed;
+    background-color: white;
+    margin-left: 1260px;
+    margin-top: 132px;
+    list-style: none;
+    margin-bottom: 1em;
+  }
+  
+  li {
+    cursor: pointer;
+  }
+
+  .link li { 
+    margin-bottom: 5px;
+  }
+  
+  
