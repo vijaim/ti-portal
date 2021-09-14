@@ -1,16 +1,9 @@
-/* .content {
-    background-color: '#ffffff';
-    font-family: 'var(--bs-font-sans-serif)';
-    font-size: '1rem';
-    font-weight: '400';
-    line-height: '1.5';
-  } */
-  
 .content > div {
     min-height: 100vh;
     padding-top: 180px;
-    padding-left: 50px;
+    padding-left: 110px;
     padding-right: 300px;
+    text-align: justify;
 }
 
 .link {
