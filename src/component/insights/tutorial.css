@@ -1,0 +1,29 @@
+.content > div {
+    min-height: 100vh;
+    padding-top: 180px;
+    padding-left: 110px;
+    padding-right: 300px;
+    text-align: justify;
+}
+
+.link {
+    justify-content: space-around;
+    height: 100%;
+    padding: 50px 59px 0px 60px;
+    position: fixed;
+    background-color: white;
+    margin-left: 1260px;
+    margin-top: 132px;
+    list-style: none;
+    margin-bottom: 1em;
+  }
+  
+  li {
+    cursor: pointer;
+  }
+
+  .link li { 
+    margin-bottom: 5px;
+  }
+  
+  

@@ -138,6 +138,7 @@ const AddBusiness = (props) => {
     fetchList()
     if (props.businessData) {
       setAdminList([])
+      const adminsList = []
       props.businessData.admins.map((item) => {
         if (item.user_id !== parseInt(localStorage.getItem('userId'))) {
           adminsList.push(item.email_id)
@@ -145,6 +146,7 @@ const AddBusiness = (props) => {
         setAdminList(adminsList)
         return null
       })
+      setErrors({})
     }
     return () => {
       setAdminList([])
@@ -211,7 +213,7 @@ const AddBusiness = (props) => {
           <div className="text-danger">{errors.url}</div>
         )}
       </div>
-      {(routePath === SETTINGS_BUSINESS)
+      {(routePath.includes(SETTINGS_BUSINESS))
         ? (
           <>
             <div className="mb-12">

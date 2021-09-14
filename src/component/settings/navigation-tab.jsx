@@ -16,7 +16,7 @@ const NavigationTab = (props) => {
               (navTab.isNavigation && navTab.type !== 'home'
                 ? <Link
                 key={navTab.id}
-                className={routePath === navTab.routePath ? 'nav-link active' : 'nav-link'}
+                className={routePath.includes(navTab.routePath) ? 'nav-link active' : 'nav-link'}
                 to={navTab.routePath}
               >
                 {navTab.name}

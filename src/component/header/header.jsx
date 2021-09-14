@@ -6,12 +6,13 @@ import { GetRoutesPathName } from '../../utils/util-methods'
 import { deleteCookie, getCookie } from '../../functions/cookie-functions'
 import { connect } from 'react-redux'
 import { setLoginCookie } from '../signin/signin-actions'
+import './header-style.css'
 
 const Header = (props) => {
   const routePath = GetRoutesPathName()
   const {
     SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES,
-    SALES, SETTINGS_BUSINESS, SETTINGS_PROFILE, SIGN_IN, TRACKING
+    SALES, SETTINGS_BUSINESS, SETTINGS_PROFILE, SIGN_IN, TRACKING, TUTORIAL
   } = ROUTES_PATH_NAME
   const [state, setState] = useState({
     cookieHeader: false
@@ -33,12 +34,14 @@ const Header = (props) => {
       return SIGN_UP
     } else if (routePath === VERIFY_CODE) {
       return path === SIGN_UP ? SIGN_UP : SIGN_IN
-    } else if (routePath === SETTINGS_BUSINESS) {
+    } else if (routePath === SETTINGS_BUSINESS || routePath.includes(SETTINGS_BUSINESS)) {
       return isHeaderShow ? SETTINGS_BUSINESS : SIGN_IN
     } else if (routePath === HOME) {
       return isHeaderShow ? HOME : SIGN_IN
     } else if (routePath === TRACKING) {
       return isHeaderShow ? TRACKING : SIGN_IN
+    } else if (routePath === TUTORIAL) {
+      return isHeaderShow ? TUTORIAL : SIGN_IN
     }
     return routePath
   }
@@ -65,7 +68,7 @@ const Header = (props) => {
                 <Link to={SIGN_IN} className="navbar-brand text-primary">
                   <img src={IMAGE_URL.TRUEINSIGHTS_LOGO} alt="Trueinsight logo" width={132} height={29} />
                 </Link>
-                {!props.history.location.search.includes(UTM_SOURCE_WORDPRESS) && <>
+                {!props.history.location.search.includes(UTM_SOURCE_WORDPRESS) && routePath !== VERIFY_CODE && <>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                   <span className="navbar-toggler-icon" />
                 </button>
@@ -95,12 +98,12 @@ const Header = (props) => {
         : (
           <>
             <header>
-              <nav className="bg-white navbar navbar-expand-lg pb-lg-3 pt-lg-3">
+              <nav className={`bg-white navbar navbar-expand-lg pb-lg-3 pt-lg-3 ${routePath === TUTORIAL ? 'header-position' : ''}`}>
                 <div className="container">
                   <Link to="/home" className="navbar-brand text-primary">
                     <img src={IMAGE_URL.TRUEINSIGHTS_LOGO} alt="Trueinsight logo" width={132} height={29} />
                   </Link>
-                  { !props.history.location.search.includes(UTM_SOURCE_WORDPRESS) && <><button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+                  { !props.history.location.search.includes(UTM_SOURCE_WORDPRESS) && routePath !== VERIFY_CODE && <><button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon" />
                   </button>
                   <div className="collapse navbar-collapse" id="navbarToggler">

@@ -12,7 +12,8 @@ export const ROUTES_PATH_NAME = {
   TRACKING: '/tracking',
   SETTINGS_BUSINESS: '/settingsBusiness',
   SETTINGS_PROFILE: '/settingsProfile',
-  TERMS_OF_USE: 'https://www.trueinsights.co/terms-of-use'
+  TERMS_OF_USE: 'https://www.trueinsights.co/terms-of-use',
+  TUTORIAL: '/tutorial'
 }
 
 export const NAVIGATION_TABS = [
@@ -29,6 +30,7 @@ export const HEADER_NAVIGATION = [
   { id: 'home', routePath: ROUTES_PATH_NAME.HOME, name: 'Home', type: 'dashboard' },
   // { id: 'tracking', routePath: ROUTES_PATH_NAME.TRACKING, name: 'Tracking', type: 'dashboard' },
   { id: 'settings', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Settings', type: 'dashboard' },
+  { id: 'tutorial', routePath: ROUTES_PATH_NAME.TUTORIAL, name: 'Tutorial', type: 'dashboard' },
   { id: 'logOut', routePath: ROUTES_PATH_NAME.SIGN_IN, name: 'Logout', type: 'dashboard' }
 ]
 
@@ -74,7 +76,8 @@ export const HEADING_TITLE = {
   FAVORITES: 'Insights',
   SALES: 'Insights - Sales',
   TRACKING: 'Tracking',
-  SETTINGS: 'Settings'
+  SETTINGS: 'Settings',
+  TUTORIAL: 'Tutorial'
 }
 
 export const API_ROOT = process.env.REACT_APP_API_ENDPOINT || 'https://devportalapi.trueinsights.co/'
@@ -102,3 +105,11 @@ export const BUSINESSKEYS = {
 }
 
 export const UTM_SOURCE_WORDPRESS = 'utm_source=wordpress'
+
+export const TUTORIAL_CONTENT = [
+  { id: 'overview', heading: 'Overview', description: 'Traditional Analytics requires a complicated setup of Business Intelligence tools, a Data Warehouse, and an in-house IT staff to manage it all. TrueInsights enables any size business to effortlessly customize easy to-understand, narrative insights (analytics/metrics). This enables a competitive advantage without managing an expensive data infrastructure.' },
+  { id: 'realtimeNarratives', heading: 'Realtime Narratives', description: 'Realtime actionable insights as narratives, that can help everyone in the organization.' },
+  { id: 'customizable', heading: 'Customizable', description: 'Narratives are fully customizable, so you can focus on the important insights' },
+  { id: 'integration', heading: 'Integration', description: 'Can configure the narratives to be delivered either via Email or Slack.' },
+  { id: 'timeMoney', heading: 'Time & Money', description: 'Narrative insights can help keep you on budget, track trends, customer behavior and market shifts, which in turn saves time & resources.' }
+]
