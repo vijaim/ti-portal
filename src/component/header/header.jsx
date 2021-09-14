@@ -34,7 +34,7 @@ const Header = (props) => {
       return SIGN_UP
     } else if (routePath === VERIFY_CODE) {
       return path === SIGN_UP ? SIGN_UP : SIGN_IN
-    } else if (routePath === SETTINGS_BUSINESS) {
+    } else if (routePath === SETTINGS_BUSINESS || routePath.includes(SETTINGS_BUSINESS)) {
       return isHeaderShow ? SETTINGS_BUSINESS : SIGN_IN
     } else if (routePath === HOME) {
       return isHeaderShow ? HOME : SIGN_IN
@@ -68,7 +68,7 @@ const Header = (props) => {
                 <Link to={SIGN_IN} className="navbar-brand text-primary">
                   <img src={IMAGE_URL.TRUEINSIGHTS_LOGO} alt="Trueinsight logo" width={132} height={29} />
                 </Link>
-                {!props.history.location.search.includes(UTM_SOURCE_WORDPRESS) && <>
+                {!props.history.location.search.includes(UTM_SOURCE_WORDPRESS) && routePath !== VERIFY_CODE && <>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                   <span className="navbar-toggler-icon" />
                 </button>
@@ -103,7 +103,7 @@ const Header = (props) => {
                   <Link to="/home" className="navbar-brand text-primary">
                     <img src={IMAGE_URL.TRUEINSIGHTS_LOGO} alt="Trueinsight logo" width={132} height={29} />
                   </Link>
-                  { !props.history.location.search.includes(UTM_SOURCE_WORDPRESS) && <><button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+                  { !props.history.location.search.includes(UTM_SOURCE_WORDPRESS) && routePath !== VERIFY_CODE && <><button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon" />
                   </button>
                   <div className="collapse navbar-collapse" id="navbarToggler">

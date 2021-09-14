@@ -1,15 +1,15 @@
 /* eslint-disable no-empty */
 import React, { useState, useEffect } from 'react'
-import { Tabs, TabPanel, TabList, Tab } from 'react-tabs'
 import InsightsHeader from '../insights/insights-header'
 import NavigationTab from './navigation-tab'
 import AddBusiness from '../signup/add-business'
-import { HEADING_TITLE, BUSINESSKEYS } from '../../utils/constants'
+import { HEADING_TITLE, ROUTES_PATH_NAME } from '../../utils/constants'
 import NetworkManager from '../../network-manager/network-config'
 import { connect } from 'react-redux'
 import { setBusinessById } from '../signin/signin-actions'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { Link } from 'react-router-dom'
 
 const SettingsBusiness = (props) => {
   const [state, setState] = useState({
@@ -18,30 +18,38 @@ const SettingsBusiness = (props) => {
     businessObj: {},
     businessData: []
   })
-  const { selectedIndex, buttonActive, businessObj, businessData } = state
+  const { buttonActive } = state
+  const [businessId, setBusinessId] = useState(props.match.params?.id ? parseInt(props.match.params.id) : 0)
+  const [businessMap, setBusinessMap] = useState(new Map())
+  const [selectedBusiness, setSelectedBusiness] = useState({})
+  const { SETTINGS_BUSINESS } = ROUTES_PATH_NAME
   const { SETTINGS } = HEADING_TITLE
-  const { APPS } = BUSINESSKEYS
   const { setBusinessById } = props
   const loginCookie = localStorage.getItem('localLoginCookie')
 
-  const handleBusinessSelect = (index) => {
-    setState(() => ({ selectedIndex: index }))
-  }
-
   const handleBusiness = (id) => {
-    setState(() => ({ selectedIndex: 0, buttonActive: id, businessObj: businessObj }))
-    getBusinessById(id, businessObj)
+    console.log('   ', businessId, ' ', id)
+    if (businessId !== id) {
+      setBusinessMap(businessMap)
+      setState(() => ({ buttonActive: id }))
+      getBusinessById(id, businessMap)
+    }
   }
 
   const businessLists = () => {
+    setBusinessId(props.match.params?.id ? parseInt(props.match.params.id) : 0)
     const loginCookie = localStorage.getItem('localLoginCookie')
     localStorage.setItem('prevPath', props.history.location.pathname)
     NetworkManager.getBusiness(loginCookie).then(response => {
       if (response.data.response_objects.app_ids === null) {
-        setState(() => ({ businessObj: {}, selectedIndex: 0 }))
+        setBusinessMap(new Map())
       } else {
-        setState(() => ({ businessObj: response.data.response_objects, selectedIndex: 0 }))
-        getBusinessById(response.data.response_objects.app_ids[0], response.data.response_objects)
+        const newResponseList = response.data.response_objects
+        const businessList = constructBussinessList(newResponseList)
+        setBusinessMap(businessList)
+        const id = (businessId === 0) ? response.data.response_objects.app_ids[0] : businessId
+        setSelectedBusiness({})
+        getBusinessById(id, businessList)
       }
     })
       .catch(error => {
@@ -51,6 +59,16 @@ const SettingsBusiness = (props) => {
       })
   }
 
+  const constructBussinessList = (data) => {
+    const businessMap = new Map()
+    for (let i = 0; i < data.apps.length; i++) {
+      const apps = data.apps[i]
+      businessMap.set(apps.id, apps)
+    }
+
+    return businessMap
+  }
+
   const getBusinessById = (id, businessObj) => {
     const payload = {
       id: id
@@ -58,9 +76,13 @@ const SettingsBusiness = (props) => {
     NetworkManager.copyTrackCode(payload, loginCookie).then(response => {
       if (response.status === 200) {
         if (response.data.response_objects === null) {
-          setState(() => ({ businessData: [] }))
+          setSelectedBusiness({})
         } else {
-          setState(() => ({ businessData: response.data.response_objects, selectedIndex: 0, businessObj: businessObj, buttonActive: id }))
+          setBusinessId(id)
+          localStorage.setItem('prevPath', props.history.location.pathname)
+          setState(() => ({ buttonActive: id }))
+          setBusinessMap(businessObj)
+          setSelectedBusiness(response.data.response_objects)
           setBusinessById(response.data.response_objects)
         }
       }
@@ -78,7 +100,7 @@ const SettingsBusiness = (props) => {
       setState({})
     }
   }, [])
-
+  const businessList = Array.from(businessMap, ([name, value]) => ({ name, value }))
   return (
     <>
       <main>
@@ -92,41 +114,24 @@ const SettingsBusiness = (props) => {
           <div className="container pb-40 pt-40">
             <div className="gy-3 mb-40 row">
               <div className="col-md-4 col-lg-3">
-                {businessObj &&
-                  (Object.entries(businessObj).map(([key, value]) => (
-                    key === APPS && (
-                      businessObj[APPS].map(business => (
-                  <div key={business.id} className="nav flex-column nav-pills me-3 business-tabs" id="business-tab" role="tablist" aria-orientation="vertical">
-                    <button className={((buttonActive ? buttonActive === business.id : '') ? 'nav-link active' : 'nav-link')} onClick={() => handleBusiness(business.id)}>{business.name}</button>
+                {
+                 businessList && businessList.map((item, key) => {
+                   return <div key={item.value.id} className="nav flex-column nav-pills me-3 business-tabs" id="business-tab" role="tablist" aria-orientation="vertical">
+                    <Link to={`${SETTINGS_BUSINESS}/${item.value.id}`} className={((buttonActive ? buttonActive === parseInt(item.value.id) : '') ? 'nav-link active' : 'nav-link')} onClick={() => handleBusiness(item.value.id)}>{item.value.name}</Link>
                   </div>
-                      ))
-                    )
-                  ))
-                  )
+                 })
                 }
               </div>
-              {businessObj &&
-                (Object.entries(businessObj).map(([key, value]) => (
-                  key === APPS && (
-                <div className="col-md-8 col-lg-9">
-                  <Tabs className="tab-content" selectedIndex={selectedIndex} onSelect={handleBusinessSelect}>
-                    <TabPanel className="tab-pane fade show active">
-                      <div className="listing-item pt-20 pb-20">
-                        <div className="row">
-                            <div className="col-xl-8">
-                              <AddBusiness className="btn btn-primary" buttonTitle="Save" businessData= {businessData} onClick= {businessLists} />
-                            </div>
+              {
+               Object.keys(selectedBusiness).length > 0 && <div className="col-md-8 col-lg-9">
+                  <div className="listing-item pt-20 pb-20">
+                    <div className="row">
+                        <div className="col-xl-8">
+                          <AddBusiness className="btn btn-primary" buttonTitle="Save" businessData= {selectedBusiness} onClick= {businessLists} />
                         </div>
-                      </div>
-                    </TabPanel>
-                    <TabList className="disable">
-                      <Tab />
-                    </TabList>
-                  </Tabs>
+                    </div>
+                  </div>
                 </div>
-                  )
-                ))
-                )
               }
             </div>
           </div>

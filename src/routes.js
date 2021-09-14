@@ -69,6 +69,7 @@ const Routes = (props) => {
         {isLoggedIn && <Route exact path={SALES} component={Sales} /> }
         {isLoggedIn && <Route exact path={TRACKING} component={Tracking} /> }
         {isLoggedIn && <Route exact path={SETTINGS_BUSINESS} component={SettingsBusiness} /> }
+        {isLoggedIn && <Route exact path={`${SETTINGS_BUSINESS}/:id`} component={SettingsBusiness} /> }
         {isLoggedIn && <Route exact path={SETTINGS_PROFILE} component={SettingsProfile} /> }
         {isLoggedIn && <Route exact path={TUTORIAL} component={Tutorial} /> }
         {isLoggedIn && <Route exact path="*" component={InSightsBusiness} />}
