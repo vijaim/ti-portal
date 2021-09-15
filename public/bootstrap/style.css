@@ -498,3 +498,9 @@ a.business-item:hover .listing-item{
     font-size: 1rem !important;
     width: 160px !important;
 }
+/* trender content */ 
+@media (max-width: 767px) {
+    .trendStatus-content {
+        width: 90px;
+    }
+}

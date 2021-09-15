@@ -21,7 +21,7 @@ import { Link } from 'react-router-dom'
 let responseList = []
 const Favorites = (props) => {
   const {
-    TODAY, ORDERS, STAR_ACTIVE, STAR, ARROW_LEFT, HIDDEN, VISIBLE
+    TODAY, ORDERS, STAR_ACTIVE, STAR, ARROW_LEFT, HIDDEN, VISIBLE, INCREASE, DECREASE
     // DECREASE, TRANSACTIONS, , CUSTOMERS, PRODUCTS, INCREASE, DISLIKE, LOCATION, LIKE, DISLIKE_ACTIVE, LIKE_ACTIVE,
   } = IMAGE_URL
   const { FAVORITES } = HEADING_TITLE
@@ -89,6 +89,14 @@ const Favorites = (props) => {
     for (let i = 0; i < data.narratives.length; i++) {
       const narrative = data.narratives[i]
       const innerObj = {}
+      let trendPercentage = ''
+      let trendIcon = ''
+      let isTrendIncrease = false
+      if (narrative.trend_value_change !== null && narrative.trend_value !== null) {
+        trendPercentage = narrative.trend_value_change > 0 ? `${((narrative.trend_value_change / (narrative.trend_value - narrative.trend_value_change)) * 100).toFixed(1)}%` : `${((narrative.trend_value_change / (narrative.trend_value - narrative.trend_value_change)) * 100).toFixed(1)}%`
+        trendIcon = narrative.trend_value_change > 0 ? INCREASE : DECREASE
+        isTrendIncrease = (narrative.trend_value_change > 0)
+      }
       innerObj.created_at = `${data.anos[i].created_at}`.split('T')[0]
       innerObj.category_name = narrative.category_name
       innerObj.category_image_url = narrative.category_image_url
@@ -97,6 +105,10 @@ const Favorites = (props) => {
       innerObj.values = data.anos[i].values
       innerObj.date_range = data.anos[i].date_range
       innerObj.isNew = (responseList.length > limit - 1)
+      innerObj.showTrend = (narrative.trend_value_change > 0 || narrative.trend_value_change < 0)
+      innerObj.trendPercentage = trendPercentage
+      innerObj.trendIcon = trendIcon
+      innerObj.isTrendIncrease = isTrendIncrease
       innerObj.isFavorite = tab === 'favorites' ? true : (data.favourite_ids) ? data.favourite_ids.includes(narrative.narrative_id) : false
       innerObj.isHidden = (tab === 'hiddens')
       responseObject.push(innerObj)
@@ -224,8 +236,12 @@ const Favorites = (props) => {
                 return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className={`${subvalueItem.isNew ? 'loadedNewItem_list listing-item' : 'listing-item'}`}>
                   <div className="align-items-center gy-2 row">
                     <div className="col-xl-11">
-                      <div className="insightStatus-content">
-                      <span dangerouslySetInnerHTML={ {__html: subvalueItem.output_html}} />
+                      <div className="insightStatus-content d-flex align-items-md-center">
+                      {subvalueItem.showTrend && <div className="trendStatus-content">
+                          <img className="insightStatus-icon" src={subvalueItem.trendIcon} alt="Increase Icon" height={8} width={14} />
+                          <span className={`fs--6 fw-bold text-${subvalueItem.isTrendIncrease ? 'success' : 'danger'}`}>{subvalueItem.trendPercentage}</span>
+                      </div>}
+                      <span className="px-1" dangerouslySetInnerHTML={ {__html: subvalueItem.output_html}} />
                       </div>
                     </div>
                     <div className="col-xl-1">
@@ -277,6 +293,10 @@ const Favorites = (props) => {
                <Link className="text-center pt-20 pb-20" onClick={() => setTabValue({id: 'all'})} to={`${ROUTES_PATH_NAME.FAVORITES}/${apps.id}/all`}>
                 <span className="btn btn-primary disabled-link">Add insights to favorites</span>
               </Link>
+               </div> : (tabName === 'all' && !isLoading) ? <div className="d-flex flex-column align-items-center justify-content-center">
+              <h5 className="fw-bolder">No insights yet</h5>
+              {/* <img className="insightAction-icon my-1" src={STAR} alt="Icon Star" height={200} width={200} /> */}
+               <span>For new businesses, insights should get generated within 15-30 minutes from the time of setup.</span>
                </div> : null }
               {/* Insights Data end */}
               {isLoading && <div className="d-flex justify-content-center align-items-center" >
