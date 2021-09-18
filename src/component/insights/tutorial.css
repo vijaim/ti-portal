@@ -1,63 +1,66 @@
-.content > div {
-    min-height: 100vh;
-    padding-top: 180px;
-    padding-left: 450px;
-    padding-right: 100px;
-    text-align: justify;
+.content {
+  padding-top: 180px;
+  padding-left: 450px;
+  padding-right: 100px;
+  text-align: justify;
+}
+
+.contentBottom {
+  padding-top: 0px;
+  padding-bottom: 500px;
 }
 
 .link {
-    justify-content: space-around;
-    height: 100%;
-    padding: 50px 115px 0px 115px;
-    position: fixed;
-    background-color: white;
-    float: left;
-    margin-top: 132px;
-    list-style: none;
-    margin-bottom: 1em;
+  justify-content: space-around;
+  height: 100%;
+  padding: 50px 115px 0px 115px;
+  position: fixed;
+  background-color: white;
+  float: left;
+  margin-top: 132px;
+  list-style: none;
+  margin-bottom: 1em;
   }
   
-  li {
-    cursor: pointer;
-  }
+li {
+  cursor: pointer;
+}
 
-  .link li { 
-    margin-bottom: 5px;
+.link li { 
+  margin-bottom: 5px;
+}
+
+.section-width {
+  width: 100% !important;
+  margin-top: 70px !important;
+}
+
+@media screen and (max-width: 993px) {
+  .link {
+    margin-top: 117px !important;
   }
-  
+} 
+
+@media screen and (max-width: 993px) {
   .section-width {
-    width: 100% !important;
-    margin-top: 70px !important;
+    margin-top: 57px !important;
   }
+} 
 
-  @media screen and (max-width: 993px) {
-    .link {
-      margin-top: 117px !important;
-    }
-  } 
-
-  @media screen and (max-width: 993px) {
-    .section-width {
-      margin-top: 57px !important;
-    }
-  } 
-
-  @media screen and (max-width: 800px) {
-    .link {
-      padding: 50px 50px 0px 50px;
-    }
-  }  
-
-  @media screen and (max-width: 500px) {
-    .link {
-      padding: 50px 60px 0px 10px;
-    }
-  } 
-
-  @media screen and (max-width: 800px) {
-    .content > div {
-      padding-left: 300px;
-    }
+@media screen and (max-width: 800px) {
+  .link {
+    padding: 50px 50px 0px 50px;
   }
-  
+}  
+
+@media screen and (max-width: 500px) {
+  .link {
+    padding: 50px 60px 0px 10px;
+  }
+} 
+
+@media screen and (max-width: 800px) {
+  .content  {
+    padding-left: 300px;
+  }
+}
