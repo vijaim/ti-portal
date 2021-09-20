@@ -11,12 +11,14 @@ import React, { useState, useEffect } from 'react'
 import InsightsHeader from '../insights/insights-header'
 import NavigationTab from '../settings/navigation-tab'
 // import { Link } from 'react-router-dom'
-import { ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, anosHiddenListFirstFive } from '../../utils/constants'
+import { ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, anosHiddenListFirstFive, IMAGES_ID } from '../../utils/constants'
 import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import { connect } from 'react-redux'
 import { setSearchBar } from '../signin/signin-actions'
 import { Link } from 'react-router-dom'
+import { ImageSaver} from '../../utils/util-methods'
+import { v4 as uuidv4 } from 'uuid'
 
 let responseList = []
 const Favorites = (props) => {
@@ -215,11 +217,13 @@ const Favorites = (props) => {
   const renderTabContent = (tab) => {
     const anosListValues = Array.from(anosList, ([name, value]) => ({ name, value }))
     return anosListValues.map((value, key) => {
+      const insightsId = uuidv4()
+      value.insightsId = insightsId
       const categoryList = Array.from(value.value, ([name, value]) => ({ name, value }))
       return <div ref={ anosListContainerRef } key={`${value.name}_key_`} className="container pb-20 pt-10">
-        <div className=" gy-3 mb-40 row">
+        <div id={value.insightsId} className=" gy-3 mb-40 row">
        { searchValue === '' && <h2 className="fw-bold h4 mb-40 text-center text-dark">{displayDateFormat(value.name)}
-          <img src={TODAY} width={24} height={24} alt="Computer" className="ms-3 icon-base" />
+       <img src={TODAY} style={{cursor: 'pointer'}} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(value.insightsId)} className="ms-3 icon-base" />
         </h2>}
         { categoryList.map((subvalue, subKey) => {
           const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS
@@ -248,7 +252,7 @@ const Favorites = (props) => {
                       <div className="insightAction d-flex justify-content-start align-items-center">
                         <span className="insightAction-link inSightAction-PaddingRight mr-5 form-check-label" onClick={() => iconPressed(subvalueItem, 'hiddens')}>
                           <img className="insightAction-icon icon-active" src={!subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
-                          <img className="insightAction-icon mt-1" src={subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
+                          <img className="insightAction-icon mt-1" data-html2canvas-ignore="true" src={subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
                         </span>
                         <span className={`insightAction-link form-check-label ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
                           <img className="insightAction-icon icon-active" src={!subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
