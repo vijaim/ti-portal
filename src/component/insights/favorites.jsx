@@ -223,7 +223,7 @@ const Favorites = (props) => {
       return <div ref={ anosListContainerRef } key={`${value.name}_key_`} className="container pb-20 pt-10">
         <div id={value.insightsId} className=" gy-3 mb-40 row">
        { searchValue === '' && <h2 className="fw-bold h4 mb-40 text-center text-dark">{displayDateFormat(value.name)}
-       <img src={TODAY} style={{cursor: 'pointer'}} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(value.insightsId)} className="ms-3 icon-base" />
+       <img src={TODAY} style={{cursor: 'pointer'}} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(value.insightsId, tab)} className="ms-3 icon-base" />
         </h2>}
         { categoryList.map((subvalue, subKey) => {
           const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS

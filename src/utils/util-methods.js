@@ -14,12 +14,13 @@ export const history = createBrowserHistory()
 
 export const loginCookie = localStorage.getItem('localLoginCookie')
 
-export const ImageSaver = (imageId) => {
-  const currentDateTime = moment().format('DDMMyyyyhhmmss')
+export const ImageSaver = (imageId, tabNames) => {
+  const tabName = tabNames === 'hiddens' ? 'hidden' : tabNames
+  const currentDateTime = moment().format('YYYY-MM-DD')
   const canvasData = document.getElementById(imageId)
   html2canvas(canvasData).then(canvas => {
     canvas.toBlob(function (blob) {
-      saveAs(blob, `favorites_${currentDateTime}.png`)
+      saveAs(blob, `insights_${tabName}_${currentDateTime}.png`)
     })
   })
 }
