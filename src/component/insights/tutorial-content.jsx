@@ -8,13 +8,14 @@ const TutorialContent = () => {
   return (
     <>
       <TutorialLink/>
-      <div className="content">
-        {TUTORIAL_CONTENT.map(tutorialList => (
-        <div id={tutorialList.id}>
+      <div>
+      {TUTORIAL_CONTENT.map(tutorialList => (
+        <div className="content" id={tutorialList.id}>
           <h2>{tutorialList.heading}</h2>
           {tutorialList.description}
         </div>
-        ))}
+      ))}
+      <div className="contentBottom"></div>
       </div>
     </>
   )
