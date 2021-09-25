@@ -46,9 +46,8 @@ const CopyCode = (props) => {
     <>
       <h1 className="fw-bold h4 mb-40 text-center">{COPY_CODE}</h1>
       <ul className="mb-40">
-        <li>Copy the tracking code</li>
-        <li>Paste this tracking code inside the tag in the pages where transactions happen</li>
-        <li>Receive insights in your email</li>
+        <li>Copy and paste this tracking code into the header of your site. </li>
+        <li>Inside the &lt;head&gt; HTML tag.</li>
       </ul>
       <div className="mb-20">
         <label htmlFor="inputTrackingCode" className="form-label fw-bold">Tracking Code</label>
