@@ -55,3 +55,10 @@ export const setBusinessId = (businessId) => {
     payload: businessId
   }
 }
+
+export const setTutorialId = (tutorialId) => {
+  return {
+    type: Actions.SET_TUTORIAL_ID,
+    payload: tutorialId
+  }
+}

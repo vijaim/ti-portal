@@ -1,24 +1,72 @@
 /* eslint-disable quotes  */
+/* eslint-disable multiline-ternary  */
 import React from 'react'
 import './tutorial.css'
-import TutorialLink from './tutorial-link'
-import { TUTORIAL_CONTENT } from '../../utils/constants'
+import { TUTORIAL_CONTENT, TUTORIAL_SUB_CONTENT } from '../../utils/constants'
+import { connect } from 'react-redux'
 
-const TutorialContent = () => {
+const TutorialContent = (props) => {
+  const { tutorialId } = props
   return (
-    <>
-      <TutorialLink/>
-      <div>
-      {TUTORIAL_CONTENT.map(tutorialList => (
-        <div className="content" id={tutorialList.id}>
-          <h2>{tutorialList.heading}</h2>
-          {tutorialList.description}
-        </div>
-      ))}
-      <div className="contentBottom"></div>
-      </div>
-    </>
+  <>
+    <div className="content-section">
+    {TUTORIAL_CONTENT.map(tutorialList => {
+      return (
+      <>
+      { tutorialId === tutorialList.id
+        ? (
+          <>
+          <div className="content" id={tutorialList.id}>
+            <h3>{tutorialList.heading}</h3>
+            {tutorialList.description}
+          </div>
+          <div>
+          {TUTORIAL_SUB_CONTENT.map(tutorialSubList => {
+            return (
+              tutorialSubList.id === tutorialList.subContentId
+                ? (
+                  <div className="content" id={tutorialSubList.id}>
+                    <h5>{tutorialSubList.heading}</h5>
+                    {tutorialSubList.description}
+                  </div>
+                  ) : null
+            )
+          })}
+          </div>
+          </>
+          ) : <div>
+          {TUTORIAL_SUB_CONTENT.map(tutorialSubList => {
+            return (
+              tutorialSubList.id === tutorialList.subContentId
+                ? (
+                  <>
+                    <div className="content" id={tutorialList.id}>
+                      <h3>{tutorialList.heading}</h3>
+                      {tutorialList.description}
+                    </div>
+                    <div className="content" id={tutorialSubList.id}>
+                      <h5>{tutorialSubList.heading}</h5>
+                      {tutorialSubList.description}
+                    </div>
+                  </>
+                  ) : null
+            )
+          })}
+         </div>
+      }
+      </>
+      )
+    })}
+    <div className="content-bottom"></div>
+    </div>
+  </>
   )
 }
 
-export default TutorialContent
+const mapStateToProps = (state) => {
+  return {
+    tutorialId: state.signIn.tutorialId
+  }
+}
+
+export default connect(mapStateToProps, null)(TutorialContent)
