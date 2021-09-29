@@ -84,11 +84,6 @@ const NetworkManager = {
   // google signin
   googleSignIn: (params) => {
     return axios.post(GOOGLE_SIGNIN, params)
-  },
-
-  // getBussinessMetricsById
-  getBussinessMetricsById: (params, cookie) => {
-    return axios.get(`${GET_ALL_USERS}${params.userId}/apps/${params.appId}/anos/narrative/${params.narrativeId}?offset=${params.offset}&limit=${params.limit}&period=${params.period}`, config(cookie))
   }
 }
 
