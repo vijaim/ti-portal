@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable no-undef */
 /* eslint-disable camelcase */
 /* eslint-disable no-const-assign */
@@ -11,7 +12,7 @@ import React, { useState, useEffect } from 'react'
 import InsightsHeader from '../insights/insights-header'
 import NavigationTab from '../settings/navigation-tab'
 // import { Link } from 'react-router-dom'
-import { ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, anosHiddenListFirstFive, IMAGES_ID } from '../../utils/constants'
+import { ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, anosHiddenListFirstFive, IMAGES_ID, PeriodRange, PeriodRangeValue } from '../../utils/constants'
 import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import { connect } from 'react-redux'
@@ -19,6 +20,7 @@ import { setSearchBar } from '../signin/signin-actions'
 import { Link } from 'react-router-dom'
 import { ImageSaver} from '../../utils/util-methods'
 import { v4 as uuidv4 } from 'uuid'
+import ChartComponent from './Charts'
 
 let responseList = []
 const Favorites = (props) => {
@@ -38,6 +40,13 @@ const Favorites = (props) => {
   const user_Id = localStorage.getItem('userId')
   const anosListContainerRef = React.createRef()
   const scrollToRef = (ref) => window.scrollTo(0, ref.current.offsetTop)
+  let [anosGraphList, setAnosGraphList] = useState([])
+  const [isGraphData, setIsGraphData] = useState(false)
+  let [chartType, setChartType] = useState('Bar')
+  let [dateRangePeriod, setDateRangePeriod] = useState('')
+  const [chartPageNo, setChartPageNo] = useState(1)
+  const outputKey = ['count', 'duration', 'past_count', 'current_count', 'percentage', 'bounce_rate', 'bounces']
+  // const [isExpandOpen, setIsExpandOpen] = useState(false)
   useEffect(() => {
     setIsLoading(true)
     inSightsList(tabName, 0)
@@ -214,6 +223,120 @@ const Favorites = (props) => {
     return `${month}-${day}-${year}`
   }
 
+  const goToBussinesMetric = (narrativeInfo) => {
+    anosGraphList = []
+    const businessMetricInfo = {
+      narrativeId: narrativeInfo.narrative_id,
+      AppId: JSON.parse(localStorage.getItem('selectedAppsInfo')).id,
+      dateRange: narrativeInfo.date_range || 'week'
+    }
+    localStorage.setItem('businessMetricInfo', JSON.stringify(businessMetricInfo))
+    setIsGraphData(true)
+    getMetricsList(0, businessMetricInfo.dateRange)
+  }
+
+  const getMetricsList = (page, period) => {
+    let limitValue = 0
+    PeriodRangeValue.map(item => {
+      if (item.name === period) {
+        limitValue = item.value
+      }
+      return null
+    })
+    const params = {
+      userId: parseInt(localStorage.getItem('userId')),
+      appId: JSON.parse(localStorage.getItem('businessMetricInfo')).AppId,
+      narrativeId: JSON.parse(localStorage.getItem('businessMetricInfo')).narrativeId,
+      offset: chartPageNo,
+      period: period,
+      limit: limitValue
+    }
+    NetworkManager.getBussinessMetricsById(params, localStorage.getItem('localLoginCookie')).then(response => {
+      if (response.status === 200 && response.data.response_objects) {
+        const valueKeyCount = Object.keys(response.data.response_objects.anos[0].values[0]).length > 0 ? Object.keys(response.data.response_objects.anos[0].values[0]).length : 0
+        const chartType = valueKeyCount === 1 ? 'Bar' : valueKeyCount === 2 ? 'Bar' : 'No'
+        let displayData = constructDisplayData(valueKeyCount, chartType, response.data.response_objects)
+        setChartType(chartType)
+        setAnosGraphList(displayData)
+        setDateRangePeriod(period)
+        setIsGraphData(false)
+      }
+    })
+      .catch(error => {
+        console.log('error', error)
+        toast(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER
+        })
+      })
+  }
+
+  const constructDisplayData = (valueKeyCount, chartType, data) => {
+    let graphData = [...anosGraphList]
+    if (valueKeyCount !== 0) {
+      if (anosGraphList.length === 0 || anosGraphList[0] === undefined) {
+        if (chartType === 'Bar' && valueKeyCount === 1) {
+          graphData.push(['created_at', getResponseOutputKey(data.anos[0].values[0])])
+        } else if (chartType === 'Bar' && valueKeyCount === 2) {
+          if (isHavePastCount(data.anos[0].values[0])) {
+            graphData.push(['created_at', ...Object.keys(data.anos[0].values[0])])
+          } else {
+            graphData.push(['created_at', getResponseOutputKey(data.anos[0].values[0])])
+          }
+        } else if (chartType === 'PieChart') {
+          graphData.push(Object.keys(data.anos[0].values[0]).reverse())
+        }
+      }
+      data.anos.map((item, index) => {
+        if (chartType === 'Bar' && valueKeyCount === 1) {
+          const valueOne = item.created_at
+          const valueTwo = parseInt(Object.values(item.values[0])[0])
+          graphData.push([valueOne, valueTwo])
+        } else if (chartType === 'Bar' && valueKeyCount === 2) {
+          if (isHavePastCount(item.values[0])) {
+            graphData.push([item.created_at, ...Object.values(item.values[0])])
+          } else {
+            const countIndex = Object.keys(item.values[0]).indexOf(getResponseOutputKey(item.values[0]))
+            const valueOne = item.created_at
+            const valueTwo = parseInt(Object.values(item.values[0])[countIndex])
+            graphData.push([valueOne, valueTwo])
+          }
+        } else if (chartType === 'PieChart') {
+          const countIndex = Object.keys(item.values[0]).indexOf(getResponseOutputKey(item.values[0]))
+          const valueTwo = parseInt(Object.values(item.values[0])[countIndex])
+          const valueOne = Object.values(item.values[0])[countIndex === 0 ? 1 : 0]
+          graphData.push([valueOne, valueTwo])
+        }
+        return null
+      })
+    } else {
+      const newData = data.narratives
+      if (anosGraphList.length > 0) {
+        anosList.push(...data.narratives)
+        graphData = anosGraphList
+      } else {
+        graphData = newData
+      }
+    }
+    return graphData
+  }
+
+  const isHavePastCount = (item) => {
+    return getResponseOutputKey(item) === 'past_count' || getResponseOutputKey(item) === 'current_count'
+  }
+
+  const getResponseOutputKey = (response) => {
+    return Object.keys(response).find(ai => outputKey.indexOf(ai) !== -1)
+  }
+
+  const selectPeriodRange = (selectEvent) => {
+    setDateRangePeriod(selectEvent.target.value)
+    if (chartType !== 'No') {
+      let resetData = anosGraphList[0]
+      anosGraphList = resetData === undefined ? [] : [resetData]
+    }
+    getMetricsList(0, selectEvent.target.value)
+  }
+
   const renderTabContent = (tab) => {
     const anosListValues = Array.from(anosList, ([name, value]) => ({ name, value }))
     return anosListValues.map((value, key) => {
@@ -234,33 +357,62 @@ const Favorites = (props) => {
                 <img src={categoryTypeImage} width={24} height={24} alt="Computer" className="me-2 icon-base" />{`${subvalue.name}`}
               </h3>
             </div>
-            <div className="col-lg-9 col-xl-10">
+            <div className="col-lg-9 col-xl-10 accordion" id={`${subvalue.name}`}>
             { subvalue.value.map((subvalueItem, anosIndex) => {
               if (!searchValue !== '' && `${subvalueItem.output_html}`.toLowerCase().includes(searchValue.toLowerCase()) || `${subvalue.name}`.includes(searchValue)) {
-                return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className={`${subvalueItem.isNew ? 'loadedNewItem_list listing-item' : 'listing-item'}`}>
-                  <div className="align-items-center gy-2 row">
-                    <div className="col-xl-11">
-                      <div className="insightStatus-content d-flex align-items-md-center">
-                      {subvalueItem.showTrend && <div className="trendStatus-content">
-                          <img className="insightStatus-icon" src={subvalueItem.trendIcon} alt="Increase Icon" height={8} width={14} />
-                          <span className={`fs--6 fw-bold text-${subvalueItem.isTrendIncrease ? 'success' : 'danger'}`}>{subvalueItem.trendPercentage}</span>
-                      </div>}
-                      <span className="px-1" dangerouslySetInnerHTML={ {__html: subvalueItem.output_html}} />
+                return <div style={{cursor: 'pointer'}} key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className={`${subvalueItem.isNew ? 'loadedNewItem_list' : ''} business-listing-item accordion-item `} >
+                  {/* <div className="accordion-header" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}> */}
+                      <div className="align-items-center gy-2 row accordion-header mx-1" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}>
+                        <div className="col-xl-11">
+                          <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target={`#narrative_id_${subvalueItem.narrative_id}`} aria-expanded={anosIndex === 0 ? 'true' : 'false'} aria-controls={`narrative_id_${subvalueItem.narrative_id}`} onClick={() => goToBussinesMetric(subvalueItem)}>
+                                <div className="insightStatus-content d-flex align-items-md-center">
+                                {subvalueItem.showTrend && <div className="trendStatus-content">
+                                    <img className="insightStatus-icon" src={subvalueItem.trendIcon} alt="Increase Icon" height={8} width={14} />
+                                    <span className={`fs--6 fw-bold text-${subvalueItem.isTrendIncrease ? 'success' : 'danger'}`}>{subvalueItem.trendPercentage}</span>
+                                </div>}
+                                <span className="px-1" dangerouslySetInnerHTML={ {__html: subvalueItem.output_html}} />
+                                </div>
+                          </button>
+                        </div>
+                        <div className="col-xl-1">
+                          <div className="insightAction d-flex justify-content-start align-items-center">
+                            <span className="insightAction-link inSightAction-PaddingRight mr-5 form-check-label" onClick={() => iconPressed(subvalueItem, 'hiddens')}>
+                              <img className="insightAction-icon icon-active" src={!subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
+                              <img className="insightAction-icon mt-1" data-html2canvas-ignore="true" src={subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
+                            </span>
+                            <span className={`insightAction-link form-check-label ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
+                              <img className="insightAction-icon icon-active" src={!subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
+                              <img className="insightAction-icon" src={subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                  {/* </div> */}
+                  <div id={`narrative_id_${subvalueItem.narrative_id}`} className="accordion-collapse collapse" aria-labelledby={`narrative_id_Heading_${subvalueItem.narrative_id}`} data-bs-parent={`#${subvalue.name}`}>
+                      <div className="accordion-body">
+                      {
+                      // isExpandOpen &&
+                      isGraphData ? <div className="d-flex justify-content-center align-items-center" >
+                          <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </div>
+                      </div> : <>
+                        <div className="d-flex justify-content-end">
+                          <div className="w-25 my-3">
+                            <select className="form-select border-primary" aria-label="Default select example" value={dateRangePeriod} onChange={(event) => selectPeriodRange(event)}>
+                              {
+                                PeriodRange.map(item => {
+                                  return <option key={item} value={item}>{item}</option>
+                                })
+                              }
+                            </select>
+                          </div>
+                        </div>
+                        <RenderGraph data={anosGraphList} chartType={chartType} dateRangePeriod={dateRangePeriod} />
+                      </>
+                    }
                       </div>
                     </div>
-                    <div className="col-xl-1">
-                      <div className="insightAction d-flex justify-content-start align-items-center">
-                        <span className="insightAction-link inSightAction-PaddingRight mr-5 form-check-label" onClick={() => iconPressed(subvalueItem, 'hiddens')}>
-                          <img className="insightAction-icon icon-active" src={!subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
-                          <img className="insightAction-icon mt-1" data-html2canvas-ignore="true" src={subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
-                        </span>
-                        <span className={`insightAction-link form-check-label ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
-                          <img className="insightAction-icon icon-active" src={!subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
-                          <img className="insightAction-icon" src={subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               } else {
                 return null
@@ -276,6 +428,15 @@ const Favorites = (props) => {
          </div>
     </div>
     })
+  }
+
+  const RenderGraph = ({ data, chartType, dateRangePeriod, anosListContainerRef }) => {
+    const period = dateRangePeriod.charAt(0).toUpperCase() + dateRangePeriod.slice(1)
+    if (chartType !== 'No') {
+      return <ChartComponent chartData={data} chartType={chartType} period={period} />
+    } else {
+      return null
+    }
   }
   const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
   return (
