@@ -121,3 +121,14 @@ export const TUTORIAL_SUB_CONTENT = [
   { id: 'integrationContent', contentId: 'integration', heading: 'Integration Content', description: 'Can configure the narratives to be delivered either via Email or Slack.Traditional Analytics requires a complicated setup of Business Intelligence tools, a Data Warehouse, and an in-house IT staff to manage it all. TrueInsights enables any size business to effortlessly customize easy to-understand, narrative insights (analytics/metrics). This enables a competitive advantage without managing an expensive data infrastructure.Traditional Analytics requires a complicated setup of Business Intelligence tools, a Data Warehouse, and an in-house IT staff to manage it all. TrueInsights enables any size business to effortlessly customize easy to-understand, narrative insights (analytics/metrics). This enables a competitive advantage without managing an expensive data infrastructure.Traditional Analytics requires a complicated setup of Business Intelligence tools, a Data Warehouse, and an in-house IT staff to manage it all. TrueInsights enables any size business to effortlessly customize easy to-understand, narrative insights (analytics/metrics). This enables a competitive advantage without managing an expensive data infrastructure.This enables a competitive advantage without managing an expensive data infrastructure.' },
   { id: 'timeMoneyContent', contentId: 'timeMoney', heading: 'Time & Money Content', description: 'Can configure the narratives to be delivered either via Email or Slack.Traditional Analytics requires a complicated setup of Business Intelligence tools, a Data Warehouse, and an in-house IT staff to manage it all. TrueInsights enables any size business to effortlessly customize easy to-understand, narrative insights (analytics/metrics). This enables a competitive advantage without managing an expensive data infrastructure.Traditional Analytics requires a complicated setup of Business Intelligence tools, a Data Warehouse, and an in-house IT staff to manage it all. TrueInsights enables any size business to effortlessly customize easy to-understand, narrative insights (analytics/metrics). This enables a competitive advantage without managing an expensive data infrastructure.Traditional Analytics requires a complicated setup of Business Intelligence tools, a Data Warehouse, and an in-house IT staff to manage it all. TrueInsights enables any size business to effortlessly customize easy to-understand, narrative insights (analytics/metrics). This enables a competitive advantage without managing an expensive data infrastructure.' }
 ]
+
+export const PeriodRange = ['today', 'yesterday', 'week', 'month', 'quarter', 'year']
+
+export const PeriodRangeValue = [
+  { name: 'today', value: 1 },
+  { name: 'yesterday', value: 1 },
+  { name: 'week', value: 7 },
+  { name: 'month', value: 31 },
+  { name: 'quarter', value: 90 },
+  { name: 'year', value: 365 }
+]
