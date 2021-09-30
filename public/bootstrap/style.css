@@ -355,6 +355,14 @@ nav.page-tabs .nav-link:hover {
     box-shadow: 0px 2px 4px rgba(15, 42, 66, 0.1);
 }
 
+.business-listing-item {
+    background-color: white;
+    /* padding: 0.75rem 1.25rem; */
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
+    box-shadow: 0px 2px 4px rgba(15, 42, 66, 0.1);
+}
+
 .loadedNewItem_list{
     background-color: #fffcda;
 }
@@ -503,4 +511,21 @@ a.business-item:hover .listing-item{
     .trendStatus-content {
         width: 90px;
     }
+}
+
+/* accordion override styles */ 
+
+.accordion-button{
+    padding: 0.75rem 1.25rem !important; 
+    box-shadow: none !important;
+}
+.accordion-button:not(.collapsed){
+    color: inherit !important;
+    background-color: inherit;
+}
+.accordion-button::after {
+    background-image: none !important;
+}
+.accordion-button::before {
+    background-image: none !important;
 }
