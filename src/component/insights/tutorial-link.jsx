@@ -18,22 +18,21 @@ const TutorialLink = (props) => {
       <nav className="scroll-height">
         <ul className='link scroll-section'>
         {TUTORIAL_CONTENT.map(tutorialList => (
-          <div>
-            <li>
-            <Link activeClass='scroll-active' offset={-130} to={tutorialList.id} onClick={() => handleSetActive(tutorialList.id)} spy={true}>{tutorialList.heading}</Link>
+          <div key={tutorialList.id}>
+            <li title={tutorialList.heading} className='scroll-hover'>
+              <Link activeClass='scroll-active' offset={-130} to={tutorialList.id} onClick={() => handleSetActive(tutorialList.id)} spy={true}>{tutorialList.heading.length > 20 ? `${tutorialList.heading.substring(0, 20)}...` : tutorialList.heading}</Link>
+            </li>
             <ul>
             {TUTORIAL_SUB_CONTENT.map((tutorialSubList) => {
-              console.log('click tutorialSubList.id', tutorialSubList.id)
               return (
                 tutorialList.id === tutorialSubList.contentId && (
-                <li>
-                  <Link activeClass='scroll-active' offset={-130} to={tutorialSubList.id} onClick={() => handleSetActive(tutorialSubList.id)} spy={true}>{tutorialSubList.heading}</Link>
+                <li title={tutorialSubList.heading} className='scroll-hover'>
+                  <Link activeClass='scroll-active' offset={-130} to={tutorialSubList.id} onClick={() => handleSetActive(tutorialSubList.id)} spy={true}>{tutorialSubList.heading.length > 20 ? `${tutorialSubList.heading.substring(0, 20)}...` : tutorialSubList.heading}</Link>
                 </li>
                 ))
             }
             )}
             </ul>
-            </li>
           </div>
         )
         )}

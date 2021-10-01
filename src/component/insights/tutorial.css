@@ -28,6 +28,7 @@ h3,h5{
   list-style: none;
   margin-bottom: 1em;
   text-align: justify;
+  width: 25em;
 }
 
 .scroll-section {
@@ -81,18 +82,20 @@ li {
 @media screen and (max-width: 800px) {
   .link {
     padding: 50px 50px 0px 0px;
+    width: 300px;
   }
 }  
 
 @media screen and (max-width: 600px) {
   .link {
     padding: 50px 60px 0px 10px;
+    width: 300px;
   }
 } 
 
 @media screen and (max-width: 800px) {
   .content  {
-    padding-left: 400px;
+    padding-left: 350px;
     padding-right: 50px;
   }
 }
