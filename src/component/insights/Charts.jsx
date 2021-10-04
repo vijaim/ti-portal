@@ -23,9 +23,15 @@ const ChartComponent = ({ period, chartData, chartType }) => {
       options={{
         // title: `${period}`,
         // bar: { groupWidth: '95%' },
-        tooltip: { isHtml: true, trigger: "visible" },
-        colors: ['#3557cc', '#18b7a1']
-        // backgroundColor: '#3557cc',
+        // bars: 'vertical',
+        colors: ['#3557cc', '#18b7a1'],
+        backgroundColor: '#f0f4f8',
+        vAxis: {
+          minValue: 0
+        },
+        annotations: {
+          alwaysOutside: true
+        }
         // Just add this option
         // is3D: true
       }}

@@ -132,3 +132,5 @@ export const PeriodRangeValue = [
   { name: 'quarter', value: 90 },
   { name: 'year', value: 365 }
 ]
+
+export const CHART_TYPE_BAR = 'ColumnChart'
