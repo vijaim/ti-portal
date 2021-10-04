@@ -106,7 +106,7 @@ const Favorites = (props) => {
       let trendPercentage = ''
       let trendIcon = ''
       let isTrendIncrease = false
-      if (narrative.trend_value_change !== null && narrative.trend_value !== null) {
+      if (narrative.trend_value_change !== null && narrative.trend_value !== null && (narrative.trend_value - narrative.trend_value_change) !== 0) {
         trendPercentage = narrative.trend_value_change > 0 ? `${((narrative.trend_value_change / (narrative.trend_value - narrative.trend_value_change)) * 100).toFixed(1)}%` : `${((narrative.trend_value_change / (narrative.trend_value - narrative.trend_value_change)) * 100).toFixed(1)}%`
         trendIcon = narrative.trend_value_change > 0 ? INCREASE : DECREASE
         isTrendIncrease = (narrative.trend_value_change > 0)
