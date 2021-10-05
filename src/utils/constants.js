@@ -124,13 +124,4 @@ export const TUTORIAL_SUB_CONTENT = [
 
 export const PeriodRange = ['today', 'yesterday', 'week', 'month', 'quarter', 'year']
 
-export const PeriodRangeValue = [
-  { name: 'today', value: 1 },
-  { name: 'yesterday', value: 1 },
-  { name: 'week', value: 7 },
-  { name: 'month', value: 31 },
-  { name: 'quarter', value: 90 },
-  { name: 'year', value: 365 }
-]
-
-export const CHART_TYPE_BAR = 'ColumnChart'
+export const CHART_TYPE_LINE = 'LineChart'

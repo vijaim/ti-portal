@@ -13,15 +13,14 @@ import InsightsHeader from '../insights/insights-header'
 import NavigationTab from '../settings/navigation-tab'
 // import { Link } from 'react-router-dom'
 import {
-  ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, anosHiddenListFirstFive, IMAGES_ID, PeriodRange, PeriodRangeValue,
-  CHART_TYPE_BAR
+  ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, PeriodRange, CHART_TYPE_LINE
 } from '../../utils/constants'
 import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
 import { connect } from 'react-redux'
 import { setSearchBar } from '../signin/signin-actions'
 import { Link } from 'react-router-dom'
-import { ImageSaver} from '../../utils/util-methods'
+import { ImageSaver } from '../../utils/util-methods'
 import { v4 as uuidv4 } from 'uuid'
 import ChartComponent from './Charts'
 
@@ -38,7 +37,7 @@ const Favorites = (props) => {
   const [limit, setLimit] = useState(30)
   const [isLoadMore, setIsLoadMore] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const { cookie, userId, searchValue, setSearchBarValue} = props
+  const { cookie, userId, searchValue, setSearchBarValue } = props
   const loginCookie = localStorage.getItem('localLoginCookie')
   const user_Id = localStorage.getItem('userId')
   const anosListContainerRef = React.createRef()
@@ -257,20 +256,13 @@ const Favorites = (props) => {
   }
 
   const getMetricsList = (page, period) => {
-    let limitValue = 0
-    PeriodRangeValue.map(item => {
-      if (item.name === period) {
-        limitValue = item.value
-      }
-      return null
-    })
     const params = {
       userId: parseInt(localStorage.getItem('userId')),
       appId: JSON.parse(localStorage.getItem('businessMetricInfo')).AppId,
       narrativeId: JSON.parse(localStorage.getItem('businessMetricInfo')).narrativeId,
-      offset: chartPageNo,
+      offset: 0,
       period: period,
-      limit: limitValue
+      limit: 5
     }
     NetworkManager.getBussinessMetricsById(params, localStorage.getItem('localLoginCookie')).then(response => {
       if (response.status === 200 && response.data.response_objects) {
@@ -304,7 +296,7 @@ const Favorites = (props) => {
           if (isHavePastCount(data.anos[0].values[0])) {
             graphData.push(['created_at', ...Object.keys(data.anos[0].values[0])])
           } else {
-            graphData.push(['created_at', getResponseOutputKey(data.anos[0].values[0]), { role: 'annotation'}])
+            graphData.push(['created_at', getResponseOutputKey(data.anos[0].values[0]), { role: 'annotation' }])
           }
         } else if (chartType === 0) {
           graphData.push(['created_at', Object.keys(data.anos[0].values[0])[0]])
@@ -368,106 +360,106 @@ const Favorites = (props) => {
       const insightsId = uuidv4()
       value.insightsId = insightsId
       const categoryList = Array.from(value.value, ([name, value]) => ({ name, value }))
-      return <div ref={ anosListContainerRef } key={`${value.name}_key_`} className="container pb-20 pt-10 accordion" id='accordionSample'>
+      return <div ref={anosListContainerRef} key={`${value.name}_key_`} className="container pb-20 pt-10 accordion" id='accordionSample'>
         <div id={value.insightsId} className=" gy-3 mb-40 row">
-       { searchValue === '' && <h2 className="fw-bold h4 mb-40 text-center text-dark">{displayDateFormat(value.name)}
-       <img src={TODAY} style={{cursor: 'pointer'}} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(value.insightsId, tab)} className="ms-3 icon-base" />
-        </h2>}
-        { categoryList.map((subvalue, subKey) => {
-          const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS
-          const outputvalueCheck = subvalue.value.map(item => `${item.output_html}`.toLowerCase().includes(searchValue.toLowerCase()))
-          if (!searchValue !== '' && (`${subvalue.name}`.toLowerCase().includes(searchValue.toLowerCase()) || outputvalueCheck.includes(true))) {
-            return <React.Fragment key={`${subvalue.name}_key_`}> <div className="col-lg-3 col-xl-2">
-              <h3 className="insightTitle">
-                <img src={categoryTypeImage} width={24} height={24} alt="Computer" className="me-2 icon-base" />{`${subvalue.name}`}
-              </h3>
-            </div>
-            <div className="col-lg-9 col-xl-10 ">
-            { subvalue.value.map((subvalueItem, anosIndex) => {
-              if (!searchValue !== '' && `${subvalueItem.output_html}`.toLowerCase().includes(searchValue.toLowerCase()) || `${subvalue.name}`.includes(searchValue)) {
-                return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className={`${subvalueItem.isNew ? 'loadedNewItem_list' : ''} business-listing-item accordion-item ${!subvalueItem.date_range ? 'pointerNone' : ''} `} >
-                  {/* <div className="accordion-header" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}> */}
-                      <div className="align-items-center gy-2 row accordion-header mx-1 my-2" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}>
-                        <div className="col-xl-10">
-                                <div className="insightStatus-content d-flex align-items-md-center">
-                                {subvalueItem.showTrend && <div className="trendStatus-content">
-                                    <img className="insightStatus-icon" src={subvalueItem.trendIcon} alt="Increase Icon" height={8} width={14} />
-                                    <span className={`fs--6 fw-bold text-${subvalueItem.isTrendIncrease ? 'success' : 'danger'}`}>{subvalueItem.trendPercentage}</span>
-                                </div>}
-                                <span className="px-1" dangerouslySetInnerHTML={ {__html: subvalueItem.output_html}} />
-                                </div>
-                        </div>
-                        <div className="col-xl-2">
-                          <div className="insightAction d-flex justify-content-evenly align-items-center">
-                            <span className={`insightAction-link form-check-label ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
-                              <img className="insightAction-icon icon-active" src={!subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
-                              <img className="insightAction-icon" src={subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
-                            </span>
-                            <span className="insightAction-link  mr-5 form-check-label" onClick={() => iconPressed(subvalueItem, 'hiddens')}>
-                              <img className="insightAction-icon icon-active" src={!subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
-                              <img className="insightAction-icon mt-1" data-html2canvas-ignore="true" src={subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
-                            </span>
-                            {
-                            subvalueItem.date_range ? <span className="accordion-button insightAction-link  mr-5 form-check-label" type="button" data-bs-toggle="collapse" data-bs-target={`#narrative_id_${subvalueItem.narrative_id}`} aria-expanded={anosIndex === 0 ? 'true' : 'false'} aria-controls={`narrative_id_${subvalueItem.narrative_id}`} onClick={() => goToBussinesMetric(subvalueItem)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bar-chart-fill barIcon" viewBox="0 0 16 16">
-                                  <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2z"/>
-                                </svg>
+          {searchValue === '' && <h2 className="fw-bold h4 mb-40 text-center text-dark">{displayDateFormat(value.name)}
+            <img src={TODAY} style={{ cursor: 'pointer' }} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(value.insightsId, tab)} className="ms-3 icon-base" />
+          </h2>}
+          {categoryList.map((subvalue, subKey) => {
+            const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS
+            const outputvalueCheck = subvalue.value.map(item => `${item.output_html}`.toLowerCase().includes(searchValue.toLowerCase()))
+            if (!searchValue !== '' && (`${subvalue.name}`.toLowerCase().includes(searchValue.toLowerCase()) || outputvalueCheck.includes(true))) {
+              return <React.Fragment key={`${subvalue.name}_key_`}> <div className="col-lg-3 col-xl-2">
+                <h3 className="insightTitle">
+                  <img src={categoryTypeImage} width={24} height={24} alt="Computer" className="me-2 icon-base" />{`${subvalue.name}`}
+                </h3>
+              </div>
+                <div className="col-lg-9 col-xl-10 ">
+                  {subvalue.value.map((subvalueItem, anosIndex) => {
+                    if (!searchValue !== '' && `${subvalueItem.output_html}`.toLowerCase().includes(searchValue.toLowerCase()) || `${subvalue.name}`.includes(searchValue)) {
+                      return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className={`${subvalueItem.isNew ? 'loadedNewItem_list' : ''} business-listing-item accordion-item ${!subvalueItem.date_range ? 'pointerNone' : ''} `} >
+                        {/* <div className="accordion-header" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}> */}
+                        <div className="align-items-center gy-2 row accordion-header mx-1 my-2" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}>
+                          <div className="col-xl-10">
+                            <div className="insightStatus-content d-flex align-items-md-center">
+                              {subvalueItem.showTrend && <div className="trendStatus-content">
+                                <img className="insightStatus-icon" src={subvalueItem.trendIcon} alt="Increase Icon" height={8} width={14} />
+                                <span className={`fs--6 fw-bold text-${subvalueItem.isTrendIncrease ? 'success' : 'danger'}`}>{subvalueItem.trendPercentage}</span>
+                              </div>}
+                              <span className="px-1" dangerouslySetInnerHTML={{ __html: subvalueItem.output_html }} />
+                            </div>
+                          </div>
+                          <div className="col-xl-2">
+                            <div className="insightAction d-flex justify-content-evenly align-items-center">
+                              <span className={`insightAction-link form-check-label ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
+                                <img className="insightAction-icon icon-active" src={!subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
+                                <img className="insightAction-icon" src={subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
                               </span>
-                              : <span className="accordion-button insightAction-link inSightAction-PaddingRight mr-40  invisible" >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-award" viewBox="0 0 16 16">
-                                  <path d="M9.669.864 8 0 6.331.864l-1.858.282-.842 1.68-1.337 1.32L2.6 6l-.306 1.854 1.337 1.32.842 1.68 1.858.282L8 12l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 6l.306-1.854-1.337-1.32-.842-1.68L9.669.864zm1.196 1.193.684 1.365 1.086 1.072L12.387 6l.248 1.506-1.086 1.072-.684 1.365-1.51.229L8 10.874l-1.355-.702-1.51-.229-.684-1.365-1.086-1.072L3.614 6l-.25-1.506 1.087-1.072.684-1.365 1.51-.229L8 1.126l1.356.702 1.509.229z"/>
-                                  <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z"/>
-                                </svg>
-                            </span>
+                              <span className="insightAction-link  mr-5 form-check-label" onClick={() => iconPressed(subvalueItem, 'hiddens')}>
+                                <img className="insightAction-icon icon-active" src={!subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
+                                <img className="insightAction-icon mt-1" data-html2canvas-ignore="true" src={subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
+                              </span>
+                              {
+                                subvalueItem.date_range ? <span className="accordion-button insightAction-link  mr-5 form-check-label" type="button" data-bs-toggle="collapse" data-bs-target={`#narrative_id_${subvalueItem.narrative_id}`} aria-expanded={anosIndex === 0 ? 'true' : 'false'} aria-controls={`narrative_id_${subvalueItem.narrative_id}`} onClick={() => goToBussinesMetric(subvalueItem)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bar-chart-fill barIcon" viewBox="0 0 16 16">
+                                    <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2z" />
+                                  </svg>
+                                </span>
+                                  : <span className="accordion-button insightAction-link inSightAction-PaddingRight mr-40  invisible" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-award" viewBox="0 0 16 16">
+                                      <path d="M9.669.864 8 0 6.331.864l-1.858.282-.842 1.68-1.337 1.32L2.6 6l-.306 1.854 1.337 1.32.842 1.68 1.858.282L8 12l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 6l.306-1.854-1.337-1.32-.842-1.68L9.669.864zm1.196 1.193.684 1.365 1.086 1.072L12.387 6l.248 1.506-1.086 1.072-.684 1.365-1.51.229L8 10.874l-1.355-.702-1.51-.229-.684-1.365-1.086-1.072L3.614 6l-.25-1.506 1.087-1.072.684-1.365 1.51-.229L8 1.126l1.356.702 1.509.229z" />
+                                      <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z" />
+                                    </svg>
+                                  </span>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                        {/* </div> */}
+                        <div id={`narrative_id_${subvalueItem.narrative_id}`} className="accordion-collapse collapse" aria-labelledby={`narrative_id_Heading_${subvalueItem.narrative_id}`} data-bs-parent='#accordionSample'>
+                          <div className="accordion-body">
+                            {
+                              // isExpandOpen &&
+                              isGraphData ? <div className="d-flex justify-content-center align-items-center" >
+                                <div className="spinner-border text-primary" role="status">
+                                  <span className="visually-hidden">Loading...</span>
+                                </div>
+                              </div> : <>
+                                <div className="d-flex justify-content-end">
+                                  <div className="w-25 my-3">
+                                    <select className="form-select border-primary" aria-label="Default select example" value={dateRangePeriod} onChange={(event) => selectPeriodRange(event)}>
+                                      {
+                                        PeriodRange.map(item => {
+                                          return <option key={item} value={item}>{item}</option>
+                                        })
+                                      }
+                                    </select>
+                                  </div>
+                                </div>
+                                <RenderGraph data={anosGraphList} chartType={chartType} dateRangePeriod={dateRangePeriod} />
+                              </>
                             }
                           </div>
                         </div>
                       </div>
-                  {/* </div> */}
-                  <div id={`narrative_id_${subvalueItem.narrative_id}`} className="accordion-collapse collapse" aria-labelledby={`narrative_id_Heading_${subvalueItem.narrative_id}`} data-bs-parent='#accordionSample'>
-                      <div className="accordion-body">
-                      {
-                      // isExpandOpen &&
-                      isGraphData ? <div className="d-flex justify-content-center align-items-center" >
-                          <div className="spinner-border text-primary" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                          </div>
-                      </div> : <>
-                        <div className="d-flex justify-content-end">
-                          <div className="w-25 my-3">
-                            <select className="form-select border-primary" aria-label="Default select example" value={dateRangePeriod} onChange={(event) => selectPeriodRange(event)}>
-                              {
-                                PeriodRange.map(item => {
-                                  return <option key={item} value={item}>{item}</option>
-                                })
-                              }
-                            </select>
-                          </div>
-                        </div>
-                        <RenderGraph data={anosGraphList} chartType={chartType} dateRangePeriod={dateRangePeriod} />
-                      </>
+                    } else {
+                      return null
                     }
-                      </div>
-                    </div>
+                  })
+                  }
                 </div>
-              } else {
-                return null
-              }
-            })
+              </React.Fragment>
+            } else {
+              return null
             }
-            </div>
-            </React.Fragment>
-          } else {
-            return null
-          }
-        })}
-         </div>
-    </div>
+          })}
+        </div>
+      </div>
     })
   }
 
   const getChartName = (value) => {
-    const typeName = (value === 1 || value === 2) ? CHART_TYPE_BAR : 'Line'
+    const typeName = (value === 1 || value === 2) ? CHART_TYPE_LINE : CHART_TYPE_LINE
     return typeName
   }
 
@@ -476,36 +468,36 @@ const Favorites = (props) => {
     if (chartType !== 0) {
       return <ChartComponent chartData={data} chartType={getChartName(chartType)} period={period} />
     } else {
-      return <div class="table-responsive" style={{height: data.length > 10 ? '400px' : 'auto'}}>
+      return <div class="table-responsive" style={{ height: data.length > 10 ? '400px' : 'auto' }}>
         <table class="table table-striped table-hover" >
-            <thead>
+          <thead>
             {/* <th scope="col">#</th> */}
             {
               data[0].map(column => {
                 return <th scope="col">{column}</th>
               })
             }
-            </thead>
-            <tbody>
-              {
-                data.map((row, index) => {
-                  if (index !== 0) {
-                    return <tr >
-                      {/* <td>{index}</td> */}
-                      {
-                        row.map(row => {
-                          return <td>
-                            {
-                              row
-                            }
-                            </td>
-                        })
-                      }
-                      </tr>
-                  }
-                })
-              }
-            </tbody>
+          </thead>
+          <tbody>
+            {
+              data.map((row, index) => {
+                if (index !== 0) {
+                  return <tr >
+                    {/* <td>{index}</td> */}
+                    {
+                      row.map(row => {
+                        return <td>
+                          {
+                            row
+                          }
+                        </td>
+                      })
+                    }
+                  </tr>
+                }
+              })
+            }
+          </tbody>
         </table>
       </div>
     }
@@ -521,30 +513,30 @@ const Favorites = (props) => {
         </section>
         <section className="bg-section">
           <NavigationTab appId={apps.id} currentTab={tabName} navType="home" tabRender={setTabValue} />
-            <div className="container pb-40 pt-40">
-              {/* Insights Data */}
-              { anosList.size > 0 ? renderTabContent(tabName) : (tabName === 'favorites' && !isLoading) ? <div className="d-flex flex-column align-items-center justify-content-center">
+          <div className="container pb-40 pt-40">
+            {/* Insights Data */}
+            {anosList.size > 0 ? renderTabContent(tabName) : (tabName === 'favorites' && !isLoading) ? <div className="d-flex flex-column align-items-center justify-content-center">
               <h5 className="fw-bolder">No favorites yet</h5>
               <img className="insightAction-icon my-1" src={STAR} alt="Icon Star" height={200} width={200} />
-               <span>Your favorites insights will show up here after you add them to your favorites</span>
-               <Link className="text-center pt-20 pb-20" onClick={() => setTabValue({id: 'all'})} to={`${ROUTES_PATH_NAME.FAVORITES}/${apps.id}/all`}>
+              <span>Your favorites insights will show up here after you add them to your favorites</span>
+              <Link className="text-center pt-20 pb-20" onClick={() => setTabValue({ id: 'all' })} to={`${ROUTES_PATH_NAME.FAVORITES}/${apps.id}/all`}>
                 <span className="btn btn-primary disabled-link">Add insights to favorites</span>
               </Link>
-               </div> : (tabName === 'all' && !isLoading) ? <div className="d-flex flex-column align-items-center justify-content-center">
+            </div> : (tabName === 'all' && !isLoading) ? <div className="d-flex flex-column align-items-center justify-content-center">
               <h5 className="fw-bolder">No insights yet</h5>
               {/* <img className="insightAction-icon my-1" src={STAR} alt="Icon Star" height={200} width={200} /> */}
-               <span>For new businesses, insights should get generated within 15-30 minutes from the time of setup.</span>
-               </div> : null }
-              {/* Insights Data end */}
-              {isLoading && <div className="d-flex justify-content-center align-items-center" >
-                <div className="spinner-border text-primary" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
+              <span>For new businesses, insights should get generated within 15-30 minutes from the time of setup.</span>
+            </div> : null}
+            {/* Insights Data end */}
+            {isLoading && <div className="d-flex justify-content-center align-items-center" >
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
             </div>}
-              {isLoadMore && <div className="text-center pt-20 pb-20" onClick={() => loadMoreData(pageNo, limit)}>
-                <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
-              </div>}
-            </div>
+            {isLoadMore && <div className="text-center pt-20 pb-20" onClick={() => loadMoreData(pageNo, limit)}>
+              <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
+            </div>}
+          </div>
         </section>
       </main>
     </>
