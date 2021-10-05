@@ -514,9 +514,15 @@ a.business-item:hover .listing-item{
 }
 
 /* accordion override styles */ 
-
+.pointerNone{
+    cursor: auto !important;
+}
+.barIcon:hover{
+    fill: #3557CC;
+}
 .accordion-button{
-    padding: 0.75rem 1.25rem !important; 
+    padding: 0.6rem !important; 
+    width: 24% !important; 
     box-shadow: none !important;
 }
 .accordion-button:not(.collapsed){
