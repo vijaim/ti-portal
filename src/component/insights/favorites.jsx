@@ -71,7 +71,6 @@ const Favorites = (props) => {
     setIsLoadMore(false)
     setPageNo(offSet)
     NetworkManager.getAnos(params).then(response => {
-      localStorage.setItem('prevPath', props.history.location.pathname)
       setIsLoading(false)
       if (response.status === 200 && response.data.response_objects && response.data.response_objects.narratives) {
         const newResponseList = response.data.response_objects

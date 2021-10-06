@@ -39,7 +39,6 @@ const SettingsBusiness = (props) => {
   const businessLists = () => {
     setBusinessId(props.match.params?.id ? parseInt(props.match.params.id) : 0)
     const loginCookie = localStorage.getItem('localLoginCookie')
-    localStorage.setItem('prevPath', props.history.location.pathname)
     NetworkManager.getBusiness(loginCookie).then(response => {
       if (response.data.response_objects.app_ids === null) {
         setBusinessMap(new Map())
@@ -79,7 +78,6 @@ const SettingsBusiness = (props) => {
           setSelectedBusiness({})
         } else {
           setBusinessId(id)
-          localStorage.setItem('prevPath', props.history.location.pathname)
           setState(() => ({ buttonActive: id }))
           setBusinessMap(businessObj)
           setSelectedBusiness(response.data.response_objects)
