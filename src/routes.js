@@ -34,21 +34,13 @@ const Routes = (props) => {
   const { isLoggedIn } = state
   const { cookie } = props
 
-  useEffect(() => {
-    window.addEventListener('storage', (event) => {
-      if (event.storageArea === localStorage) {
-        const token = localStorage.getItem('localLoginCookie')
-        if (!token) {
-          history.push(SIGN_IN)
-          window.location.reload()
-        }
+  useEffect(async () => {
+    const loginCookie = getCookie('trueinsights-cookie')
+    setState(() => ({ isLoggedIn: (loginCookie === null || loginCookie === '') ? false : true }), () => {
+      if (isLoggedIn && (SIGN_IN || SIGN_UP || VERIFY_CODE || PASSWORD)) {
+        history.push(HOME)
       }
     })
-    const loginCookie = getCookie('trueinsights-cookie')
-    setState(() => ({ isLoggedIn: loginCookie !== undefined && loginCookie !== '' && loginCookie !== null ? true : false }))
-    if (isLoggedIn && (SIGN_IN || SIGN_UP || VERIFY_CODE || PASSWORD)) {
-      history.push(SIGN_IN)
-    }
   }, [cookie])
 
   return (

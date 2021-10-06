@@ -20,10 +20,10 @@ const SignIn = (props) => {
 
   useEffect(() => {
     if (getCookie('trueinsights-cookie')) {
-      if (localStorage.getItem('prevPath')) {
-        props.history.push(localStorage.getItem('prevPath'))
-      } else {
+      if (window.location.pathname === '/') {
         props.history.push(HOME)
+      } else {
+        props.history.push(window.location.pathname)
       }
     }
     if (routePath.includes(UTM_SOURCE_WORDPRESS)) {
@@ -85,7 +85,7 @@ const SignIn = (props) => {
               }
             } else {
               setLoginCookie(loginCookie)
-              props.history.push(prevActionPath)
+              props.history.push(HOME)
             }
           } else {
             setLoginCookie(loginCookie)

@@ -44,7 +44,6 @@ const SettingsProfile = (props) => {
     const payload = {
       id: userId
     }
-    localStorage.setItem('prevPath', props.history.location.pathname)
     NetworkManager.getAllUsers(payload, loginCookie).then(response => {
       if (response.status === 200) {
         setUser(response.data.response_objects.users)
