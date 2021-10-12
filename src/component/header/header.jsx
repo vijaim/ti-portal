@@ -55,6 +55,7 @@ const Header = (props) => {
     setLoginCookie(null)
     localStorage.clear()
     deleteCookie('trueinsights-cookie')
+    localStorage.setItem('logout', 'click')
   }
 
   return (

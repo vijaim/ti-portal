@@ -2,3 +2,9 @@
   position: fixed !important;
   width: 100% !important;
 }
+
+.MuiSelect-select.MuiSelect-select {
+  padding-right: 24px;
+  background-color: var(--ti-light);
+  margin-top: -5px;
+}

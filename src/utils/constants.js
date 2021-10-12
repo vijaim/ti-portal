@@ -125,3 +125,21 @@ export const TUTORIAL_SUB_CONTENT = [
 export const PeriodRange = ['today', 'yesterday', 'week', 'month', 'quarter', 'year']
 
 export const CHART_TYPE_LINE = 'LineChart'
+
+export const DAYSMAP = [
+  { id: '1', dayName: 'Monday' },
+  { id: '2', dayName: 'Tuesday' },
+  { id: '3', dayName: 'Wednesday' },
+  { id: '4', dayName: 'Thursday' },
+  { id: '5', dayName: 'Friday' },
+  { id: '6', dayName: 'Saturday' },
+  { id: '7', dayName: 'Sunday' }
+]
+
+export const TIME = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+export const DAY_OF_WEEK_DEFAULT_VALUE = '3,4'
+export const HOUR_DEFAULT_VALUE = 12
+export const CHANNEL_ID_DEFAULT_VALUE = 1
+export const MERIDIAN_DEFAULT_VALUE = 'AM'
+export const MERIDIAN_PM_VALUE = 'PM'

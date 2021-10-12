@@ -35,6 +35,15 @@ const Routes = (props) => {
   const { cookie } = props
 
   useEffect(async () => {
+    window.addEventListener('storage', (event) => {
+      if (event.storageArea === localStorage) {
+        const token = localStorage.getItem('localLoginCookie')
+        if (!token && localStorage.getItem('logout')) {
+          history.push(SIGN_IN)
+          localStorage.clear()
+        }
+      }
+    })
     const loginCookie = getCookie('trueinsights-cookie')
     setState(() => ({ isLoggedIn: (loginCookie === null || loginCookie === '') ? false : true }), () => {
       if (isLoggedIn && (SIGN_IN || SIGN_UP || VERIFY_CODE || PASSWORD)) {
