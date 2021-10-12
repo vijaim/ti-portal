@@ -156,7 +156,7 @@ const AddBusiness = (props) => {
     if (props.businessData) {
       setAdminList([])
       const adminsList = []
-      if (props.businessData.user_preferences[0]) {
+      if (props.businessData.user_preferences && props.businessData.user_preferences.length > 0) {
         setDays(props.businessData.user_preferences[0].day_of_weeks ? props.businessData.user_preferences[0].day_of_weeks.toString() : DAY_OF_WEEK_DEFAULT_VALUE)
         setNotificationValue(props.businessData.user_preferences[0].channel_id ? parseInt(props.businessData.user_preferences[0].channel_id) : 0)
         timeConvert(props.businessData.user_preferences[0].time_of_day ? props.businessData.user_preferences[0].time_of_day : '00:00')
