@@ -9,7 +9,7 @@ const initialState = {
   businessList: {},
   user: {},
   businessId: '',
-  tutorialId: 'overview'
+  tutorialId: ''
 }
 const setEmailDetail = (state, payload) => {
   return {

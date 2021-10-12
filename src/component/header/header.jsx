@@ -40,7 +40,7 @@ const Header = (props) => {
       return isHeaderShow ? HOME : SIGN_IN
     } else if (routePath === TRACKING) {
       return isHeaderShow ? TRACKING : SIGN_IN
-    } else if (routePath === TUTORIAL) {
+    } else if (routePath === TUTORIAL || routePath.includes(TUTORIAL)) {
       return isHeaderShow ? TUTORIAL : SIGN_IN
     }
     return routePath
@@ -99,7 +99,7 @@ const Header = (props) => {
         : (
           <>
             <header>
-              <nav className={`bg-white navbar navbar-expand-lg pb-lg-3 pt-lg-3 ${routePath === TUTORIAL ? 'header-position' : ''}`}>
+              <nav className={`bg-white navbar navbar-expand-lg pb-lg-3 pt-lg-3 ${routePath === TUTORIAL || routePath.includes(TUTORIAL) ? 'header-position' : ''}`}>
                 <div className="container">
                   <Link to="/home" className="navbar-brand text-primary">
                     <img src={IMAGE_URL.TRUEINSIGHTS_LOGO} alt="Trueinsight logo" width={132} height={29} />
