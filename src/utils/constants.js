@@ -134,9 +134,9 @@ export const DAYSMAP = [
   { id: '7', dayName: 'Sunday' }
 ]
 
-export const TIME = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+export const TIME = ['01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30']
 
-export const DAY_OF_WEEK_DEFAULT_VALUE = '3,4'
+export const DAY_OF_WEEK_DEFAULT_VALUE = '1,3'
 export const HOUR_DEFAULT_VALUE = 12
 export const CHANNEL_ID_DEFAULT_VALUE = 1
 export const MERIDIAN_DEFAULT_VALUE = 'AM'

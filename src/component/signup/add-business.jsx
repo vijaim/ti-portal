@@ -109,7 +109,7 @@ const AddBusiness = (props) => {
       platform_id: values.platform_id,
       admins: adminsList,
       channel_id: notificationValue ? 1 : 0,
-      time_of_day: setHourValue(),
+      time_of_day: getUTCHours(TIME[hours], true),
       day_of_weeks: days.split(',').map(iNum => parseInt(iNum))
     }
     NetworkManager.updateBusiness(businessList.id, payload, loginCookie).then(response => {
@@ -159,11 +159,15 @@ const AddBusiness = (props) => {
       if (props.businessData.user_preferences && props.businessData.user_preferences.length > 0) {
         setDays(props.businessData.user_preferences[0].day_of_weeks ? props.businessData.user_preferences[0].day_of_weeks.toString() : DAY_OF_WEEK_DEFAULT_VALUE)
         setNotificationValue(props.businessData.user_preferences[0].channel_id ? parseInt(props.businessData.user_preferences[0].channel_id) : 0)
-        timeConvert(props.businessData.user_preferences[0].time_of_day ? props.businessData.user_preferences[0].time_of_day : '00:00')
+        if (props.businessData.user_preferences[0].time_of_day) {
+          timeConvert(props.businessData.user_preferences[0].time_of_day, true)
+        } else {
+          timeConvert('00:00', false)
+        }
       } else {
         setNotificationValue(CHANNEL_ID_DEFAULT_VALUE)
         setDays(DAY_OF_WEEK_DEFAULT_VALUE)
-        timeConvert('00:00')
+        timeConvert('00:00', false)
       }
       props.businessData.admins.map((item) => {
         if (item.user_id !== parseInt(localStorage.getItem('userId'))) {
@@ -203,34 +207,55 @@ const AddBusiness = (props) => {
     setHours(event.target.value)
   }
 
-  const timeConvert = (time) => {
+  const getUTCHours = (time, isMeridianConversion) => {
+    let totalMins
+    if (isMeridianConversion) {
+      totalMins = getHourValue(time, isMeridianConversion) + new Date().getTimezoneOffset()
+    } else {
+      totalMins = getHourValue(time, isMeridianConversion) - new Date().getTimezoneOffset()
+    }
+    if (Math.sign(totalMins) === -1) {
+      totalMins = (24 * 60) + totalMins
+    }
+    let realMin = totalMins % 60
+    let hoursValue = Math.floor(totalMins / 60)
+
+    return `${hoursValue < 10 ? `0${hoursValue}` : hoursValue}:${realMin === 0 ? '00' : realMin}`
+  }
+
+  const timeConvert = (time, isDbTime) => {
     // Check correct time format and split into components
-    time = time.split(':')
+    if (isDbTime) {
+      time = getUTCHours(time, false).split(':')
+    } else {
+      time = time.split(':')
+    }
     let hourValue = parseInt(time[0])
     const timeValue = hourValue % 12 || 12
     hourValue < 12 ? setMeridianValue('AM') : setMeridianValue('PM') // Set AM/PM
-    setHours(timeValue) // Adjust hours
+    setHours(TIME.indexOf(`${timeValue <= 9 ? `0${timeValue}` : timeValue > 12 ? timeValue - 12 : timeValue}:${time[1]}`)) // Adjust hours
   }
 
   const handleMeridiemChange = (event) => {
     setMeridianValue(event.target.value)
   }
 
-  const setHourValue = () => {
+  const getHourValue = (time, isMeridianConversion) => {
     let selectedValue
-    if (meridian === 'PM' && parseInt(hours) < 12) {
-      selectedValue = parseInt(hours) + 12
-    } else if (meridian === 'AM' && parseInt(hours) === 12) {
-      selectedValue = parseInt(hours) - 12
+    let hoursValue = parseInt(time.split(':')[0])
+    if (isMeridianConversion) {
+      if (meridian === 'PM' && parseInt(hoursValue) < 12) {
+        selectedValue = parseInt(hoursValue) + 12
+      } else if (meridian === 'AM' && parseInt(hoursValue) === 12) {
+        selectedValue = parseInt(hoursValue) - 12
+      } else {
+        selectedValue = parseInt(hoursValue)
+      }
     } else {
-      selectedValue = parseInt(hours)
+      selectedValue = parseInt(hoursValue)
     }
-    if (selectedValue < 10) {
-      selectedValue = `0${selectedValue}:00`
-    } else {
-      selectedValue = `${selectedValue}:00`
-    }
-    return selectedValue
+    let mins = (selectedValue * 60) + parseInt((time).split(':')[1])
+    return mins
   }
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -333,8 +358,8 @@ const AddBusiness = (props) => {
                 </div>
                 <div className="col-6 col-sm-auto">
                   <select className="form-select" style={{ height: '56px', marginBottom: '12px' }} aria-label="Frequency hour" id="inputFrqHour" onChange={(e) => handleTimeChange(e)} value={hours}>
-                  {TIME.map((time) => (
-                    <option key={time} value={time} label={time}></option>
+                  {TIME.map((time, index) => (
+                    <option key={time} value={index} label={time}></option>
                   ))}
                   </select>
                 </div>
