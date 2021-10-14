@@ -40,7 +40,7 @@ const Header = (props) => {
       return isHeaderShow ? HOME : SIGN_IN
     } else if (routePath === TRACKING) {
       return isHeaderShow ? TRACKING : SIGN_IN
-    } else if (routePath === TUTORIAL || routePath.includes(TUTORIAL)) {
+    } else if (routePath === TUTORIAL) {
       return isHeaderShow ? TUTORIAL : SIGN_IN
     }
     return routePath
