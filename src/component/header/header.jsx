@@ -55,6 +55,7 @@ const Header = (props) => {
     setLoginCookie(null)
     localStorage.clear()
     deleteCookie('trueinsights-cookie')
+    localStorage.setItem('logout', 'click')
   }
 
   return (
@@ -98,7 +99,7 @@ const Header = (props) => {
         : (
           <>
             <header>
-              <nav className={`bg-white navbar navbar-expand-lg pb-lg-3 pt-lg-3 ${routePath === TUTORIAL ? 'header-position' : ''}`}>
+              <nav className={`bg-white navbar navbar-expand-lg pb-lg-3 pt-lg-3 ${routePath === TUTORIAL || routePath.includes(TUTORIAL) ? 'header-position' : ''}`}>
                 <div className="container">
                   <Link to="/home" className="navbar-brand text-primary">
                     <img src={IMAGE_URL.TRUEINSIGHTS_LOGO} alt="Trueinsight logo" width={132} height={29} />
