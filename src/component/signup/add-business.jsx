@@ -231,8 +231,18 @@ const AddBusiness = (props) => {
       time = time.split(':')
     }
     let hourValue = parseInt(time[0])
-    const timeValue = hourValue % 12 || 12
-    timeValue < 12 ? setMeridianValue('AM') : setMeridianValue('PM') // Set AM/PM
+    let timeValue
+    if (hourValue >= 24) {
+      if (hourValue === 24) {
+        timeValue = hourValue - 12
+      } else {
+        timeValue = hourValue - 24
+      }
+      setMeridianValue('AM')
+    } else {
+      timeValue = hourValue % 12 || 12
+      hourValue < 12 ? setMeridianValue('AM') : setMeridianValue('PM')
+    }
     setHours(TIME.indexOf(`${timeValue <= 9 ? `0${timeValue}` : timeValue > 12 ? timeValue - 12 : timeValue}:${time[1]}`)) // Adjust hours
   }
 
