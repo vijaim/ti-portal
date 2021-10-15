@@ -92,7 +92,12 @@ const TutorialContent = () => {
                   <h3>Overview</h3>
                   TrueInsights is a business intelligence platform that tracks, stores and analyzes website activity and provides insights as narratives. <br/> <br/> Business Intelligence dashboards and data visualization tools are slowly becoming an integral part of all businesses. But typical dashboards filled with charts and data points can be overwhelming and difficult to understand. A dedicated person often needs to takes care of analyzing the dashboards, which slows down the process and can be costly.<br/> <br/>
                   TrueInsights presents the data and insights in a more meaningful narratives or stories. Data tells you ‘what is happening’, while presented as a narrative, it guides you to an understanding of ‘why it is happening’. TrueInsights empowers businesses to utilize metrics and in turning them into actionable insights.<br/><br/>
-                  <img src="/images/help/sample_narratives.png"/>
+                  <img src="/images/help/sample_narratives.png"/> <br/>
+                  <h5>Faster Narratives</h5>TrueInsights is fast and you will see the insights generated within 5 minutes or less.<br/><br/>
+                  <h5>Customizable</h5>Narratives are fully customizable. You can favorite the important insights and hide the ones you dont like.<br/><br/>
+                  <h5>Integrations</h5>You can configure the narratives to be delivered via Email on your required schedule.<br/><br/>
+                  <h3>How TrueInsights works?</h3>
+                  TrueInsights works by the addition of a block of JavaScript code on pages in your website. When users to your website view a page, click on a button or link, the Javascript code executes the tracking event. The event retrieves the data about the page view, click action etc and sends this information to TrueInsights. TrueInsights then processes those events and generates insights as narratives.
                 </div>
               </>
               ) : null
