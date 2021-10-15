@@ -2,9 +2,8 @@
 /* eslint-disable quotes  */
 /* eslint-disable multiline-ternary  */
 /* eslint-disable no-unused-vars */
-import React, { useRef, useState, useMemo } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import './tutorial.css'
 
 const TutorialContent = () => {
   const [state, setState] = useState({
@@ -13,32 +12,34 @@ const TutorialContent = () => {
   const { tutorialId } = state
   const scrollRef = useRef(null)
   const scrollToTop = (scrollRef) => window.scrollTo(0, 0)
-  const scrollToOverviewContent = (scrollRef) => window.scrollTo(0, 310)
-  const scrollToRealtimeNarrativesContent = (scrollRef) => window.scrollTo(0, 380)
-  const scrollToCustomizableContent = (scrollRef) => window.scrollTo(0, 310)
-  const scrollToIntegrationContent = (scrollRef) => window.scrollTo(0, 330)
-  const scrollToTimeMoneyContent = (scrollRef) => window.scrollTo(0, 310)
 
   const handleSetActive = (to) => {
     setState(() => ({ tutorialId: to }))
     if (to === 'overviewContent') {
+      const scrollToOverviewContent = (scrollRef) => window.scrollTo(0, 310)
       scrollToOverviewContent()
     } else if (to === 'realtimeNarrativesContent') {
+      const scrollToRealtimeNarrativesContent = (scrollRef) => window.scrollTo(0, 380)
       scrollToRealtimeNarrativesContent()
     } else if (to === 'customizableContent') {
+      const scrollToCustomizableContent = (scrollRef) => window.scrollTo(0, 310)
       scrollToCustomizableContent()
     } else if (to === 'integrationContent') {
+      const scrollToIntegrationContent = (scrollRef) => window.scrollTo(0, 330)
       scrollToIntegrationContent()
     } else if (to === 'timeMoneyContent') {
+      const scrollToTimeMoneyContent = (scrollRef) => window.scrollTo(0, 310)
       scrollToTimeMoneyContent()
     } else {
       scrollToTop()
     }
   }
 
-  const handleRenderByMemo = useMemo(() => {
-    return handleSetActive(tutorialId)
-  }, [tutorialId])
+  useEffect(() => {
+    if (tutorialId === 'overview') {
+      scrollToTop()
+    }
+  })
 
   return (
     <>
@@ -46,38 +47,38 @@ const TutorialContent = () => {
         <ul className='link scroll-section'>
           <div>
             <li title='Overview' className='scroll-hover'>
-              <Link className={tutorialId === 'overview' ? 'scroll-active' : 'scroll-inactive' } offset={-130} to='/tutorial/overview' onClick={() => handleSetActive('overview')}>{`Overview`.length > 20 ? `${`Overview`.substring(0, 20)}...` : 'Overview'}</Link>
+              <Link className={tutorialId === 'overview' ? 'scroll-active' : 'scroll-inactive' } onClick={() => handleSetActive('overview')}>{`Overview`.length > 20 ? `${`Overview`.substring(0, 20)}...` : 'Overview'}</Link>
             </li>
             <li title='Realtime Narratives' className='scroll-hover'>
-              <Link className={tutorialId === 'realtimeNarratives' ? 'scroll-active' : 'scroll-inactive' } offset={-130} to='/tutorial/realtimeNarratives' onClick={() => handleSetActive('realtimeNarratives')}>{`Realtime Narratives`.length > 20 ? `${`Realtime Narratives`.substring(0, 20)}...` : 'Realtime Narratives'}</Link>
+              <Link className={tutorialId === 'realtimeNarratives' ? 'scroll-active' : 'scroll-inactive' } onClick={() => handleSetActive('realtimeNarratives')}>{`Realtime Narratives`.length > 20 ? `${`Realtime Narratives`.substring(0, 20)}...` : 'Realtime Narratives'}</Link>
             </li>
             <ul>
               <li title='Realtime Narratives Content' className='scroll-hover'>
-              <Link className={tutorialId === 'realtimeNarrativesContent' ? 'scroll-active' : 'scroll-inactive' } offset={-130} to='/tutorial/realtimeNarrativesContent' onClick={() => handleSetActive('realtimeNarrativesContent')}>{`Realtime Narratives Content`.length > 20 ? `${`Realtime Narratives Content`.substring(0, 20)}...` : 'Realtime Narratives Content'}</Link>
+              <Link className={tutorialId === 'realtimeNarrativesContent' ? 'scroll-active' : 'scroll-inactive' } onClick={() => handleSetActive('realtimeNarrativesContent')}>{`Realtime Narratives Content`.length > 20 ? `${`Realtime Narratives Content`.substring(0, 20)}...` : 'Realtime Narratives Content'}</Link>
               </li>
             </ul>
             <li title='Customizable' className='scroll-hover'>
-              <Link className={tutorialId === 'customizable' ? 'scroll-active' : 'scroll-inactive' } offset={-130} to='/tutorial/customizable' onClick={() => handleSetActive('customizable')}>{`Customizable`.length > 20 ? `${`Customizable`.substring(0, 20)}...` : 'Customizable'}</Link>
+              <Link className={tutorialId === 'customizable' ? 'scroll-active' : 'scroll-inactive' } onClick={() => handleSetActive('customizable')}>{`Customizable`.length > 20 ? `${`Customizable`.substring(0, 20)}...` : 'Customizable'}</Link>
             </li>
             <ul>
               <li title='Customizable Content' className='scroll-hover'>
-              <Link className={tutorialId === 'customizableContent' ? 'scroll-active' : 'scroll-inactive' } offset={-130} to='/tutorial/customizableContent' onClick={() => handleSetActive('customizableContent')}>{`Customizable Content`.length > 20 ? `${`Customizable Content`.substring(0, 20)}...` : 'Customizable Content'}</Link>
+              <Link className={tutorialId === 'customizableContent' ? 'scroll-active' : 'scroll-inactive' } onClick={() => handleSetActive('customizableContent')}>{`Customizable Content`.length > 20 ? `${`Customizable Content`.substring(0, 20)}...` : 'Customizable Content'}</Link>
               </li>
             </ul>
             <li title='Integration' className='scroll-hover'>
-              <Link className={tutorialId === 'integration' ? 'scroll-active' : 'scroll-inactive' } offset={-130} to='/tutorial/integration' onClick={() => handleSetActive('integration')}>{`Integration`.length > 20 ? `${`Integration`.substring(0, 20)}...` : 'Integration'}</Link>
+              <Link className={tutorialId === 'integration' ? 'scroll-active' : 'scroll-inactive' } onClick={() => handleSetActive('integration')}>{`Integration`.length > 20 ? `${`Integration`.substring(0, 20)}...` : 'Integration'}</Link>
             </li>
             <ul>
               <li title='Integration Content' className='scroll-hover'>
-              <Link className={tutorialId === 'integrationContent' ? 'scroll-active' : 'scroll-inactive' } offset={-130} to='/tutorial/integrationContent' onClick={() => handleSetActive('integrationContent')}>{`Integration Content`.length > 20 ? `${`Integration Content`.substring(0, 20)}...` : 'Integration Content'}</Link>
+              <Link className={tutorialId === 'integrationContent' ? 'scroll-active' : 'scroll-inactive' } onClick={() => handleSetActive('integrationContent')}>{`Integration Content`.length > 20 ? `${`Integration Content`.substring(0, 20)}...` : 'Integration Content'}</Link>
               </li>
             </ul>
             <li title='Time and Money' className='scroll-hover'>
-              <Link className={tutorialId === 'timeMoney' ? 'scroll-active' : 'scroll-inactive' } offset={-130} to='/tutorial/timeMoney' onClick={() => handleSetActive('timeMoney')}>{`Time & Money`.length > 20 ? `${`Time & Money`.substring(0, 20)}...` : 'Time & Money'}</Link>
+              <Link className={tutorialId === 'timeMoney' ? 'scroll-active' : 'scroll-inactive' } onClick={() => handleSetActive('timeMoney')}>{`Time & Money`.length > 20 ? `${`Time & Money`.substring(0, 20)}...` : 'Time & Money'}</Link>
             </li>
             <ul>
               <li title='Time and Money Content' className='scroll-hover'>
-              <Link className={tutorialId === 'timeMoneyContent' ? 'scroll-active' : 'scroll-inactive' } offset={-130} to='/tutorial/timeMoneyContent' onClick={() => handleSetActive('timeMoneyContent')}>{`Time & Money Content`.length > 20 ? `${`Time & Money Content`.substring(0, 20)}...` : 'Time & Money Content'}</Link>
+              <Link className={tutorialId === 'timeMoneyContent' ? 'scroll-active' : 'scroll-inactive' } onClick={() => handleSetActive('timeMoneyContent')}>{`Time & Money Content`.length > 20 ? `${`Time & Money Content`.substring(0, 20)}...` : 'Time & Money Content'}</Link>
               </li>
             </ul>
           </div>
