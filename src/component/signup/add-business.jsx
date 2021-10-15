@@ -110,7 +110,8 @@ const AddBusiness = (props) => {
       admins: adminsList,
       channel_id: notificationValue ? 1 : 0,
       time_of_day: getUTCHours(TIME[hours], true),
-      day_of_weeks: days.split(',').map(iNum => parseInt(iNum))
+      day_of_weeks: days.split(',').map(iNum => parseInt(iNum)),
+      utc_offset: new Date().getTimezoneOffset()
     }
     NetworkManager.updateBusiness(businessList.id, payload, loginCookie).then(response => {
       if (response.status === 200) {
@@ -208,12 +209,7 @@ const AddBusiness = (props) => {
   }
 
   const getUTCHours = (time, isMeridianConversion) => {
-    let totalMins
-    if (isMeridianConversion) {
-      totalMins = getHourValue(time, isMeridianConversion) + new Date().getTimezoneOffset()
-    } else {
-      totalMins = getHourValue(time, isMeridianConversion) - new Date().getTimezoneOffset()
-    }
+    let totalMins = getHourValue(time, isMeridianConversion)
     if (Math.sign(totalMins) === -1) {
       totalMins = (24 * 60) + totalMins
     }
@@ -231,18 +227,8 @@ const AddBusiness = (props) => {
       time = time.split(':')
     }
     let hourValue = parseInt(time[0])
-    let timeValue
-    if (hourValue >= 24) {
-      if (hourValue === 24) {
-        timeValue = hourValue - 12
-      } else {
-        timeValue = hourValue - 24
-      }
-      setMeridianValue('AM')
-    } else {
-      timeValue = hourValue % 12 || 12
-      hourValue < 12 ? setMeridianValue('AM') : setMeridianValue('PM')
-    }
+    let timeValue = hourValue % 12 || 12
+    hourValue < 12 ? setMeridianValue('AM') : setMeridianValue('PM')
     setHours(TIME.indexOf(`${timeValue <= 9 ? `0${timeValue}` : timeValue > 12 ? timeValue - 12 : timeValue}:${time[1]}`)) // Adjust hours
   }
 
