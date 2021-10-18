@@ -18,9 +18,7 @@ const Tutorial = () => {
           </div>
         </div>
       </section>
-      <section className="bg-section section-padding">
-        <TutorialContent/>
-      </section>
+      <TutorialContent/>
     </main>
   )
 }
