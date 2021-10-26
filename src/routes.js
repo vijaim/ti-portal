@@ -27,7 +27,7 @@ import { ToastContainer } from 'react-toastify'
 const Routes = (props) => {
   const {
     SIGN_UP, VERIFY_CODE, PASSWORD, BUSINESS, TRACK_CODE, HOME, FAVORITES, SALES,
-    TRACKING, SETTINGS_BUSINESS, SETTINGS_PROFILE, SIGN_IN, TUTORIAL, ADDCUSTOMMETRIC
+    TRACKING, SETTINGS_BUSINESS, SETTINGS_PROFILE, SIGN_IN, TUTORIAL, CREATECUSTOMMETRIC
   } = ROUTES_PATH_NAME
   const [state, setState] = useState({
     isLoggedIn: false
@@ -74,7 +74,7 @@ const Routes = (props) => {
         {isLoggedIn && <Route exact path={`${SETTINGS_BUSINESS}/:id`} component={SettingsBusiness} /> }
         {isLoggedIn && <Route exact path={SETTINGS_PROFILE} component={SettingsProfile} /> }
         {isLoggedIn && <Route exact path={TUTORIAL} component={Tutorial} /> }
-        {isLoggedIn && <Route exact path={ADDCUSTOMMETRIC} component={AddCustomMetric} /> }
+        {isLoggedIn && <Route exact path={CREATECUSTOMMETRIC} component={AddCustomMetric} /> }
         {isLoggedIn && <Route exact path="*" component={InSightsBusiness} />}
         {!isLoggedIn && <Route exact path="*" component={SignIn} />}
       </Switch>

@@ -14,7 +14,7 @@ export const ROUTES_PATH_NAME = {
   SETTINGS_PROFILE: '/settingsProfile',
   TERMS_OF_USE: 'https://www.trueinsights.co/terms-of-use',
   TUTORIAL: '/help',
-  ADDCUSTOMMETRIC: '/addCustomMetric'
+  CREATECUSTOMMETRIC: '/createCustomMetric'
 }
 
 export const NAVIGATION_TABS = [
