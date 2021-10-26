@@ -1,0 +1,71 @@
+
+
+.rows {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    /* display: flex; */
+    flex-wrap: wrap;
+    margin-top: calc(var(--bs-gutter-y) * -1);
+    margin-right: calc(var(--bs-gutter-x)/ -2);
+    margin-left: calc(var(--bs-gutter-x)/ -2);
+  }
+  
+  .btns {
+    font-size: 0.875rem;
+    font-weight: bold;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    border-radius: .25rem;
+  }
+  
+  .icon-color {
+    color: #3557cc;
+  }
+  
+  .vertical-line {
+    border-left: 3px solid #D9E1EC;
+    height: auto;
+    margin-right: 4%;
+    margin-bottom: -52%;
+  }
+  
+  .vertical-lines {
+    border-left: 3px solid #D9E1EC;
+    height: auto;
+    margin-right: 4%;
+    margin-bottom: -125%;
+  }
+  
+  .vertical-bar {
+    border-left: 3px solid #D9E1EC;
+    height: auto;
+    margin-right: 4%;
+    margin-bottom: -125%;
+  }
+  
+  .input-search {
+    margin-left: 4.8%;
+    border: none;
+    width: 29%;
+  }
+  
+  .input-bar {
+    margin-top: 0%;
+    margin-left: 23%;
+  }
+  
+  input:focus {
+    outline:none;
+  }
+  
+  .form-select {
+    padding: -0.375rem 2.25rem 0.625rem 0.75rem;
+  }
+  
+  .inputs-search {
+    margin-left: -0.2%;
+    border: none;
+    width: 22%;
+  }
+  

@@ -13,7 +13,8 @@ export const ROUTES_PATH_NAME = {
   SETTINGS_BUSINESS: '/settingsBusiness',
   SETTINGS_PROFILE: '/settingsProfile',
   TERMS_OF_USE: 'https://www.trueinsights.co/terms-of-use',
-  TUTORIAL: '/help'
+  TUTORIAL: '/help',
+  ADDCUSTOMMETRIC: '/addCustomMetric'
 }
 
 export const NAVIGATION_TABS = [
@@ -35,7 +36,8 @@ export const HEADER_NAVIGATION = [
 
 export const IMAGES = {
   IMAGE_PATH: 'images/',
-  IMAGE_PATHS: 'images/icons/'
+  IMAGE_PATHS: 'images/icons/',
+  CUSTOM_METRIC_ICON_PATH: 'images/custom-metric/'
 }
 
 export const IMAGE_URL = {
@@ -60,7 +62,12 @@ export const IMAGE_URL = {
   ARROW_LEFT_BLUE: `${IMAGES.IMAGE_PATHS}${'icon-arrow-left-blue.png'}`,
   GOOGLE_SIGN_IN: `${IMAGES.IMAGE_PATH}${'sign-in-with-google.jpg'}`,
   VISIBLE: `../../${IMAGES.IMAGE_PATHS}${'icon-visible.svg'}`,
-  HIDDEN: `../../${IMAGES.IMAGE_PATHS}${'icon-hidden.svg'}`
+  HIDDEN: `../../${IMAGES.IMAGE_PATHS}${'icon-hidden.svg'}`,
+  ADD: `../../${IMAGES.CUSTOM_METRIC_ICON_PATH}${'add.png'}`,
+  PENCIL: `../../${IMAGES.CUSTOM_METRIC_ICON_PATH}${'pencil.png'}`,
+  CLOSE: `../../${IMAGES.CUSTOM_METRIC_ICON_PATH}${'close.png'}`,
+  FILTER: `../../${IMAGES.CUSTOM_METRIC_ICON_PATH}${'filter.png'}`,
+  LINE: `../../${IMAGES.CUSTOM_METRIC_ICON_PATH}${'line.png'}`
 }
 
 export const HEADING_TITLE = {
