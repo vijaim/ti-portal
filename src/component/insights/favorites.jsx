@@ -47,6 +47,8 @@ const Favorites = (props) => {
   let [chartType, setChartType] = useState('Bar')
   let [dateRangePeriod, setDateRangePeriod] = useState('')
   const [chartPageNo, setChartPageNo] = useState(1)
+  let [periodRange, setPeriodRange] = useState(PeriodRange)
+  let [ShowChartId, setShowChartId] = useState(0)
   const outputKey = ['count', 'duration', 'past_count', 'current_count', 'percentage', 'bounce_rate', 'bounces', 'clicks', 'average_session_length', 'avg_time']
   // const [isExpandOpen, setIsExpandOpen] = useState(false)
   useEffect(() => {
@@ -250,8 +252,11 @@ const Favorites = (props) => {
       dateRange: narrativeInfo.date_range || 'week'
     }
     localStorage.setItem('businessMetricInfo', JSON.stringify(businessMetricInfo))
-    setIsGraphData(true)
-    getMetricsList(0, businessMetricInfo.dateRange)
+    setShowChartId(narrativeInfo.narrative_id)
+    if (ShowChartId !== narrativeInfo.narrative_id) {
+      setIsGraphData(true)
+      getMetricsList(0, businessMetricInfo.dateRange)
+    }
   }
 
   const getMetricsList = (page, period) => {
@@ -270,6 +275,7 @@ const Favorites = (props) => {
         let displayData = constructDisplayData(valueKeyCount, chartType, response.data.response_objects)
         setChartType(chartType)
         setAnosGraphList(displayData)
+        setPeriodRange(response.data.response_objects.anos[0].narrative_date_ranges)
         setDateRangePeriod(period)
         setIsGraphData(false)
       } else {
@@ -298,7 +304,7 @@ const Favorites = (props) => {
             graphData.push(['created_at', getResponseOutputKey(data.anos[0].values[0]), { role: 'annotation' }])
           }
         } else if (chartType === 0) {
-          graphData.push(['created_at', Object.keys(data.anos[0].values[0])[0]])
+          graphData.push(['created_at', ...Object.keys(data.anos[0].values[0])])
         }
       }
       data.anos.map((item, index) => {
@@ -318,9 +324,9 @@ const Favorites = (props) => {
           }
         } else if (chartType === 0) {
           // const countIndex = Object.keys(item.values[0]).indexOf(getResponseOutputKey(item.values[0], item.narrative_trend_value))
-          const valueTwo = Object.values(item.values[0])[0]
+          const valueTwo = Object.values(item.values[0])
           const valueOne = item.created_at
-          graphData.push([valueOne, valueTwo])
+          graphData.push([valueOne, ...valueTwo])
         }
         return null
       })
@@ -428,7 +434,7 @@ const Favorites = (props) => {
                                   <div className="w-25 my-3">
                                     <select className="form-select border-primary" aria-label="Default select example" value={dateRangePeriod} onChange={(event) => selectPeriodRange(event)}>
                                       {
-                                        PeriodRange.map(item => {
+                                        periodRange.map(item => {
                                           return <option key={item} value={item}>{item}</option>
                                         })
                                       }
@@ -469,11 +475,11 @@ const Favorites = (props) => {
     } else {
       return <div class="table-responsive" style={{ height: data.length > 10 ? '400px' : 'auto' }}>
         <table class="table table-striped table-hover" >
-          <thead>
+          <thead style={{display: 'flex'}} >
             {/* <th scope="col">#</th> */}
             {
               data[0].map(column => {
-                return <th scope="col">{column}</th>
+                return <th style={{flex: 1}} key={column} scope="col">{column}</th>
               })
             }
           </thead>
@@ -481,13 +487,13 @@ const Favorites = (props) => {
             {
               data.map((row, index) => {
                 if (index !== 0) {
-                  return <tr >
+                  return <tr style={{display: 'flex'}} key={`${index}_row_index`}>
                     {/* <td>{index}</td> */}
                     {
-                      row.map(row => {
-                        return <td>
+                      row.map((row, cIndex) => {
+                        return <td key={`${cIndex}_index`} style={{flex: 1, width: 'auto', wordBreak: 'break-word'}}>
                           {
-                            row
+                            row === null ? '-' : row
                           }
                         </td>
                       })
