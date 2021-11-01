@@ -27,14 +27,14 @@
     border-left: 3px solid #D9E1EC;
     height: auto;
     margin-right: 4%;
-    margin-bottom: -52%;
+    /* margin-bottom: -38%; */
   }
   
   .vertical-lines {
     border-left: 3px solid #D9E1EC;
     height: auto;
     margin-right: 4%;
-    margin-bottom: -125%;
+    margin-bottom: -105%;
   }
   
   .vertical-bar {
@@ -45,14 +45,16 @@
   }
   
   .input-search {
-    margin-left: 4.8%;
+    /* margin-left: 4.8%; */
     border: none;
-    width: 29%;
+    /* width: 29%; */
+    width: 11vw;
   }
   
   .input-bar {
     margin-top: 0%;
-    margin-left: 23%;
+    /* margin-left: 22%; */
+    margin-left: 12.5vw;
   }
   
   input:focus {
@@ -68,4 +70,45 @@
     border: none;
     width: 22%;
   }
+
+  .col-pad-left {
+    padding-left: 150.5%;
+  }
+
+  .col-padd-left {
+    padding-left: 70%;
+  }
+
+  .cols-pad-left {
+    padding-left: 116%;
+  }
   
+  @media (max-width: 1400px) {
+    .col-padd-left {
+      padding-left: 20%;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .col-padd-left {
+      padding-left: 20%;
+    }
+  }
+
+  @media (max-width: 1400px) {
+    .col-pad-left {
+      padding-left: 45%;
+    }
+  }  
+
+  @media (max-width: 992px) {
+    .col-pad-left {
+      padding-left: 20%;
+    }
+  }
+
+  @media (max-width: 1400px) {
+    .cols-pad-left {
+      padding-left: 32%;
+    }
+  }
