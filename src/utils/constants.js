@@ -21,6 +21,7 @@ export const NAVIGATION_TABS = [
   { id: 'all', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'All', type: 'home', isNavigation: true },
   { id: 'favorites', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Favorites', type: 'home', isNavigation: true },
   { id: 'hiddens', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Hidden', type: 'home', isNavigation: true },
+  { id: 'customNarratives', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Custom Narratives', type: 'home', isNavigation: true },
   { id: 'businesses', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Businesses', type: 'settings', isNavigation: true },
   { id: 'profile', routePath: ROUTES_PATH_NAME.SETTINGS_PROFILE, name: 'Profile', type: 'settings', isNavigation: true }
 ]
@@ -135,3 +136,15 @@ export const MERIDIAN_DEFAULT_VALUE = 'AM'
 export const MERIDIAN_PM_VALUE = 'PM'
 
 export const TRUEINSIGHTS_HELP_URL = 'https://www.trueinsights.in/help'
+
+export const CONDITION_DROP = ['AND', 'OR']
+
+export const ERROR_MESSAGE_NETWORK = 'Network Error'
+export const BUTTON_NAME_OK = 'Ok'
+export const BUTTON_NAME_CANCEL = 'Cancel'
+export const BUTTON_NAME_YES = 'Yes'
+export const BUTTON_NAME_NO = 'NO'
+export const MODAL_TITLE_CUSTOM_NARRATIVE_DELETE = 'Delete Custom Narrative'
+export const MODAL_BUSINESS_TITLE = 'Business'
+export const DELETE_MODAL_CONFIRM = 'Are you sure want to delete the item?'
+export const DELETE_MODAL_SUCCESS = 'Delete Successfully.'

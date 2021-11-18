@@ -29,16 +29,21 @@ const InsightsHeader = (props) => {
           </Link>
           )
         : ''}
-        {routePath.includes(FAVORITES)
+        {routePath.includes(FAVORITES) && props.currentTab !== 'customNarratives'
           ? <h1 className="fw-bold h4 mb-0 text-dark">{ `${props.businessName}'s ${props.headingTitle}`}</h1>
-          : <h1 className="fw-bold h4 mb-0 text-dark">{ `${props.headingTitle}`}</h1>}
-     { routePath.includes(FAVORITES)
+          : props.currentTab !== 'customNarratives' ? <h1 className="fw-bold h4 mb-0 text-dark">{ `${props.headingTitle}`}</h1> : ''}
+     { routePath.includes(FAVORITES) && props.currentTab !== 'customNarratives'
        ? <div className="container mt-3">
         <form >
           <SearchBar searchValue = {searchValue} onSearchValueChange = {(e) => onSearchValueChange(e)}/>
         </form>
       </div>
        : ''}
+       {props.currentTab === 'customNarratives' && <div className="d-flex justify-content-between">
+          <h1 className="fw-bold h4 mb-0 text-dark">{ `${props.businessName}'s ${props.headingTitle}`}</h1>
+          <Link to={'/createCustomMetric'} className="btn btn-primary disabled-link">Add Custom Narratives</Link>
+        </div>
+        }
     </>
   )
 }

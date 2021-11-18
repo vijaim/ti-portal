@@ -83,6 +83,18 @@
     padding-left: 116%;
   }
   
+  .customTextField{
+    width: inherit;
+    height: 5vw;
+    word-wrap: break-word; 
+    border: none;
+    outline: none;
+    resize: none;
+  }
+  .customTextField:focus{
+    outline: none;
+    resize: none;
+  }
   @media (max-width: 1400px) {
     .col-padd-left {
       padding-left: 20%;
