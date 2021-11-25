@@ -52,7 +52,8 @@ const Favorites = (props) => {
   let [periodRange, setPeriodRange] = useState(PeriodRange)
   let [ShowChartId, setShowChartId] = useState(0)
   let [customOffset, setCustomOffset] = useState(0)
-  let [customLimit, setCustomLimit] = useState(5)
+  let [customLimit, setCustomLimit] = useState(10)
+  let [isCustomLoadMore, setIsCustomLoadMore] = useState(false)
   let [modalDetail, setModalDetail] = useState(null)
   const [showModal, setShowModal] = useState(false)
   let [selectedCustomNarrative, setSelectedCustomNarrative] = useState('')
@@ -65,7 +66,7 @@ const Favorites = (props) => {
     if (tabName !== 'customNarratives') {
       inSightsList(tabName, 0)
     } else if (tabName === 'customNarratives') {
-      getAllCustomNarratives()
+      getAllCustomNarratives(0)
     }
     return () => {
       // componentWillUnmount events
@@ -81,7 +82,7 @@ const Favorites = (props) => {
       userId: userId || user_Id,
       type: path === 'all' ? '' : `/${path}`,
       offSet: offSet * limit,
-      limit: (limit)
+      limit: limit
     }
     setIsLoadMore(false)
     setPageNo(offSet)
@@ -166,8 +167,9 @@ const Favorites = (props) => {
     setTabName(tab.id)
     if (tab.id === 'customNarratives') {
       setIsLoadMore(false)
+      setIsCustomLoadMore(false)
       setIsLoading(false)
-      getAllCustomNarratives()
+      getAllCustomNarratives(0)
     } else {
       setEmptyList(tab.id, tab.id !== 'customNarratives')
     }
@@ -528,18 +530,26 @@ const Favorites = (props) => {
     }
   }
 
-  const getAllCustomNarratives = () => {
+  const getAllCustomNarratives = (offSet) => {
     let apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
     const params = {
       cookie: cookie || loginCookie,
       appId: apps.id,
-      offSet: customOffset * customLimit,
-      limit: (customLimit)
+      offSet: offSet * customLimit,
+      limit: customLimit
     }
+    setIsCustomLoadMore(false)
     NetworkManager.getAllCustomNarratives(params).then(response => {
       setIsLoading(false)
       if (response.status === 200 && response.data.response_objects.custom_narratives) {
-        setCustomNarrativeList(response.data.response_objects.custom_narratives)
+        if (response.data.response_objects.custom_narratives.length >= customLimit) {
+          setIsCustomLoadMore(true)
+        } else {
+          setIsCustomLoadMore(false)
+        }
+        customNarrativeList = [...customNarrativeList, ...response.data.response_objects.custom_narratives]
+        setCustomNarrativeList(customNarrativeList)
+        setCustomOffset(offSet)
       }
     })
       .catch(error => {
@@ -547,6 +557,12 @@ const Favorites = (props) => {
         console.log('error', error)
         errorModal(error)
       })
+  }
+
+  const loadMoreCustomData = (pageNo) => {
+    setIsLoading(true)
+    getAllCustomNarratives(pageNo + 1)
+    scrollToRef(anosListContainerRef)
   }
 
   const errorModal = (error) => {
@@ -628,13 +644,13 @@ const Favorites = (props) => {
       })
   }
   const renderCustomNarratives = () => {
-    return <div className="d-flex flex-column justify-content-end">{customNarrativeList.map((customNarrativeItem, index) => {
+    return <div ref={anosListContainerRef} className="d-flex flex-column justify-content-end">{customNarrativeList.map((customNarrativeItem, index) => {
       return <div className="d-flex" key={`index_${index}`} >
         {/* <div className="align-items-center justify-content-between gy-2 row accordion-header mx-1 my-2"> */}
           {/* <div className="col-2 d-flex"></div> */}
           <div className="col-12 business-listing-item p-3 d-flex justify-content-between align-items-center">
             <div className="insightStatus-content col-10">
-              <span className="px-1" > {Object.keys(customNarrativeItem.narrative).length > 0 ? customNarrativeItem?.narrative : customNarrativeItem.id } </span>
+              <span className="px-1" > {(customNarrativeItem.narrative && Object.keys(customNarrativeItem.narrative).length > 0) ? JSON.stringify(customNarrativeItem?.narrative) : customNarrativeItem.id } </span>
             </div>
             <div className="insightAction d-flex ">
               <Link to={'/createCustomMetric'} onClick={() => goToCreateCustomNarrative(customNarrativeItem)}>
@@ -694,6 +710,9 @@ const Favorites = (props) => {
               </div>
             </div>}
             {isLoadMore && <div className="text-center pt-20 pb-20" onClick={() => loadMoreData(pageNo, limit)}>
+              <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
+            </div>}
+            {isCustomLoadMore && <div className="text-center pt-20 pb-20" onClick={() => loadMoreCustomData(customOffset)}>
               <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
             </div>}
           </div>

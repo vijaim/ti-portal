@@ -93,7 +93,7 @@ const NetworkManager = {
 
   // get Filter
   getAllCustomNarratives: (params) => {
-    return axios.get(`${GET_BUSINESS}/${params.appId}/custom_narratives?offset=${0}&limit=${5}`, config(params.cookie))
+    return axios.get(`${GET_BUSINESS}/${params.appId}/custom_narratives?offset=${params.offSet}&limit=${params.limit}`, config(params.cookie))
   },
   getCustomNarrativesById: (params) => {
     return axios.get(`${GET_BUSINESS}/${11}/custom_narratives/${params.narrativeId}`, config(params.cookie))
@@ -104,8 +104,11 @@ const NetworkManager = {
   getFilterMetrics: (appId, cookie) => {
     return axios.get(`${GET_BUSINESS}/${appId}/custom_narratives/metrics`, config(cookie))
   },
+  getCustomNarrativeLookup: (appId, cookie) => {
+    return axios.get(`${GET_BUSINESS}/${appId}/custom_narratives/lookups`, config(cookie))
+  },
   getAutoCompleteLookup: (appId, cookie, filterId) => {
-    return axios.get(`${GET_BUSINESS}/${appId}/custom_narratives/filters/${filterId}/lookups`, config(cookie))
+    return axios.get(`${GET_BUSINESS}/${appId}/custom_narratives/filters/${filterId}/values`, config(cookie))
   },
   postCustomNarrative: (params, cookie) => {
     return axios.post(`${GET_BUSINESS}/${params.app_id}/custom_narratives`, params, config(cookie))
