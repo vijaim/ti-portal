@@ -340,7 +340,7 @@ const AddCustomMetric = (props) => {
       <section className="bg-section section-padding">
         <div className="container pb-40 pt-40">
           <div className="business-item position-relative">
-            <div className="listing-item d-flex flex-column justify-content-between mb-5" style={{ display: 'flex', paddingTop: '20px' }}>
+            <div className="customListcontainerItem d-flex flex-column justify-content-between mb-5" style={{ display: 'flex', paddingTop: '20px' }}>
               {/* <p className="d-flex">Example: {textList.length > 0
                 ? <p className="mx-2"> {customNarrativeList.map((custom, index) => {
                   if (!Object.keys(custom).includes('data')) {
