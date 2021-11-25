@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import NetworkManager from '../../network-manager/network-config'
-import { CONDITION_DROP, FIELD_THREE, IMAGE_URL, PeriodRange } from '../../utils/constants'
+import { BOOLEAN_VALUES, CONDITION_DROP, FIELD_THREE, IMAGE_URL, PeriodRange } from '../../utils/constants'
 import './insights.css'
 import Autocomplete from 'react-autocomplete'
 
@@ -111,7 +111,10 @@ const AddCustomMetric = (props) => {
     if (fieldName === 'id') {
       let [filter] = responseFilerValues.filter(item => `${item.id}` === event.target.value)
       let lookupList = autoCompleteLookup.filter(item => item.id === filter.id)
-      if (lookupList.length === 0) {
+      if (filter.data_type === 'boolean') {
+        customNarrativeList[addFieldIndex]['data'].filters[index].value = 'true'
+      }
+      if (lookupList.length === 0 && filter.data_type === 'string') {
         getAutoCompleteLookup(filter.id)
       }
     }
@@ -321,7 +324,7 @@ const AddCustomMetric = (props) => {
       <span className="form-check-label" >
         <img src={ADD} style={iconStyle} onClick = {() => displayText(index)}></img>
       </span >
-      {showTextIndex === index && <div className={ `${(showTextIndex === index && showAddText) ? 'visible' : 'invisible'} listing-item import-items-tooltiptext shadow` }style={marginLeft}>
+      {showTextIndex === index && <div className={ `${(showTextIndex === index && showAddText) ? 'visible' : 'invisible'} customListcontainerItem import-items-tooltiptext shadow` }style={marginLeft}>
         <div className="align-items-center gy-3">
           <div className="col-lg-3 col-sm-6 col-1">
             <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Data field</span></div>
@@ -372,7 +375,7 @@ const AddCustomMetric = (props) => {
                         }
                         return <div key={`customNarrativeList_${addDataItemIndex}`} className={'customListItem d-inline-flex  g-2 position-relative mx-1'}>
                               {/* <AddItemField iconStyle ={{ marginTop: '1.5rem', width: 25, height: 25, marginRight: '1.5rem' }} index={addDataItemIndex} direction={'prev'}/> */}
-                              <div className={`listing-item col-11 border border-2 rounded-3 p-1${addDataItemIndex === 0 ? 'mt-3' : 'mt-2'}`} >
+                              <div className={`customListcontainerItem col-11 border border-2 rounded-3 p-1${addDataItemIndex === 0 ? 'mt-3' : 'mt-2'}`} >
                               <div className="row g-2 position-relative ">
                                 {metric && <div className="d-flex" >
                                   <select className="form-select dropdownWidth" aria-label="Business category dataField1" id="id" style={{ marginRight: '10px', width: '10vw' }}
@@ -405,6 +408,7 @@ const AddCustomMetric = (props) => {
                                 { isHaveCustomNarrative && customNarrative.map((customFilterItem, customItemIndex) => {
                                   let opList = responseFilerValues.filter(item => `${item.id}` === `${customFilterItem.id}`)
                                   let { id, operators } = opList.length > 0 ? opList[0] : []
+                                  let dataType = opList.length > 0 ? opList[0].data_type : []
                                   return <div key={`customFilterItem_${addDataItemIndex}_${customItemIndex}`} className="d-flex g-2 mt-3"
                                     style={{ marginTop: '1%', display: 'flex', paddingRight: 0 }}>
                                       <img src={FILTER} className="filterIcon" style={{ width: '3%', height: '2%', marginTop: '1%', marginRight: '2%' }}></img>
@@ -432,19 +436,30 @@ const AddCustomMetric = (props) => {
                                           <option key={item} value={item} label={item}></option>
                                         ))}
                                       </select>
-                                      <Autocomplete
-                                        shouldItemRender={(item, value) => item.toLowerCase().indexOf(value.toLowerCase()) > -1}
-                                        getItemValue={item => item}
-                                        items={ getLookupValue(id) }
-                                        renderInput= {(props) => <input {...props} className="form-control" onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}/>}
-                                        renderItem={(item, isHighlighted) =>
-                                          <p style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: 'pointer', wordBreak: 'break-word', width: 150 }}>
-                                          {item}
-                                          </p>
-                                        }
-                                        value={customFilterItem.value}
-                                        onSelect={(val) => onChangeFilterValues(val, customItemIndex, true, 'value', addDataItemIndex)}
-                                      />
+                                      {
+                                        dataType === 'boolean'
+                                          ? <select className="form-select filterDropDownWidth" aria-label="Is equal to" id="inputPlatform" style={{ marginRight: '2%', width: '8vw' }}
+                                          value={customFilterItem.value}
+                                          onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}
+                                        >
+                                          {BOOLEAN_VALUES.map((item, index) => (
+                                            <option key={item.id} value={item.value} label={item.id}></option>
+                                          ))}
+                                        </select>
+                                          : <Autocomplete
+                                          shouldItemRender={(item, value) => item.toLowerCase().indexOf(value.toLowerCase()) > -1}
+                                          getItemValue={item => item}
+                                          items={ getLookupValue(id) }
+                                          renderInput= {(props) => <input {...props} className="form-control" onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}/>}
+                                          renderItem={(item, isHighlighted) =>
+                                            <p style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: 'pointer', wordBreak: 'break-word', width: 150 }}>
+                                            {item}
+                                            </p>
+                                          }
+                                          value={customFilterItem.value}
+                                          onSelect={(val) => onChangeFilterValues(val, customItemIndex, true, 'value', addDataItemIndex)}
+                                        />
+                                      }
                                       <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'customFilterList', customItemIndex)} width={customItemIndex === 0 ? 20 : 30} height={20} styles={{ marginLeft: customItemIndex === 0 ? '3%' : '1%' }}/>
                                     </div>
                                 })}

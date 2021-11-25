@@ -148,3 +148,5 @@ export const MODAL_TITLE_CUSTOM_NARRATIVE_DELETE = 'Delete Custom Narrative'
 export const MODAL_BUSINESS_TITLE = 'Business'
 export const DELETE_MODAL_CONFIRM = 'Are you sure want to delete the item?'
 export const DELETE_MODAL_SUCCESS = 'Delete Successfully.'
+
+export const BOOLEAN_VALUES = [{ id: 'Yes', value: 'true' }, { id: 'No', value: 'false' }]
