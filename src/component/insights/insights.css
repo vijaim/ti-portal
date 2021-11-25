@@ -102,7 +102,7 @@
 
   .import-items-tooltiptext {
     visibility: hidden;
-    width: 110px;
+    width: 130px;
     background-color: #fff;
     color: #000;
     text-align: center;
@@ -127,7 +127,7 @@
   }
 
   .customListItem{
-    flex-basis: 48%; 
+    flex-basis: 45%; 
     margin-bottom: 10px;
   }
   .addItemWidth{
@@ -171,5 +171,21 @@
   @media (max-width: 1400px) {
     .cols-pad-left {
       padding-left: 32%;
+    }
+  }
+  .filterIcon{
+    width: 4% !important;
+    height: 45% !important;
+  }
+  
+  .showAdd_text:hover{
+    color: #3557cc!important;
+    font-weight: bold;
+  }
+ /* this will target only Mac Safari and Chrome browsers */
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+    .deleteIconSize{
+      width: 25px;
+      height: 25px;
     }
   }

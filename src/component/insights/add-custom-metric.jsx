@@ -15,7 +15,7 @@ import './insights.css'
 import Autocomplete from 'react-autocomplete'
 
 const ThrashIcon = ({ width, height, styles, onPressRemove }) => (
-  <svg onClick={onPressRemove} style={styles} xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill="currentColor" className="bi bi-trash icon-color ml-1 form-check-label" viewBox="0 0 16 16">
+  <svg onClick={onPressRemove} style={styles} xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill="currentColor" className="bi bi-trash icon-color ml-1 form-check-label deleteIconSize" viewBox="0 0 16 16">
     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
     <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
   </svg>
@@ -312,7 +312,7 @@ const AddCustomMetric = (props) => {
 
   const displayText = (index) => {
     setShowTextIndex(index)
-    setShowText(true)
+    setShowText(!showText)
     setState(() => ({ loader: !loader }))
   }
   const AddItemField = ({ iconStyle, container, index, direction, showAddText }) => {
@@ -324,8 +324,8 @@ const AddCustomMetric = (props) => {
       {showTextIndex === index && <div className={ `${(showTextIndex === index && showAddText) ? 'visible' : 'invisible'} listing-item import-items-tooltiptext shadow` }style={marginLeft}>
         <div className="align-items-center gy-3">
           <div className="col-lg-3 col-sm-6 col-1">
-            <div><span className="form-check-label" onClick= {() => handleShowDataField()} style={{ fontWeight: 'bold', color: 'black', whiteSpace: 'nowrap' }}>Data field</span></div>
-            <div><span className="form-check-label" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>
+            <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Data field</span></div>
+            <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>
           </div>
         </div>
       </div>}
@@ -405,9 +405,9 @@ const AddCustomMetric = (props) => {
                                 { isHaveCustomNarrative && customNarrative.map((customFilterItem, customItemIndex) => {
                                   let opList = responseFilerValues.filter(item => `${item.id}` === `${customFilterItem.id}`)
                                   let { id, operators } = opList.length > 0 ? opList[0] : []
-                                  return <div key={`customFilterItem_${addDataItemIndex}_${customItemIndex}`} className="d-flex g-2 my-3"
+                                  return <div key={`customFilterItem_${addDataItemIndex}_${customItemIndex}`} className="d-flex g-2 mt-3"
                                     style={{ marginTop: '1%', display: 'flex', paddingRight: 0 }}>
-                                      <img src={FILTER} style={{ width: '3%', height: '2%', marginTop: '1%', marginRight: '2%' }}></img>
+                                      <img src={FILTER} className="filterIcon" style={{ width: '3%', height: '2%', marginTop: '1%', marginRight: '2%' }}></img>
                                       {customItemIndex !== 0 && <select className="form-select" aria-label="And" id="inputPlatform" style={{ marginRight: '2%', width: '6vw' }}
                                       value={customFilterItem.condition}
                                       onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'condition', addDataItemIndex)}
