@@ -83,6 +83,75 @@
     padding-left: 116%;
   }
   
+  .customTextField{
+    width: inherit;
+    height: 5vw;
+    word-wrap: break-word; 
+    border: none;
+    outline: none;
+    resize: none;
+  }
+  .customTextField:focus{
+    outline: none;
+    resize: none;
+  }
+
+  .import-items-tooltip {
+    display: inline-flex;
+  }
+
+  .import-items-tooltiptext {
+    visibility: hidden;
+    width: 130px;
+    background-color: #fff;
+    color: #000;
+    text-align: center;
+    border-radius: 6px;
+    padding: 1rem;
+    position: absolute;
+    z-index: 1;
+    top: 3%;
+    left: 8%;
+    margin-left: 1.6rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    box-shadow: inset 5em 1em #000;
+
+  }
+  .import-items-tooltiptext {
+    opacity: 1;
+  }
+  .customListcontainer{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .customListcontainerItem {
+    background-color: white;
+    padding: 0.75rem 0.5rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
+    height: fit-content;
+    box-shadow: 0px 2px 4px rgba(15, 42, 66, 0.1);
+}
+
+  .customListItem{
+    flex-basis: 45%; 
+    margin-bottom: 10px;
+  }
+  .addItemWidth{
+    width: 45%;
+  }
+  .textAreaWidth{
+    width: 45%;
+  }
+  .dropdownWidth{
+    width: 10vw;
+  }
+
+  .filterDropDownWidth{
+    max-width: 120px;
+  }
+
   @media (max-width: 1400px) {
     .col-padd-left {
       padding-left: 20%;
@@ -110,5 +179,21 @@
   @media (max-width: 1400px) {
     .cols-pad-left {
       padding-left: 32%;
+    }
+  }
+  .filterIcon{
+    width: 4% !important;
+    height: 45% !important;
+  }
+  
+  .showAdd_text:hover{
+    color: #3557cc!important;
+    font-weight: bold;
+  }
+ /* this will target only Mac Safari and Chrome browsers */
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+    .deleteIconSize{
+      width: 25px;
+      height: 25px;
     }
   }
