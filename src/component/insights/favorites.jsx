@@ -168,7 +168,7 @@ const Favorites = (props) => {
     if (tab.id === 'customNarratives') {
       setIsLoadMore(false)
       setIsCustomLoadMore(false)
-      setIsLoading(false)
+      setIsLoading(true)
       getAllCustomNarratives(0)
     } else {
       setEmptyList(tab.id, tab.id !== 'customNarratives')
@@ -712,7 +712,7 @@ const Favorites = (props) => {
             {isLoadMore && <div className="text-center pt-20 pb-20" onClick={() => loadMoreData(pageNo, limit)}>
               <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
             </div>}
-            {isCustomLoadMore && <div className="text-center pt-20 pb-20" onClick={() => loadMoreCustomData(customOffset)}>
+            {isCustomLoadMore && customNarrativeList.length > 0 && <div className="text-center pt-20 pb-20" onClick={() => loadMoreCustomData(customOffset)}>
               <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
             </div>}
           </div>
