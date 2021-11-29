@@ -146,12 +146,19 @@
   }
   .dropdownWidth{
     width: 10vw;
+    max-width: 150px;
+    font-size: 13px;
   }
 
   .filterDropDownWidth{
-    max-width: 120px;
+    max-width: 100px;
+    font-size: 13px;
   }
 
+  .filterDropDownWidth_ZeroIndex{
+    max-width: 120px;
+    font-size: 13px;
+  }
   @media (max-width: 1400px) {
     .col-padd-left {
       padding-left: 20%;
@@ -181,6 +188,36 @@
       padding-left: 32%;
     }
   }
+  @media (max-width: 1024px) {
+    .customListcontainer{
+      justify-content: space-around;
+    }
+    .customListItem{
+      flex-basis: 98%; 
+    }
+    .dropdownWidth{
+      max-width: none;
+      flex: 0.8;
+      margin-right: 2%;
+    }
+  
+    .filterDropDownWidth{
+      max-width: none;
+      flex: 0.8;
+      margin-right: 2% !important;
+    }
+  
+    .filterDropDownWidth_ZeroIndex{
+      max-width: none;
+      flex: 0.8;
+      margin-right: 2%;
+    }
+    
+    .import-items-tooltiptext {
+      opacity: 1;
+      left: -9rem !important;
+    }
+  }
   .filterIcon{
     width: 4% !important;
     height: 45% !important;
@@ -190,10 +227,14 @@
     color: #3557cc!important;
     font-weight: bold;
   }
+  .btn-disabled{
+    background-color: #D9E1EC;
+    cursor: auto !important;
+  }
  /* this will target only Mac Safari and Chrome browsers */
   @media screen and (-webkit-min-device-pixel-ratio:0) {
     .deleteIconSize{
-      width: 25px;
-      height: 25px;
+      width: 20px;
+      height: 20px;
     }
   }

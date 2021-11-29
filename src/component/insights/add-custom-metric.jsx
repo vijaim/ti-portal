@@ -6,7 +6,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-tabs */
 /* eslint-disable no-mixed-spaces-and-tabs */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import NetworkManager from '../../network-manager/network-config'
@@ -30,6 +30,7 @@ const AddCustomMetric = (props) => {
     showAddFilter: false,
     loader: false
   })
+  let ref = useRef(null)
   let apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
   const loginCookie = localStorage.getItem('localLoginCookie')
   let [responseFilerValues, setFilterValues] = useState([])
@@ -103,10 +104,25 @@ const AddCustomMetric = (props) => {
     if (localStorage.getItem('selectedNarrativeId') !== 'undefined') {
       getCustomNarrativesById()
     }
+    document.addEventListener('click', handleClickOutside, true)
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true)
+    }
   }, [])
+
+  const handleClickOutside = (event) => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      setShowTextIndex('')
+      setShowText(!showText)
+      setState(() => ({ loader: !loader }))
+    }
+  }
 
   const onChangeFilterValues = (event, index, pickValue, fieldName, addFieldIndex) => {
     customNarrativeList[addFieldIndex]['data'].filters[index][fieldName] = pickValue ? event : event.target.value
+    if (fieldName === 'value' && !pickValue) {
+      customNarrativeList[addFieldIndex]['data'].filters[index][fieldName] = event.target.value.trim().length === 0 ? event.target.value.trim() : event.target.value
+    }
     setCustomNarrativeList(customNarrativeList)
     if (fieldName === 'id') {
       let [filter] = responseFilerValues.filter(item => `${item.id}` === event.target.value)
@@ -127,7 +143,7 @@ const AddCustomMetric = (props) => {
     setState(() => ({ loader: !loader }))
   }
   const onTextChange = (event, index, fieldName) => {
-    customNarrativeList[index][fieldName] = event.target.value
+    customNarrativeList[index][fieldName] = event.target.value.trim().length === 0 ? event.target.value.trim() : event.target.value
     setCustomNarrativeList(customNarrativeList)
     setState(() => ({ loader: !loader }))
   }
@@ -324,7 +340,7 @@ const AddCustomMetric = (props) => {
       <span className="form-check-label" >
         <img src={ADD} style={iconStyle} onClick = {() => displayText(index)}></img>
       </span >
-      {showTextIndex === index && <div className={ `${(showTextIndex === index && showAddText) ? 'visible' : 'invisible'} customListcontainerItem import-items-tooltiptext shadow` }style={marginLeft}>
+      {showTextIndex === index && <div ref={ref} className={ `${(showTextIndex === index && showAddText) ? 'visible' : 'invisible'} customListcontainerItem import-items-tooltiptext shadow` }style={marginLeft}>
         <div className="align-items-center gy-3">
           <div className="col-lg-3 col-sm-6 col-1">
             <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Data field</span></div>
@@ -352,11 +368,11 @@ const AddCustomMetric = (props) => {
                 <div className="mx-2">
                     <img src={ADD}></img>
                 </div>
-                <div className="listing-item" style={{ width: 120 }}>
+                <div className="listing-item" style={{ width: 130 }}>
                   <div className="align-items-center gy-3 row">
                     <div className="col-lg-3 col-sm-6 col-1">
-                      <div><span className="form-check-label" onClick= {() => handleShowDataField()} style={{ fontWeight: 'bold', color: 'black', whiteSpace: 'nowrap' }}>Data field</span></div>
-                      <div><span className="form-check-label" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>
+                      <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Data field</span></div>
+                      <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>
                     </div>
                   </div>
                 </div>
@@ -377,8 +393,8 @@ const AddCustomMetric = (props) => {
                               {/* <AddItemField iconStyle ={{ marginTop: '1.5rem', width: 25, height: 25, marginRight: '1.5rem' }} index={addDataItemIndex} direction={'prev'}/> */}
                               <div className={`customListcontainerItem col-11 border border-2 rounded-3 p-1${addDataItemIndex === 0 ? 'mt-3' : 'mt-2'}`} >
                               <div className="row g-2 position-relative ">
-                                {metric && <div className="d-flex" >
-                                  <select className="form-select dropdownWidth" aria-label="Business category dataField1" id="id" style={{ marginRight: '10px', width: '10vw' }}
+                                {metric && <div className="d-flex justify-content-between " >
+                                  <select className="form-select dropdownWidth" aria-label="Business category dataField1" id="id" style={{ marginRight: '10px', width: '11vw' }}
                                     value={metric.id}
                                     onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'id', 'metric')}
                                   >
@@ -386,7 +402,7 @@ const AddCustomMetric = (props) => {
                                       <option key={item.name} value={item.id} label={item.name} />
                                     ))}
                                   </select>
-                                  <select className="form-select dropdownWidth" aria-label="Business category dataField2" id="aggregator" style={{ marginRight: '10px', width: '10vw' }}
+                                  <select className="form-select dropdownWidth" aria-label="Business category dataField2" id="aggregator" style={{ marginRight: '10px', width: '8vw' }}
                                     value={metric.aggregator}
                                     onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'aggregator', 'metric')}
                                   >
@@ -394,7 +410,7 @@ const AddCustomMetric = (props) => {
                                       <option key={item} value={item} label={item} />
                                     ))}
                                   </select>
-                                  <select className="form-select dropdownWidth" aria-label="Business category dataField3" id="time_period" style={{ marginRight: '10px', width: '10vw' }}
+                                  <select className="form-select dropdownWidth" aria-label="Business category dataField3" id="time_period" style={{ marginRight: '10px', width: '9vw' }}
                                     value={metric.time_period}
                                     onChange={(e) => handleFieldValueChange(e, addDataItemIndex, 'time_period', 'metric')}
                                   >
@@ -409,10 +425,11 @@ const AddCustomMetric = (props) => {
                                   let opList = responseFilerValues.filter(item => `${item.id}` === `${customFilterItem.id}`)
                                   let { id, operators } = opList.length > 0 ? opList[0] : []
                                   let dataType = opList.length > 0 ? opList[0].data_type : []
-                                  return <div key={`customFilterItem_${addDataItemIndex}_${customItemIndex}`} className="d-flex g-2 mt-3"
-                                    style={{ marginTop: '1%', display: 'flex', paddingRight: 0 }}>
-                                      <img src={FILTER} className="filterIcon" style={{ width: '3%', height: '2%', marginTop: '1%', marginRight: '2%' }}></img>
-                                      {customItemIndex !== 0 && <select className="form-select" aria-label="And" id="inputPlatform" style={{ marginRight: '2%', width: '6vw' }}
+                                  let dropdownWidth = customItemIndex === 0 ? 'filterDropDownWidth_ZeroIndex' : 'filterDropDownWidth'
+                                  return <div key={`customFilterItem_${addDataItemIndex}_${customItemIndex}`} className="d-flex justify-content-between g-2 mt-3"
+                                    style={{ marginTop: '1%', paddingRight: 0 }}>
+                                      <img src={FILTER} className="filterIcon" style={{ width: '3%', height: '2%', marginTop: '1%' }}></img>
+                                      {customItemIndex !== 0 && <select className={`form-select ${dropdownWidth}`} aria-label="And" id="inputPlatform" style={{ maxWidth: 75, fontSize: 12 }}
                                       value={customFilterItem.condition}
                                       onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'condition', addDataItemIndex)}
                                       >
@@ -420,7 +437,7 @@ const AddCustomMetric = (props) => {
                                           <option key={item} value={item} label={item} />
                                         ))}
                                       </select>}
-                                      <select className="form-select filterDropDownWidth" aria-label="Referer" id="inputPlatform" style={{ marginRight: '2%', width: '8vw' }}
+                                      <select className={`form-select ${dropdownWidth}`} aria-label="Referer" id="inputPlatform"
                                         value={customFilterItem.id}
                                         onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'id', addDataItemIndex)}
                                       >
@@ -428,7 +445,7 @@ const AddCustomMetric = (props) => {
                                           <option key={item.name} value={item.id} label={item.name}></option>
                                         ))}
                                       </select>
-                                      <select className="form-select filterDropDownWidth" aria-label="Is equal to" id="inputPlatform" style={{ marginRight: '2%', width: '8vw' }}
+                                      <select className={`form-select ${dropdownWidth}`} aria-label="Is equal to" id="inputPlatform"
                                         value={customFilterItem.operator}
                                         onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'operator', addDataItemIndex)}
                                       >
@@ -438,7 +455,7 @@ const AddCustomMetric = (props) => {
                                       </select>
                                       {
                                         dataType === 'boolean'
-                                          ? <select className="form-select filterDropDownWidth" aria-label="Is equal to" id="inputPlatform" style={{ marginRight: '2%', width: '8vw' }}
+                                          ? <select className={`form-select ${dropdownWidth}`} aria-label="Is equal to" id="inputPlatform" style={{ marginRight: '2%', width: '8vw' }}
                                           value={customFilterItem.value}
                                           onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}
                                         >
@@ -450,7 +467,7 @@ const AddCustomMetric = (props) => {
                                           shouldItemRender={(item, value) => item.toLowerCase().indexOf(value.toLowerCase()) > -1}
                                           getItemValue={item => item}
                                           items={ getLookupValue(id) }
-                                          renderInput= {(props) => <input {...props} className="form-control" onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}/>}
+                                          renderInput= {(props) => <input {...props} className={`form-control ${dropdownWidth}`} onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}/>}
                                           renderItem={(item, isHighlighted) =>
                                             <p style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: 'pointer', wordBreak: 'break-word', width: 150 }}>
                                             {item}
@@ -460,7 +477,7 @@ const AddCustomMetric = (props) => {
                                           onSelect={(val) => onChangeFilterValues(val, customItemIndex, true, 'value', addDataItemIndex)}
                                         />
                                       }
-                                      <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'customFilterList', customItemIndex)} width={customItemIndex === 0 ? 20 : 30} height={20} styles={{ marginLeft: customItemIndex === 0 ? '3%' : '1%' }}/>
+                                      <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'customFilterList', customItemIndex)} width={customItemIndex === 0 ? 20 : 10} height={20} />
                                     </div>
                                 })}
                                 <span><span className="form-check-label text-primary" onClick= {() => handleShowAddFilter(addDataItemIndex)}>Add filter</span></span>
@@ -489,7 +506,7 @@ const AddCustomMetric = (props) => {
               <div className={'col-md-auto col-sm-auto text-xl-center d-flex justify-content-end mt-3'} style={{ marginTop: '-4%', marginBottom: '20px' }}>
                 {/* <button className="btns mt-20" style={{ color: '#EE5D2C', marginRight: '10px' }}>Delete</button> */}
                 <Link to={`businesses/${apps.id}/customNarratives`} className="btns mt-20" style={{ color: '#3557cc', marginRight: '20px' }}>Cancel</Link>
-                <button className="btn btn-primary d-block mt-20" style={{ marginRight: '10px' }} onClick={() => AddMetric()}>Save</button>
+                <button disabled={customNarrativeList.length === 0} className={`btn ${customNarrativeList.length >= 1 ? 'btn-primary' : 'btn-disabled'} d-block mt-20`} style={{ marginRight: '10px' }} onClick={() => AddMetric()}>Save</button>
               </div>
             </div>
           </div>
