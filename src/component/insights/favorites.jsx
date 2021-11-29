@@ -166,9 +166,9 @@ const Favorites = (props) => {
     setIsLoading(true)
     setTabName(tab.id)
     if (tab.id === 'customNarratives') {
-      setIsLoadMore(true)
+      setIsLoadMore(false)
       setIsCustomLoadMore(false)
-      setIsLoading(false)
+      setIsLoading(true)
       getAllCustomNarratives(0)
     } else {
       setEmptyList(tab.id, tab.id !== 'customNarratives')
