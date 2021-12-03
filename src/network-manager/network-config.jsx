@@ -96,7 +96,7 @@ const NetworkManager = {
     return axios.get(`${GET_BUSINESS}/${params.appId}/custom_narratives?offset=${params.offSet}&limit=${params.limit}`, config(params.cookie))
   },
   getCustomNarrativesById: (params) => {
-    return axios.get(`${GET_BUSINESS}/${11}/custom_narratives/${params.narrativeId}`, config(params.cookie))
+    return axios.get(`${GET_BUSINESS}/${params.appId}/custom_narratives/${params.narrativeId}`, config(params.cookie))
   },
   getFilter: (appId, cookie) => {
     return axios.get(`${GET_BUSINESS}/${appId}/custom_narratives/filters`, config(cookie))

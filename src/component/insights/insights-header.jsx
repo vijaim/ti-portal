@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES_PATH_NAME, IMAGE_URL } from '../../utils/constants'
@@ -8,7 +9,7 @@ import { setSearchBar } from '../signin/signin-actions'
 
 const InsightsHeader = (props) => {
   const routePath = GetRoutesPathName()
-  const { FAVORITES, SALES, TRACKING } = ROUTES_PATH_NAME
+  const { FAVORITES, SALES, TRACKING, CREATECUSTOMMETRIC } = ROUTES_PATH_NAME
   const [searchValue, setSearchValue] = React.useState('')
   const { setSearchBarValue } = props
 
@@ -16,6 +17,7 @@ const InsightsHeader = (props) => {
     setSearchBarValue(e.target.value)
     setSearchValue(e.target.value)
   }
+  const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
   return (
     <>
       { routePath === SALES || routePath === TRACKING
@@ -41,7 +43,7 @@ const InsightsHeader = (props) => {
        : ''}
        {props.currentTab === 'customNarratives' && <div className="d-flex justify-content-between">
           <h1 className="fw-bold h4 mb-0 text-dark">{ `${props.businessName}'s ${props.headingTitle}`}</h1>
-          <Link to={'/createCustomMetric'} className="btn btn-primary disabled-link">Add Custom Narratives</Link>
+          <Link to={`${FAVORITES}/${apps.id}${CREATECUSTOMMETRIC}`} className="btn btn-primary disabled-link">Add Custom Narratives</Link>
         </div>
         }
     </>

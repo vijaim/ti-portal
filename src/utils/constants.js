@@ -36,9 +36,9 @@ export const HEADER_NAVIGATION = [
 ]
 
 export const IMAGES = {
-  IMAGE_PATH: 'images/',
-  IMAGE_PATHS: 'images/icons/',
-  CUSTOM_METRIC_ICON_PATH: 'images/custom-metric/'
+  IMAGE_PATH: '../images/',
+  IMAGE_PATHS: '../images/icons/',
+  CUSTOM_METRIC_ICON_PATH: '../images/custom-metric/'
 }
 
 export const IMAGE_URL = {
