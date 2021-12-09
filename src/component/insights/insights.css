@@ -159,6 +159,24 @@
     max-width: 120px;
     font-size: 13px;
   }
+  @media (min-width: 1025px) {
+    .fullWidth{
+      width: 200px;
+    }
+    .titleContainer{
+      width: 42%;
+      display: flex;
+      justify-content: space-between !important;
+    }
+    
+    .titleContainer input, .titleContainer select {
+      width: 90%;
+    }
+    
+    .titleContainer input{
+      margin-right: 2%;
+    }
+  }
   @media (max-width: 1400px) {
     .col-padd-left {
       padding-left: 20%;
@@ -217,6 +235,19 @@
       opacity: 1;
       left: -9rem !important;
     }
+    
+    .titleContainer{
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .titleContainer input, .titleContainer select {
+      width: 90%;
+    }
+    .titleContainer input{
+      margin-right: 2%;
+    }
   }
   .filterIcon{
     width: 4% !important;
@@ -230,6 +261,37 @@
   .btn-disabled{
     background-color: #D9E1EC;
     cursor: auto !important;
+  }
+  @media (max-width: 992px) {
+    .autocomplete {
+      max-width: 110px;
+    }
+  }
+  @media (max-width: 740px) {
+    .customListcontainer{
+      flex-direction: column;
+    }
+    .textArea_container{
+      height: 15vw !important;
+    }
+    .customTextField{
+      height: 15vw!important;
+    }
+    .titleContainer input, .titleContainer select {
+      width: 100%;
+      margin-top: 1%;
+      margin-bottom: 1%;
+    }
+  }
+  @media (max-width: 500px) {
+    .page-tabs .nav-link{
+      padding: 0.75rem 0.5rem !important;
+      font-size: 13px !important;
+    }
+    
+    .fullWidth{
+      width: '100%' !important;
+    }
   }
  /* this will target only Mac Safari and Chrome browsers */
   @media screen and (-webkit-min-device-pixel-ratio:0) {

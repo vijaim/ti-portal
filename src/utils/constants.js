@@ -21,7 +21,7 @@ export const NAVIGATION_TABS = [
   { id: 'all', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'All', type: 'home', isNavigation: true },
   { id: 'favorites', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Favorites', type: 'home', isNavigation: true },
   { id: 'hiddens', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Hidden', type: 'home', isNavigation: true },
-  { id: 'customNarratives', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Custom Narratives', type: 'home', isNavigation: true },
+  // { id: 'customNarratives', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Custom Narratives', type: 'home', isNavigation: true },
   { id: 'businesses', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Businesses', type: 'settings', isNavigation: true },
   { id: 'profile', routePath: ROUTES_PATH_NAME.SETTINGS_PROFILE, name: 'Profile', type: 'settings', isNavigation: true }
 ]
@@ -150,3 +150,7 @@ export const DELETE_MODAL_CONFIRM = 'Are you sure want to delete the item?'
 export const DELETE_MODAL_SUCCESS = 'Delete Successfully.'
 
 export const BOOLEAN_VALUES = [{ id: 'Yes', value: 'true' }, { id: 'No', value: 'false' }]
+export const BUSINESS_SETTINGS_TAB = [
+  { id: 'general', name: 'General', tabId: '0' },
+  { id: 'customInsights', name: 'Custom Insights', tabId: '1' }
+]

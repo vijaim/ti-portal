@@ -68,7 +68,7 @@ const Routes = (props) => {
         {isLoggedIn && <Route exact path={`${FAVORITES}/:id/all`} component={Favorites} /> }
         {isLoggedIn && <Route exact path={`${FAVORITES}/:id/favorites`} component={Favorites} /> }
         {isLoggedIn && <Route exact path={`${FAVORITES}/:id/hiddens`} component={Favorites} /> }
-        {isLoggedIn && <Route exact path={`${FAVORITES}/:id/customNarratives`} component={Favorites} /> }
+        {isLoggedIn && <Route exact path={`${SETTINGS_BUSINESS}/:id/customInsights`} component={SettingsBusiness} /> }
         {isLoggedIn && <Route exact path={SALES} component={Sales} /> }
         {isLoggedIn && <Route exact path={TRACKING} component={Tracking} /> }
         {isLoggedIn && <Route exact path={SETTINGS_BUSINESS} component={SettingsBusiness} /> }

@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import axios from 'axios'
-import { ROOT } from '../utils/constants'
+import { API_ROOT, ROOT } from '../utils/constants'
 
 const {
   OTP_GENERATE, LOGIN, SIGNUP, GET_BUSINESS, ADD_BUSINESS, GET_ALL_PLATFORMS, GET_ALL_VERTICALS,
@@ -118,6 +118,12 @@ const NetworkManager = {
   },
   deleteCustomNarrative: (params) => {
     return axios.delete(`${GET_BUSINESS}/${params.appId}/custom_narratives/${params.narrativeId}`, config(params.cookie))
+  },
+  previewCustomNarrative: (appId, cookie, narrativeId) => {
+    return axios.get(`${GET_BUSINESS}/${appId}/custom_narratives/${narrativeId}/preview`, config(cookie))
+  },
+  getAllCategory: (appId, cookie) => {
+    return axios.get(`${API_ROOT}lookup/getAllCategories`, config(cookie))
   }
 }
 
