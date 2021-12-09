@@ -330,7 +330,7 @@ const SettingsBusiness = (props) => {
                               </div>
                             </div>
                             : <div className="d-flex flex-column align-items-center justify-content-center">
-                            <h5 className="fw-bolder">No custom insights yet</h5>
+                            <h5 className="fw-bolder mt-20">No custom insights yet</h5>
                           </div>
                         }
                         {isCustomLoadMore && customNarrativeList.length > 0 && <div className="text-center pt-20 pb-20" onClick={() => loadMoreCustomData(customOffset)}>
