@@ -196,7 +196,7 @@ const SettingsBusiness = (props) => {
       return <div className="d-flex" key={`index_${index}`} >
           <div className="col-12 business-listing-item p-3 d-flex justify-content-between align-items-center">
             <div className="insightStatus-content col-10">
-              <span className="px-1" > {(customNarrativeItem.narrative && Object.keys(customNarrativeItem.narrative).length > 0) ? JSON.stringify(customNarrativeItem?.narrative) : customNarrativeItem.id } </span>
+              <span className="px-1" > {customNarrativeItem.name || ''} </span>
             </div>
             <div className="insightAction d-flex ">
               <Link to={`${FAVORITES}/${apps.id}${CREATECUSTOMMETRIC}/${customNarrativeItem.id}`} onClick={() => goToCreateCustomNarrative(customNarrativeItem)}>
