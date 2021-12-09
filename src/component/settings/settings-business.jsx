@@ -330,11 +330,7 @@ const SettingsBusiness = (props) => {
                               </div>
                             </div>
                             : <div className="d-flex flex-column align-items-center justify-content-center">
-                            <h5 className="fw-bolder">No custom narratives yet</h5>
-                            <span>Your narratives insights will show up here after you add them to your narratives</span>
-                            <Link className="text-center pt-20 pb-20" to={ `${SETTINGS_BUSINESS}/${selectedBusiness.id}/createCustomMetric`}>
-                              <span className="btn btn-primary disabled-link">Add Custom Narratives</span>
-                            </Link>
+                            <h5 className="fw-bolder">No custom insights yet</h5>
                           </div>
                         }
                         {isCustomLoadMore && customNarrativeList.length > 0 && <div className="text-center pt-20 pb-20" onClick={() => loadMoreCustomData(customOffset)}>

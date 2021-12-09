@@ -698,14 +698,6 @@ const Favorites = (props) => {
               {/* <img className="insightAction-icon my-1" src={STAR} alt="Icon Star" height={200} width={200} /> */}
               <span>For new businesses, insights should get generated within 15-30 minutes from the time of setup.</span>
             </div> : null}
-            {(tabName === 'customNarratives' && customNarrativeList.length === 0 && !isLoading) && <div className="d-flex flex-column align-items-center justify-content-center">
-              <h5 className="fw-bolder">No custom narratives yet</h5>
-              {/* <img className="insightAction-icon my-1" src={STAR} alt="Icon Star" height={200} width={200} /> */}
-              <span>Your narratives insights will show up here after you add them to your narratives</span>
-              <Link className="text-center pt-20 pb-20" to={'/createCustomMetric'}>
-                <span className="btn btn-primary disabled-link">Add Custom Narratives</span>
-              </Link>
-            </div>}
             {/* Insights Data end */}
             {isLoading && <div className="d-flex justify-content-center align-items-center" >
               <div className="spinner-border text-primary" role="status">
