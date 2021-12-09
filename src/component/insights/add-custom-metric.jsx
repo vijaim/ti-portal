@@ -10,7 +10,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import NetworkManager from '../../network-manager/network-config'
-import { BOOLEAN_VALUES, CONDITION_DROP, FIELD_THREE, IMAGE_URL, PeriodRange } from '../../utils/constants'
+import { BOOLEAN_VALUES, CONDITION_DROP, FIELD_THREE, IMAGE_URL, PeriodRange, ROUTES_PATH_NAME } from '../../utils/constants'
 import './insights.css'
 import Autocomplete from 'react-autocomplete'
 
@@ -21,6 +21,7 @@ const ThrashIcon = ({ width, height, styles, onPressRemove }) => (
   </svg>
 )
 const AddCustomMetric = (props) => {
+  const { FAVORITES, SETTINGS_BUSINESS } = ROUTES_PATH_NAME
   const { ADD, FILTER, LINE } = IMAGE_URL
   const [state, setState] = useState({
     showCustomMetric: false,
@@ -43,6 +44,11 @@ const AddCustomMetric = (props) => {
   const [showText, setShowText] = useState(false)
   const [showTextIndex, setShowTextIndex] = useState('')
   const { showAddFilter, loader } = state
+  let isEdit = localStorage.getItem('isEdit') === 'true'
+  let [preViewText, setPreViewText] = useState(null)
+  let [title, setTitle] = useState('')
+  let [resonseCategoryList, setResonseCategoryList] = useState([])
+  let [category, setCategory] = useState('')
   const handleShowDataField = () => {
     let customNarrativeListObj = {
       data: {
@@ -100,16 +106,21 @@ const AddCustomMetric = (props) => {
 
   useEffect(() => {
     getFilterDropdownValues()
-    // getFilterMetrics()
-    if (localStorage.getItem('selectedNarrativeId') !== 'undefined') {
+    getAllCategory()
+    if (isEdit) {
       getCustomNarrativesById()
     }
     document.addEventListener('click', handleClickOutside, true)
     return () => {
+      removeNarrativeId()
       document.removeEventListener('click', handleClickOutside, true)
     }
   }, [])
 
+  const removeNarrativeId = () => {
+    localStorage.removeItem('selectedNarrativeId')
+    localStorage.setItem('isEdit', false)
+  }
   const handleClickOutside = (event) => {
     if (ref.current && !ref.current.contains(event.target)) {
       setShowTextIndex('')
@@ -119,7 +130,7 @@ const AddCustomMetric = (props) => {
   }
 
   const onChangeFilterValues = (event, index, pickValue, fieldName, addFieldIndex) => {
-    customNarrativeList[addFieldIndex]['data'].filters[index][fieldName] = pickValue ? event : event.target.value
+    customNarrativeList[addFieldIndex]['data'].filters[index][fieldName] = pickValue ? event : fieldName === 'id' ? parseInt(event.target.value) : event.target.value
     if (fieldName === 'value' && !pickValue) {
       customNarrativeList[addFieldIndex]['data'].filters[index][fieldName] = event.target.value.trim().length === 0 ? event.target.value.trim() : event.target.value
     }
@@ -138,12 +149,13 @@ const AddCustomMetric = (props) => {
   }
 
   const handleFieldValueChange = (event, index, fieldName, objName) => {
-    customNarrativeList[index]['data'][objName][fieldName] = event.target.value
+    customNarrativeList[index]['data'][objName][fieldName] = fieldName === 'id' ? parseInt(event.target.value) : event.target.value
     setCustomNarrativeList(customNarrativeList)
     setState(() => ({ loader: !loader }))
   }
   const onTextChange = (event, index, fieldName) => {
-    customNarrativeList[index][fieldName] = event.target.value.trim().length === 0 ? event.target.value.trim() : event.target.value
+    event.preventDefault()
+    customNarrativeList[index][fieldName] = event.target.value.trim().length === 0 ? event.target.value.trim() : event.target.value.replace(/[\r\n]+/gm, ' ')
     setCustomNarrativeList(customNarrativeList)
     setState(() => ({ loader: !loader }))
   }
@@ -188,11 +200,14 @@ const AddCustomMetric = (props) => {
         return checkDataFieldText
       }
     })
+    if (title.length === 0 || category.length === 0) {
+      checkFields = true
+    }
     return (!checkFields)
   }
 
   const AddMetric = () => {
-    let narrativeId = localStorage.getItem('selectedNarrativeId')
+    let narrativeId = location.pathname.split('/').pop()
     if (ValidateTextField()) {
       customNarrativeList.map(dataField => {
         if (Object.keys(dataField).includes('data')) {
@@ -200,14 +215,18 @@ const AddCustomMetric = (props) => {
             delete dataField['data']['filters']
           }
           return dataField
+        } else {
+          dataField['text'] = dataField['text'].replace(/(\r\n|\n|\r)/gm, '')
         }
       })
       let params = {
         app_id: apps.id,
         user_id: localStorage.getItem('userId'),
+        name: title,
+        category_id: category,
         narrative: customNarrativeList
       }
-      if (narrativeId !== 'undefined') {
+      if (isEdit) {
         NetworkManager.updateCustomNarrative(params, loginCookie, narrativeId).then(response => {
           navigateToPreviousPage(response, params)
         })
@@ -230,11 +249,71 @@ const AddCustomMetric = (props) => {
       }
     }
   }
+  const previewMetric = () => {
+    let narrativeId = location.pathname.split('/').pop()
+    if (ValidateTextField()) {
+      customNarrativeList.map(dataField => {
+        if (Object.keys(dataField).includes('data')) {
+          if (dataField['data']['filters'] && dataField['data']['filters'].length === 0) {
+            delete dataField['data']['filters']
+          }
+          return dataField
+        }
+      })
+      let params = {
+        app_id: apps.id,
+        user_id: localStorage.getItem('userId'),
+        name: title,
+        category_id: category,
+        narrative: customNarrativeList
+      }
+      if (isEdit) {
+        NetworkManager.updateCustomNarrative(params, loginCookie, narrativeId).then(response => {
+          if (response.status === 200) {
+            previewCustomNarrative(params.app_id, loginCookie, narrativeId)
+          }
+        })
+          .catch(error => {
+            errorHandle(error)
+          })
+      } else {
+        NetworkManager.postCustomNarrative(params, loginCookie).then(response => {
+          if (response.status === 200) {
+            localStorage.setItem('selectedNarrativeId', response.data.response_objects.id)
+            localStorage.setItem('isEdit', true)
+            previewCustomNarrative(params.app_id, loginCookie, response.data.response_objects.id)
+          }
+        })
+          .catch(error => {
+            errorHandle(error)
+          })
+      }
+    } else {
+      if (customNarrativeList.length > 0) {
+        toast('Pease fill the fields', {
+          position: toast.POSITION.TOP_CENTER
+        })
+      }
+    }
+  }
+
+  const previewCustomNarrative = (appId, loginCookie, narrativeId) => {
+    NetworkManager.previewCustomNarrative(appId, loginCookie, narrativeId).then(response => {
+      if (response.status === 200) {
+        setPreViewText(response.data.response_objects)
+        setState(() => ({ loader: !loader }))
+        props.history.push(`/businesses/${appId}/createCustomMetric/${narrativeId}`)
+      }
+    })
+      .catch(error => {
+        errorHandle(error)
+      })
+  }
 
   const navigateToPreviousPage = (response, params) => {
     setIsLoading(false)
     if (response.status === 200) {
-      props.history.push(`businesses/${params.app_id}/customNarratives`)
+      props.history.push(`${SETTINGS_BUSINESS}/${params.app_id}/customInsights`)
     }
   }
 
@@ -259,13 +338,16 @@ const AddCustomMetric = (props) => {
   const getCustomNarrativesById = () => {
     let params = {
       appId: apps.id,
-      narrativeId: localStorage.getItem('selectedNarrativeId'),
+      narrativeId: location.pathname.split('/').pop(),
       cookie: loginCookie
     }
     NetworkManager.getCustomNarrativesById(params).then(response => {
       setIsLoading(false)
       if (response.status === 200 && response.data.response_objects.custom_narratives) {
         let narrative = response.data.response_objects.custom_narratives.narrative
+        previewCustomNarrative(apps.id, loginCookie, params.narrativeId)
+        setTitle(response.data.response_objects.custom_narratives.name ?? '')
+        setCategory(response.data.response_objects.custom_narratives.category_id ?? '')
         setCustomNarrativeList(narrative)
         setState(() => ({ loader: !loader }))
       }
@@ -315,7 +397,18 @@ const AddCustomMetric = (props) => {
         errorHandle(error)
       })
   }
-
+  const getAllCategory = () => {
+    NetworkManager.getAllCategory(apps.id, loginCookie).then(response => {
+      setIsLoading(false)
+      if (response.status === 200) {
+        setResonseCategoryList(response.data.response_objects)
+        setState(() => ({ loader: !loader }))
+      }
+    })
+      .catch(error => {
+        errorHandle(error)
+      })
+  }
   const getFilterMetrics = () => {
     NetworkManager.getFilterMetrics(apps.id, loginCookie).then(response => {
       setIsLoading(false)
@@ -338,7 +431,10 @@ const AddCustomMetric = (props) => {
     let marginLeft = { left: container === 'filter' ? '0.5rem' : '0.3rem' }
     return <div className="import-items-tooltip position-relative" data-bs-toggle="tooltip" data-bs-placement="left" style={{ height: 30, minWidth: 30 }}>
       <span className="form-check-label" >
-        <img src={ADD} style={iconStyle} onClick = {() => displayText(index)}></img>
+        <svg onClick = {() => displayText(index)} xmlns="http://www.w3.org/2000/svg" style={iconStyle} width="20" height="20" fill="currentColor" className="bi bi-plus-circle icon-color" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+        </svg>
       </span >
       {showTextIndex === index && <div ref={ref} className={ `${(showTextIndex === index && showAddText) ? 'visible' : 'invisible'} customListcontainerItem import-items-tooltiptext shadow` }style={marginLeft}>
         <div className="align-items-center gy-3">
@@ -350,6 +446,12 @@ const AddCustomMetric = (props) => {
       </div>}
     </div>
   }
+
+  const handleValueChanges = (event, field) => {
+    field === 'name' ? setTitle(event.target.value) : setCategory(parseInt(event.target.value))
+    setState(() => ({ loader: !loader }))
+  }
+  let isbuttonEnable = (customNarrativeList.length > 0 && title.length > 0 && (typeof category === 'number'))
   return (
   <>
     <main>
@@ -357,13 +459,19 @@ const AddCustomMetric = (props) => {
         <div className="container pb-40 pt-40">
           <div className="business-item position-relative">
             <div className="customListcontainerItem d-flex flex-column justify-content-between mb-5" style={{ display: 'flex', paddingTop: '20px' }}>
-              {/* <p className="d-flex">Example: {textList.length > 0
-                ? <p className="mx-2"> {customNarrativeList.map((custom, index) => {
-                  if (!Object.keys(custom).includes('data')) {
-                    return <p key={`index_${index}`}>{custom}</p>
-                  }
-                }) }</p>
-                : '' }</p> */}
+              {preViewText ? <p className="d-flex ">Example: {preViewText}</p> : null}
+              <div className="d-flex flex-column flex-md-row gx-2 align-items-start justify-content-start mb-2 titleContainer">
+                <input className="form-control fullWidth" id="title" onChange={(e) => handleValueChanges(e, 'name')} value={title}/>
+                <select className="form-select fullWidth" aria-label="Business category category" id="id"
+                  value={category}
+                  onChange={ (e) => handleValueChanges(e, 'category')}
+                >
+                  <option disabled label={'Select Category'}/>
+                  {resonseCategoryList.map((item, index) => (
+                    <option key={item.id} value={parseInt(item.id)} label={item.categories.name} />
+                  ))}
+                </select>
+              </div>
               {customNarrativeList.length === 0 && <div className="d-flex">
                 <div className="mx-2">
                     <img src={ADD}></img>
@@ -377,7 +485,7 @@ const AddCustomMetric = (props) => {
                   </div>
                 </div>
               </div>}
-              <div class="customListcontainer">
+              <div className="customListcontainer">
               {
                     customNarrativeList.map((addItem, addDataItemIndex) => {
                       if (Object.keys(addItem).includes('data')) {
@@ -399,7 +507,7 @@ const AddCustomMetric = (props) => {
                                     onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'id', 'metric')}
                                   >
                                     {responseMetricValues.map((item, index) => (
-                                      <option key={item.name} value={item.id} label={item.name} />
+                                      <option key={item.name} value={parseInt(item.id)} label={item.name} />
                                     ))}
                                   </select>
                                   <select className="form-select dropdownWidth" aria-label="Business category dataField2" id="aggregator" style={{ marginRight: '10px', width: '8vw' }}
@@ -442,7 +550,7 @@ const AddCustomMetric = (props) => {
                                         onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'id', addDataItemIndex)}
                                       >
                                         {responseFilerValues.map((item, index) => (
-                                          <option key={item.name} value={item.id} label={item.name}></option>
+                                          <option key={item.name} value={parseInt(item.id)} label={item.name}></option>
                                         ))}
                                       </select>
                                       <select className={`form-select ${dropdownWidth}`} aria-label="Is equal to" id="inputPlatform"
@@ -467,7 +575,7 @@ const AddCustomMetric = (props) => {
                                           shouldItemRender={(item, value) => item.toLowerCase().indexOf(value.toLowerCase()) > -1}
                                           getItemValue={item => item}
                                           items={ getLookupValue(id) }
-                                          renderInput= {(props) => <input {...props} className={`form-control ${dropdownWidth}`} onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}/>}
+                                          renderInput= {(props) => <input {...props} className={`form-control autocomplete ${dropdownWidth}`} onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}/>}
                                           renderItem={(item, isHighlighted) =>
                                             <p style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: 'pointer', wordBreak: 'break-word', width: 150 }}>
                                             {item}
@@ -487,9 +595,9 @@ const AddCustomMetric = (props) => {
                           </div>
                       } else {
                         let textItem = addItem.text
-                        return <div className={'customListItem d-inline-flex g-2 position-relative mx-2  mt-2'} style={{ height: '8vw' }}>
+                        return <div className={'customListItem d-inline-flex g-2 position-relative mx-2  mt-2 textArea_container'} style={{ height: '8vw' }}>
                           {/* <AddItemField iconStyle ={{ marginTop: '0.5rem', width: 25, height: 25 }} index={addDataItemIndex} direction={'prev'}/> */}
-                          <div key={`textField_${addDataItemIndex}`} className={'shadow w-100 mx-3 p-1 border border-2 rounded-3 d-flex justify-content-start mb-3'} >
+                          <div key={`textField_${addDataItemIndex}`} className={'shadow w-100 mx-3 p-1 border border-2 rounded-3 d-flex justify-content-start mb-lg-3'} >
                             <textarea className="px-1 customTextField " placeholder="please enter the text" value={textItem ?? ''}
                               onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} />
                             <div className=" " style={{ display: 'flex' }}>
@@ -505,8 +613,9 @@ const AddCustomMetric = (props) => {
               </div>
               <div className={'col-md-auto col-sm-auto text-xl-center d-flex justify-content-end mt-3'} style={{ marginTop: '-4%', marginBottom: '20px' }}>
                 {/* <button className="btns mt-20" style={{ color: '#EE5D2C', marginRight: '10px' }}>Delete</button> */}
-                <Link to={`businesses/${apps.id}/customNarratives`} className="btns mt-20" style={{ color: '#3557cc', marginRight: '20px' }}>Cancel</Link>
-                <button disabled={customNarrativeList.length === 0} className={`btn ${customNarrativeList.length >= 1 ? 'btn-primary' : 'btn-disabled'} d-block mt-20`} style={{ marginRight: '10px' }} onClick={() => AddMetric()}>Save</button>
+                 <Link to={`${SETTINGS_BUSINESS}/${apps.id}/customInsights`} className="btns mt-20" style={{ color: '#3557cc', marginRight: '20px' }}>Cancel</Link>
+                <button disabled={!isbuttonEnable} className={`btn ${isbuttonEnable ? 'btn-primary' : 'btn-disabled'} d-block mt-20`} style={{ marginRight: '10px' }} onClick={() => previewMetric('preview')}>Preview</button>
+                <button disabled={!isbuttonEnable} className={`btn ${isbuttonEnable ? 'btn-primary' : 'btn-disabled'} d-block mt-20`} style={{ marginRight: '10px' }} onClick={() => AddMetric('save')}>Save</button>
               </div>
             </div>
           </div>

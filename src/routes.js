@@ -68,14 +68,15 @@ const Routes = (props) => {
         {isLoggedIn && <Route exact path={`${FAVORITES}/:id/all`} component={Favorites} /> }
         {isLoggedIn && <Route exact path={`${FAVORITES}/:id/favorites`} component={Favorites} /> }
         {isLoggedIn && <Route exact path={`${FAVORITES}/:id/hiddens`} component={Favorites} /> }
-        {isLoggedIn && <Route exact path={`${FAVORITES}/:id/customNarratives`} component={Favorites} /> }
+        {isLoggedIn && <Route exact path={`${SETTINGS_BUSINESS}/:id/customInsights`} component={SettingsBusiness} /> }
         {isLoggedIn && <Route exact path={SALES} component={Sales} /> }
         {isLoggedIn && <Route exact path={TRACKING} component={Tracking} /> }
         {isLoggedIn && <Route exact path={SETTINGS_BUSINESS} component={SettingsBusiness} /> }
         {isLoggedIn && <Route exact path={`${SETTINGS_BUSINESS}/:id`} component={SettingsBusiness} /> }
         {isLoggedIn && <Route exact path={SETTINGS_PROFILE} component={SettingsProfile} /> }
         {isLoggedIn && <Route exact path={TUTORIAL} component={Tutorial} /> }
-        {isLoggedIn && <Route exact path={CREATECUSTOMMETRIC} component={AddCustomMetric} /> }
+        {isLoggedIn && <Route exact path={`${FAVORITES}/:id${CREATECUSTOMMETRIC}`} component={AddCustomMetric} /> }
+        {isLoggedIn && <Route exact path={`${FAVORITES}/:id${CREATECUSTOMMETRIC}/:narrativeId`} component={AddCustomMetric} /> }
         {isLoggedIn && <Route exact path="*" component={InSightsBusiness} />}
         {!isLoggedIn && <Route exact path="*" component={SignIn} />}
       </Switch>
