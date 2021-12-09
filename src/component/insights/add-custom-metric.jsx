@@ -7,10 +7,11 @@
 /* eslint-disable no-tabs */
 /* eslint-disable no-mixed-spaces-and-tabs */
 import React, { useEffect, useState, useRef } from 'react'
+import InsightsHeader from './insights-header'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import NetworkManager from '../../network-manager/network-config'
-import { BOOLEAN_VALUES, CONDITION_DROP, FIELD_THREE, IMAGE_URL, PeriodRange, ROUTES_PATH_NAME } from '../../utils/constants'
+import { BOOLEAN_VALUES, CONDITION_DROP, FIELD_THREE, IMAGE_URL, PeriodRange, ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
 import './insights.css'
 import Autocomplete from 'react-autocomplete'
 
@@ -455,6 +456,11 @@ const AddCustomMetric = (props) => {
   return (
   <>
     <main>
+      <section className="bg-white pb-20 position-relative shadow-sm">
+        <div className="container">
+          <InsightsHeader headingTitle={HEADING_TITLE.CUSTOM_INSIGHTS} />
+        </div>
+      </section>
       <section className="bg-section section-padding">
         <div className="container pb-40 pt-40">
           <div className="business-item position-relative">

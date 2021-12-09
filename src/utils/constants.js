@@ -84,7 +84,8 @@ export const HEADING_TITLE = {
   SALES: 'Insights - Sales',
   TRACKING: 'Tracking',
   SETTINGS: 'Settings',
-  TUTORIAL: 'Help'
+  TUTORIAL: 'Help',
+  CUSTOM_INSIGHTS: 'Custom Insights'
 }
 
 export const API_ROOT = process.env.REACT_APP_API_ENDPOINT || 'https://devportalapi.trueinsights.co/'
