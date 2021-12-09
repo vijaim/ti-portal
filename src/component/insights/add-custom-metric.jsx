@@ -459,19 +459,26 @@ const AddCustomMetric = (props) => {
         <div className="container pb-40 pt-40">
           <div className="business-item position-relative">
             <div className="customListcontainerItem d-flex flex-column justify-content-between mb-5" style={{ display: 'flex', paddingTop: '20px' }}>
-              {preViewText ? <p className="d-flex ">Example: {preViewText}</p> : null}
+              {preViewText ? <p className="d-flex ">Preview: {preViewText}</p> : null}
               <div className="d-flex flex-column flex-md-row gx-2 align-items-start justify-content-start mb-2 titleContainer">
-                <input className="form-control fullWidth" id="title" onChange={(e) => handleValueChanges(e, 'name')} value={title}/>
-                <select className="form-select fullWidth" aria-label="Business category category" id="id"
-                  value={category}
-                  onChange={ (e) => handleValueChanges(e, 'category')}
-                >
-                  <option disabled label={'Select Category'}/>
-                  {resonseCategoryList.map((item, index) => (
-                    <option key={item.id} value={parseInt(item.id)} label={item.categories.name} />
-                  ))}
-                </select>
+                <div className="mb-20">
+                  <label htmlFor="title" className="form-label fw-bold">Title</label>
+                  <input className="form-control fullWidth" id="title" onChange={(e) => handleValueChanges(e, 'name')} value={title} placeholder="Title" required/>
+                </div>
+                <div className="mb-20">
+                  <label htmlFor="id" className="form-label fw-bold">Category</label>
+                  <select className="form-select fullWidth" aria-label="Business category category" id="id"
+                    value={category}
+                    onChange={ (e) => handleValueChanges(e, 'category')}
+                  >
+                    <option disabled label={'Select Category'}/>
+                    {resonseCategoryList.map((item, index) => (
+                      <option key={item.id} value={parseInt(item.id)} label={item.categories.name} />
+                    ))}
+                  </select>
+                </div>
               </div>
+              <label className="form-label fw-bold">Builder</label>
               {customNarrativeList.length === 0 && <div className="d-flex">
                 <div className="mx-2">
                     <img src={ADD}></img>
