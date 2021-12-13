@@ -271,6 +271,7 @@ const SettingsBusiness = (props) => {
       getAllCustomNarratives(0)
     } else {
       setTabName(id)
+      setCustomNarrativeList([])
       if (location.pathname.split('/').pop() === 'customInsights') {
         props.history.push(`${SETTINGS_BUSINESS}/${apps.id}`)
       }

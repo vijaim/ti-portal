@@ -31,10 +31,10 @@ const InsightsHeader = (props) => {
           </Link>
           )
         : ''}
-        {routePath.includes(FAVORITES) && props.currentTab !== 'customNarratives'
+        {routePath.includes(FAVORITES) && props.currentTab !== 'customNarratives' && !routePath.includes(CREATECUSTOMMETRIC)
           ? <h1 className="fw-bold h4 mb-0 text-dark">{ `${props.businessName}'s ${props.headingTitle}`}</h1>
           : props.currentTab !== 'customNarratives' ? <h1 className="fw-bold h4 mb-0 text-dark">{ `${props.headingTitle}`}</h1> : ''}
-     { routePath.includes(FAVORITES) && props.currentTab !== 'customNarratives'
+     { routePath.includes(FAVORITES) && props.currentTab !== 'customNarratives' && !routePath.includes(CREATECUSTOMMETRIC)
        ? <div className="container mt-3">
         <form >
           <SearchBar searchValue = {searchValue} onSearchValueChange = {(e) => onSearchValueChange(e)}/>
