@@ -352,6 +352,13 @@ const AddCustomMetric = (props) => {
         previewCustomNarrative(apps.id, loginCookie, params.narrativeId, false)
         setTitle(response.data.response_objects.custom_narratives.name ?? '')
         setCategory(response.data.response_objects.custom_narratives.category_id ?? '')
+        narrative.map(item => {
+          if (Object.keys(item).includes('data')) {
+            item.data.filters && item.data.filters.map(filterItem => {
+              getAutoCompleteLookup(filterItem.id)
+            })
+          }
+        })
         setCustomNarrativeList(narrative)
         setState(() => ({ loader: !loader }))
       }
