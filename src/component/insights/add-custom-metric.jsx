@@ -50,6 +50,7 @@ const AddCustomMetric = (props) => {
   let [title, setTitle] = useState('')
   let [resonseCategoryList, setResonseCategoryList] = useState([])
   let [category, setCategory] = useState('')
+  const [isPreviewHighlighted, setIsPreviewHighlighted] = useState(false)
   const handleShowDataField = () => {
     let customNarrativeListObj = {
       data: {
@@ -268,10 +269,11 @@ const AddCustomMetric = (props) => {
         category_id: category,
         narrative: customNarrativeList
       }
+      setIsPreviewHighlighted(false)
       if (isEdit) {
         NetworkManager.updateCustomNarrative(params, loginCookie, narrativeId).then(response => {
           if (response.status === 200) {
-            previewCustomNarrative(params.app_id, loginCookie, narrativeId)
+            previewCustomNarrative(params.app_id, loginCookie, narrativeId, true)
           }
         })
           .catch(error => {
@@ -282,7 +284,7 @@ const AddCustomMetric = (props) => {
           if (response.status === 200) {
             localStorage.setItem('selectedNarrativeId', response.data.response_objects.id)
             localStorage.setItem('isEdit', true)
-            previewCustomNarrative(params.app_id, loginCookie, response.data.response_objects.id)
+            previewCustomNarrative(params.app_id, loginCookie, response.data.response_objects.id, true)
           }
         })
           .catch(error => {
@@ -298,10 +300,11 @@ const AddCustomMetric = (props) => {
     }
   }
 
-  const previewCustomNarrative = (appId, loginCookie, narrativeId) => {
+  const previewCustomNarrative = (appId, loginCookie, narrativeId, isNavigate) => {
     NetworkManager.previewCustomNarrative(appId, loginCookie, narrativeId).then(response => {
       if (response.status === 200) {
         setPreViewText(response.data.response_objects)
+        isNavigate && setIsPreviewHighlighted(true)
         setState(() => ({ loader: !loader }))
         props.history.push(`/businesses/${appId}/createCustomMetric/${narrativeId}`)
       }
@@ -346,9 +349,16 @@ const AddCustomMetric = (props) => {
       setIsLoading(false)
       if (response.status === 200 && response.data.response_objects.custom_narratives) {
         let narrative = response.data.response_objects.custom_narratives.narrative
-        previewCustomNarrative(apps.id, loginCookie, params.narrativeId)
+        previewCustomNarrative(apps.id, loginCookie, params.narrativeId, false)
         setTitle(response.data.response_objects.custom_narratives.name ?? '')
         setCategory(response.data.response_objects.custom_narratives.category_id ?? '')
+        narrative.map(item => {
+          if (Object.keys(item).includes('data')) {
+            item.data.filters && item.data.filters.map(filterItem => {
+              getAutoCompleteLookup(filterItem.id)
+            })
+          }
+        })
         setCustomNarrativeList(narrative)
         setState(() => ({ loader: !loader }))
       }
@@ -465,7 +475,7 @@ const AddCustomMetric = (props) => {
         <div className="container pb-40 pt-40">
           <div className="business-item position-relative">
             <div className="customListcontainerItem d-flex flex-column justify-content-between mb-5" style={{ display: 'flex', paddingTop: '20px' }}>
-              {preViewText ? <p className="d-flex ">Preview: {preViewText}</p> : null}
+              {preViewText ? <p className="d-flex ">Preview: <p className={`${isPreviewHighlighted ? 'bg-warning' : ''}`}>{preViewText}</p></p> : null}
               <div className="d-flex flex-column flex-md-row gx-2 align-items-start justify-content-start mb-2 titleContainer">
                 <div className="mb-20">
                   <label htmlFor="title" className="form-label fw-bold">Title</label>

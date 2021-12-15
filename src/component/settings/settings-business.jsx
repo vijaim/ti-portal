@@ -47,13 +47,18 @@ const SettingsBusiness = (props) => {
   let [customNarrativeList, setCustomNarrativeList] = useState([])
   let apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
   const [isLoading, setIsLoading] = useState(false)
+  let [activeBusiness, setActiveBusiness] = useState({})
 
-  const handleBusiness = (id) => {
-    console.log('   ', businessId, ' ', id)
+  const handleBusiness = (id, businessObj) => {
     if (businessId !== id) {
       setBusinessMap(businessMap)
       setState(() => ({ buttonActive: id }))
       getBusinessById(id, businessMap)
+      setCustomNarrativeList([])
+      customNarrativeList = []
+      setIsLoading(true)
+      setActiveBusiness(businessObj)
+      getAllCustomNarratives(0, id)
     }
   }
 
@@ -101,6 +106,7 @@ const SettingsBusiness = (props) => {
           setBusinessId(id)
           setState(() => ({ buttonActive: id }))
           setBusinessMap(businessObj)
+          localStorage.setItem('selectedAppsInfo', JSON.stringify(response.data.response_objects))
           setSelectedBusiness(response.data.response_objects)
           setBusinessById(response.data.response_objects)
         }
@@ -124,10 +130,10 @@ const SettingsBusiness = (props) => {
     }
   }, [])
 
-  const getAllCustomNarratives = (offSet) => {
+  const getAllCustomNarratives = (offSet, id) => {
     const params = {
       cookie: loginCookie,
-      appId: apps.id,
+      appId: id || apps.id,
       offSet: offSet * customLimit,
       limit: customLimit
     }
@@ -144,7 +150,8 @@ const SettingsBusiness = (props) => {
         setCustomNarrativeList(customNarrativeList)
         setCustomOffset(offSet)
       }
-      setState(() => ({ isLoader: !isLoader }))
+      setBusinessId(params.appId)
+      setState(() => ({ isLoader: !isLoader, buttonActive: params.appId }))
     })
       .catch(error => {
         setIsLoading(false)
@@ -265,6 +272,7 @@ const SettingsBusiness = (props) => {
   }
 
   const changeTabName = (id) => {
+    customNarrativeList = []
     if (id === 'customInsights') {
       setTabName(id)
       setIsLoading(true)
@@ -273,6 +281,7 @@ const SettingsBusiness = (props) => {
       setTabName(id)
       setCustomNarrativeList([])
       if (location.pathname.split('/').pop() === 'customInsights') {
+        handleBusiness(apps.id)
         props.history.push(`${SETTINGS_BUSINESS}/${apps.id}`)
       }
     }
@@ -294,7 +303,7 @@ const SettingsBusiness = (props) => {
                 {
                  businessList && businessList.map((item, key) => {
                    return <div key={item.value.id} className="nav flex-column nav-pills me-3 business-tabs" id="business-tab" role="tablist" aria-orientation="vertical">
-                    <Link to={`${SETTINGS_BUSINESS}/${item.value.id}`} className={((buttonActive ? buttonActive === parseInt(item.value.id) : '') ? 'nav-link active' : 'nav-link')} onClick={() => handleBusiness(item.value.id)}>{item.value.name}</Link>
+                    <Link to={`${SETTINGS_BUSINESS}/${item.value.id}`} className={((buttonActive ? buttonActive === parseInt(item.value.id) : '') ? 'nav-link active' : 'nav-link')} onClick={() => handleBusiness(item.value.id, item.value)}>{item.value.name}</Link>
                   </div>
                  })
                 }
@@ -304,7 +313,7 @@ const SettingsBusiness = (props) => {
                   <div className="listing-item pt-20 pb-20">
                     <div className="row position-relative">
                     <div>
-                      {tabName === 'customInsights' && <Link className="text-end pb-20 position-absolute top-0 end-0" to={ `${FAVORITES}/${selectedBusiness.id}/createCustomMetric`} >
+                      {tabName === 'customInsights' && <Link className="text-end pb-20 position-absolute top-0 end-0" to={ `${FAVORITES}/${activeBusiness.id || apps.id}/createCustomMetric`} >
                         <span className="btn btn-primary disabled-link">Add Custom Insights</span>
                       </Link>}
                       <nav className="">
