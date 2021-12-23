@@ -54,7 +54,7 @@ const AddCustomMetric = (props) => {
   const handleShowDataField = () => {
     let customNarrativeListObj = {
       data: {
-      	metric: { id: 1, aggregator: pickerOptionLookup.aggregator ? pickerOptionLookup.aggregator[0] : 'Average of', time_period: pickerOptionLookup.date_ranges ? pickerOptionLookup.date_ranges[0] : 'yesterday' },
+      	metric: { id: 1, aggregator: pickerOptionLookup.aggregator ? pickerOptionLookup.aggregator[0] : 'Average of', date_range: pickerOptionLookup.date_ranges ? pickerOptionLookup.date_ranges[0] : 'yesterday' },
       	filters: []
       }
     }
@@ -541,9 +541,9 @@ const AddCustomMetric = (props) => {
                                       <option key={item} value={item} label={item} />
                                     ))}
                                   </select>
-                                  <select className="form-select dropdownWidth" aria-label="Business category dataField3" id="time_period" style={{ marginRight: '10px', width: '9vw' }}
-                                    value={metric.time_period}
-                                    onChange={(e) => handleFieldValueChange(e, addDataItemIndex, 'time_period', 'metric')}
+                                  <select className="form-select dropdownWidth" aria-label="Business category dataField3" id="date_range" style={{ marginRight: '10px', width: '9vw' }}
+                                    value={metric.date_range}
+                                    onChange={(e) => handleFieldValueChange(e, addDataItemIndex, 'date_range', 'metric')}
                                   >
                                     {pickerOptionLookup.date_ranges && pickerOptionLookup.date_ranges.map((item, index) => (
                                       <option key={item} value={item} label={item} />
