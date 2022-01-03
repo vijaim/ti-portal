@@ -8,7 +8,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { GetRoutesPathName } from '../../utils/util-methods'
-import { ROUTES_PATH_NAME, DAYSMAP, TIME, MERIDIAN_DEFAULT_VALUE, HOUR_DEFAULT_VALUE, DAY_OF_WEEK_DEFAULT_VALUE, CHANNEL_ID_DEFAULT_VALUE, MERIDIAN_PM_VALUE } from '../../utils/constants'
+import { ROUTES_PATH_NAME, DAYSMAP, TIME, MERIDIAN_DEFAULT_VALUE, HOUR_DEFAULT_VALUE, DAY_OF_WEEK_DEFAULT_VALUE, CHANNEL_ID_DEFAULT_VALUE, MERIDIAN_PM_VALUE, IS_UNSUBSCRIBE_DEFAULT_VALUE } from '../../utils/constants'
 import NetworkManager from '../../network-manager/network-config'
 import AddBusinessValidateForm from '../validation/add-business-validate-form'
 import useForms from '../validation/use-forms'
@@ -35,6 +35,7 @@ const AddBusiness = (props) => {
   const loginCookie = localStorage.getItem('localLoginCookie')
   const [errors, setErrors] = useState({})
   const [notificationValue, setNotificationValue] = useState(CHANNEL_ID_DEFAULT_VALUE)
+  const [isUnSubscribe, setIsUnsubscribe] = useState(IS_UNSUBSCRIBE_DEFAULT_VALUE)
   const [days, setDays] = useState(DAY_OF_WEEK_DEFAULT_VALUE)
   const [hours, setHours] = useState(HOUR_DEFAULT_VALUE)
   const [meridian, setMeridianValue] = useState(MERIDIAN_DEFAULT_VALUE)
@@ -108,7 +109,8 @@ const AddBusiness = (props) => {
       vertical_id: values.vertical_id,
       platform_id: values.platform_id,
       admins: adminsList,
-      channel_id: notificationValue ? 1 : 0,
+      channel_id: notificationValue,
+      is_unsubscribed: isUnSubscribe,
       time_of_day: getUTCHours(TIME[hours], true),
       day_of_weeks: days.split(',').map(iNum => parseInt(iNum)),
       utc_offset: new Date().getTimezoneOffset()
@@ -159,7 +161,8 @@ const AddBusiness = (props) => {
       const adminsList = []
       if (props.businessData.user_preferences && props.businessData.user_preferences.length > 0) {
         setDays(props.businessData.user_preferences[0].day_of_weeks ? props.businessData.user_preferences[0].day_of_weeks.toString() : DAY_OF_WEEK_DEFAULT_VALUE)
-        setNotificationValue(props.businessData.user_preferences[0].channel_id ? parseInt(props.businessData.user_preferences[0].channel_id) : 0)
+        setNotificationValue(props.businessData.user_preferences[0].channel_id ? parseInt(props.businessData.user_preferences[0].channel_id) : CHANNEL_ID_DEFAULT_VALUE)
+        setIsUnsubscribe(props.businessData.user_preferences[0].is_unsubscribed ?? IS_UNSUBSCRIBE_DEFAULT_VALUE)
         if (props.businessData.user_preferences[0].time_of_day) {
           timeConvert(props.businessData.user_preferences[0].time_of_day, true)
         } else {
@@ -167,6 +170,7 @@ const AddBusiness = (props) => {
         }
       } else {
         setNotificationValue(CHANNEL_ID_DEFAULT_VALUE)
+        setIsUnsubscribe(IS_UNSUBSCRIBE_DEFAULT_VALUE)
         setDays(DAY_OF_WEEK_DEFAULT_VALUE)
         timeConvert('00:00', false)
       }
@@ -332,7 +336,7 @@ const AddBusiness = (props) => {
             <div className="mb-20">
               <span className="me-3">Send by</span>
               <div className="form-check form-check-inline">
-                <input className={`form-check-input ${notificationValue === 1 ? 'bg-primary' : ''}`} type="checkbox" name="emailNotification" checked={(notificationValue === 1)} onChange={() => setNotificationValue(notificationValue === 1 ? 0 : 1)}/>
+                <input className={`form-check-input ${!isUnSubscribe ? 'bg-primary' : ''}`} type="checkbox" name="emailNotification" checked={!isUnSubscribe} onChange={() => setIsUnsubscribe(!isUnSubscribe)}/>
                 <label className="form-check-label" value={1} htmlFor="checkboxEmail">Email</label>
               </div>
               {/* <div className="form-check form-check-inline">
