@@ -133,6 +133,7 @@ export const TIME = ['01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:0
 export const DAY_OF_WEEK_DEFAULT_VALUE = '1,3'
 export const HOUR_DEFAULT_VALUE = 12
 export const CHANNEL_ID_DEFAULT_VALUE = 1
+export const IS_UNSUBSCRIBE_DEFAULT_VALUE = false
 export const MERIDIAN_DEFAULT_VALUE = 'AM'
 export const MERIDIAN_PM_VALUE = 'PM'
 
