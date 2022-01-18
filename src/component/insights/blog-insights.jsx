@@ -235,6 +235,7 @@ const BlogInsights = (props) => {
       setEmptyList(tab.id, tab.id !== 'customNarratives')
     } else {
       setSelectedTab(tab)
+      setDateValue(new Date())
       blogInSightsList(new Date(), tab.id)
       localStorage.setItem('selectedTab', JSON.stringify(tab))
       // getAllCustomNarratives(0)
