@@ -118,6 +118,10 @@
     box-shadow: inset 5em 1em #000;
 
   }
+  .toolTopAlign{
+    margin-left: -10% !important;
+    left: -8rem !important;
+  }
   .import-items-tooltiptext {
     opacity: 1;
   }
@@ -158,6 +162,19 @@
   .filterDropDownWidth_ZeroIndex{
     max-width: 120px;
     font-size: 13px;
+  }
+  .title-richTextEditor-wrapper{
+    border: 1px solid;
+  }
+  .rdw-editor-toolbar{
+    border-bottom: 1px solid !important;
+    background: #ececec !important;
+  }
+  .blogItem{
+    flex-basis: 48%;
+  }
+  .emptyBlogItem{
+    height: 40px;
   }
   @media (min-width: 1025px) {
     .fullWidth{
@@ -233,7 +250,7 @@
     
     .import-items-tooltiptext {
       opacity: 1;
-      left: -9rem !important;
+      /* left: -9rem !important; */
     }
     
     .titleContainer{
@@ -261,6 +278,9 @@
   .btn-disabled{
     background-color: #D9E1EC;
     cursor: auto !important;
+  }
+  .action-container{
+    width: 100px;
   }
   @media (max-width: 992px) {
     .autocomplete {

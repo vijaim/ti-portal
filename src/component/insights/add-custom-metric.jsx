@@ -14,6 +14,11 @@ import NetworkManager from '../../network-manager/network-config'
 import { BOOLEAN_VALUES, CONDITION_DROP, FIELD_THREE, IMAGE_URL, PeriodRange, ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
 import './insights.css'
 import Autocomplete from 'react-autocomplete'
+import { Editor } from 'react-draft-wysiwyg'
+import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js'
+import '../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import draftToHtml from 'draftjs-to-html'
+import htmlToDraft from 'html-to-draftjs'
 
 const ThrashIcon = ({ width, height, styles, onPressRemove }) => (
   <svg onClick={onPressRemove} style={styles} xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill="currentColor" className="bi bi-trash icon-color ml-1 form-check-label deleteIconSize" viewBox="0 0 16 16">
@@ -34,6 +39,7 @@ const AddCustomMetric = (props) => {
   })
   let ref = useRef(null)
   let apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
+  let selectedInsight = JSON.parse(localStorage.getItem('selectedTab'))
   const loginCookie = localStorage.getItem('localLoginCookie')
   let [responseFilerValues, setFilterValues] = useState([])
   let [responseMetricValues, setResponseMetricValues] = useState([])
@@ -44,8 +50,10 @@ const AddCustomMetric = (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [showText, setShowText] = useState(false)
   const [showTextIndex, setShowTextIndex] = useState('')
+  let [richText, setRichText] = useState(EditorState.createEmpty())
   const { showAddFilter, loader } = state
-  let isEdit = localStorage.getItem('isEdit') === 'true'
+  let isEdit = props.isDisplayByModal ? props.isEdit === 'true' : localStorage.getItem('isEdit') === 'true'
+  let customInSightId = props.customInsightId
   let [preViewText, setPreViewText] = useState(null)
   let [title, setTitle] = useState('')
   let [resonseCategoryList, setResonseCategoryList] = useState([])
@@ -115,12 +123,14 @@ const AddCustomMetric = (props) => {
     document.addEventListener('click', handleClickOutside, true)
     return () => {
       removeNarrativeId()
+      closeModal()
       document.removeEventListener('click', handleClickOutside, true)
     }
   }, [])
 
   const removeNarrativeId = () => {
     localStorage.removeItem('selectedNarrativeId')
+    localStorage.removeItem('selectedTab')
     localStorage.setItem('isEdit', false)
   }
   const handleClickOutside = (event) => {
@@ -197,12 +207,12 @@ const AddCustomMetric = (props) => {
         } else {
           return false
         }
-      } else {
+      } else if (!props.isDisplayByModal) {
         checkDataFieldText = dataField['text'].length === 0
         return checkDataFieldText
       }
     })
-    if (title.length === 0 || category.length === 0) {
+    if (title.length === 0 || (category.length === 0 && !props.isDisplayByModal)) {
       checkFields = true
     }
     return (!checkFields)
@@ -237,6 +247,46 @@ const AddCustomMetric = (props) => {
           })
       } else {
         NetworkManager.postCustomNarrative(params, loginCookie).then(response => {
+          navigateToPreviousPage(response, params)
+        })
+          .catch(error => {
+            errorHandle(error)
+          })
+      }
+    } else {
+      if (customNarrativeList.length > 0) {
+        toast('Pease fill the fields', {
+          position: toast.POSITION.TOP_CENTER
+        })
+      }
+    }
+  }
+  const BlogAddMetric = () => {
+    let narrativeId = customInSightId
+    if (ValidateTextField()) {
+      customNarrativeList.map(dataField => {
+        if (Object.keys(dataField).includes('data')) {
+          if (dataField['data']['filters'] && dataField['data']['filters'].length === 0) {
+            delete dataField['data']['filters']
+          }
+          return dataField
+        }
+      })
+      let params = {
+        app_id: apps.id,
+        user_id: localStorage.getItem('userId'),
+        title: title,
+        narrative: [...customNarrativeList, { text: draftToHtml(convertToRaw(richText.getCurrentContent())) }]
+      }
+      if (isEdit) {
+        NetworkManager.putAnbos(params, loginCookie, narrativeId).then(response => {
+          navigateToPreviousPage(response, params)
+        })
+          .catch(error => {
+            errorHandle(error)
+          })
+      } else {
+        NetworkManager.postAnbos(params, loginCookie).then(response => {
           navigateToPreviousPage(response, params)
         })
           .catch(error => {
@@ -306,7 +356,7 @@ const AddCustomMetric = (props) => {
         setPreViewText(response.data.response_objects)
         isNavigate && setIsPreviewHighlighted(true)
         setState(() => ({ loader: !loader }))
-        props.history.push(`/businesses/${appId}/createCustomMetric/${narrativeId}`)
+        !props.isDisplayByModal && props.history.push(`/businesses/${appId}/createCustomMetric/${narrativeId}`)
       }
     })
       .catch(error => {
@@ -317,7 +367,7 @@ const AddCustomMetric = (props) => {
   const navigateToPreviousPage = (response, params) => {
     setIsLoading(false)
     if (response.status === 200) {
-      props.history.push(`${SETTINGS_BUSINESS}/${params.app_id}/customInsights`)
+      !props.isDisplayByModal ? props.history.push(`${SETTINGS_BUSINESS}/${params.app_id}/customInsights`) : props.handleModal(false, true)
     }
   }
 
@@ -342,30 +392,76 @@ const AddCustomMetric = (props) => {
   const getCustomNarrativesById = () => {
     let params = {
       appId: apps.id,
-      narrativeId: location.pathname.split('/').pop(),
+      narrativeId: props.isDisplayByModal ? customInSightId : location.pathname.split('/').pop(),
       cookie: loginCookie
     }
-    NetworkManager.getCustomNarrativesById(params).then(response => {
-      setIsLoading(false)
-      if (response.status === 200 && response.data.response_objects.custom_narratives) {
-        let narrative = response.data.response_objects.custom_narratives.narrative
-        previewCustomNarrative(apps.id, loginCookie, params.narrativeId, false)
-        setTitle(response.data.response_objects.custom_narratives.name ?? '')
-        setCategory(response.data.response_objects.custom_narratives.category_id ?? '')
-        narrative.map(item => {
-          if (Object.keys(item).includes('data')) {
-            item.data.filters && item.data.filters.map(filterItem => {
-              getAutoCompleteLookup(filterItem.id)
-            })
-          }
-        })
-        setCustomNarrativeList(narrative)
-        setState(() => ({ loader: !loader }))
-      }
-    })
-      .catch(error => {
-        errorHandle(error)
+    if (!props.isDisplayByModal) {
+      NetworkManager.getCustomNarrativesById(params).then(response => {
+        setIsLoading(false)
+        if (response.status === 200 && response.data.response_objects.custom_narratives) {
+          let narrative = response.data.response_objects.custom_narratives.narrative
+          previewCustomNarrative(apps.id, loginCookie, params.narrativeId, false)
+          setTitle(response.data.response_objects.custom_narratives.name ?? '')
+          setCategory(response.data.response_objects.custom_narratives.category_id ?? '')
+          narrative.map(item => {
+            if (Object.keys(item).includes('data')) {
+              item.data.filters && item.data.filters.map(filterItem => {
+                getAutoCompleteLookup(filterItem.id)
+              })
+            }
+          })
+          setCustomNarrativeList(narrative)
+          setState(() => ({ loader: !loader }))
+        }
       })
+        .catch(error => {
+          errorHandle(error)
+        })
+    } else {
+      NetworkManager.getAnbosById(params).then(response => {
+        setIsLoading(false)
+        if (response.status === 200 && response.data.response_objects.app_narrative_blog) {
+          let app = response.data.response_objects.app_narrative_blog
+          let narrative = app.narrative.filter((filterItem, index) => Object.keys(filterItem).includes('data'))
+          let text = app.narrative.filter((filterItem, index) => Object.keys(filterItem).includes('text'))
+          narrative.map(item => {
+            if (Object.keys(item).includes('data')) {
+              item.data.filters && item.data.filters.map(filterItem => {
+                getAutoCompleteLookup(filterItem.id)
+              })
+            }
+          })
+          console.log('text tite ==>', text)
+          setTitle(app.title)
+          setCustomNarrativeList(narrative)
+          const blocksFromHtml = htmlToDraft(text[0].text ?? '')
+          const { contentBlocks, entityMap } = blocksFromHtml
+          const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
+          setRichText(EditorState.createWithContent(contentState))
+          setState(() => ({ loader: !loader }))
+        }
+      })
+        .catch(error => {
+          errorHandle(error)
+        })
+      // if (selectedInsight) {
+      //   let app = selectedInsight
+      //   let narrative = app.narrative.filter((filterItem, index) => Object.keys(filterItem).includes('data'))
+      //   let text = app.narrative.filter((filterItem, index) => Object.keys(filterItem).includes('text'))
+      //   narrative.map(item => {
+      //     if (Object.keys(item).includes('data')) {
+      //       item.data.filters && item.data.filters.map(filterItem => {
+      //         getAutoCompleteLookup(filterItem.id)
+      //       })
+      //     }
+      //   })
+      //   console.log('text tite ==>', text)
+      //   setTitle(app.title)
+      //   setCustomNarrativeList(narrative)
+      //   setRichText(EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(text[0].text ?? ''))))
+      //   setState(() => ({ loader: !loader }))
+      // }
+    }
   }
 
   const getAutoCompleteLookup = (id) => {
@@ -434,6 +530,7 @@ const AddCustomMetric = (props) => {
   }
 
   const displayText = (index) => {
+    console.log('displayText')
     setShowTextIndex(index)
     setShowText(!showText)
     setState(() => ({ loader: !loader }))
@@ -447,11 +544,11 @@ const AddCustomMetric = (props) => {
           <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
         </svg>
       </span >
-      {showTextIndex === index && <div ref={ref} className={ `${(showTextIndex === index && showAddText) ? 'visible' : 'invisible'} customListcontainerItem import-items-tooltiptext shadow` }style={marginLeft}>
+      {showTextIndex === index && <div ref={ref} className={ `${(showTextIndex === index && showAddText) ? 'visible' : 'invisible'} customListcontainerItem import-items-tooltiptext ${customNarrativeList.length === 0 ? '' : 'toolTopAlign'} shadow` }style={marginLeft}>
         <div className="align-items-center gy-3">
           <div className="col-lg-3 col-sm-6 col-1">
             <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Data field</span></div>
-            <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>
+            {!props.isDisplayByModal && <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>}
           </div>
         </div>
       </div>}
@@ -462,16 +559,28 @@ const AddCustomMetric = (props) => {
     field === 'name' ? setTitle(event.target.value) : setCategory(parseInt(event.target.value))
     setState(() => ({ loader: !loader }))
   }
-  let isbuttonEnable = (customNarrativeList.length > 0 && title.length > 0 && (typeof category === 'number'))
+
+  const checkTextField = () => {
+    return richText.getCurrentContent().getPlainText().length > 0
+  }
+
+  const closeModal = () => {
+    selectedInsight = null
+    title = ''
+    customNarrativeList = []
+    richText = EditorState.createEmpty()
+    // setTimeout(() => props.handleModal(false), 1000)
+  }
+  let isbuttonEnable = props.isDisplayByModal ? (customNarrativeList.length > 0 && title.length > 0 && checkTextField()) : (customNarrativeList.length > 0 && title.length > 0 && (typeof category === 'number'))
   return (
   <>
     <main>
-      <section className="bg-white pb-20 position-relative shadow-sm">
+      {!props.isDisplayByModal && <section className="bg-white pb-20 position-relative shadow-sm">
         <div className="container">
           <InsightsHeader headingTitle={HEADING_TITLE.CUSTOM_INSIGHTS} />
         </div>
-      </section>
-      <section className="bg-section section-padding">
+      </section>}
+      <section className={`bg-section ${!props.isDisplayByModal ? 'section-padding' : ''}`}>
         <div className="container pb-40 pt-40">
           <div className="business-item position-relative">
             <div className="customListcontainerItem d-flex flex-column justify-content-between mb-5" style={{ display: 'flex', paddingTop: '20px' }}>
@@ -481,7 +590,7 @@ const AddCustomMetric = (props) => {
                   <label htmlFor="title" className="form-label fw-bold">Title</label>
                   <input className="form-control fullWidth" id="title" onChange={(e) => handleValueChanges(e, 'name')} value={title} placeholder="Title" required/>
                 </div>
-                <div className="mb-20">
+                {!props.isDisplayByModal && <div className="mb-20">
                   <label htmlFor="id" className="form-label fw-bold">Category</label>
                   <select className="form-select fullWidth" aria-label="Business category category" id="id"
                     value={category}
@@ -492,10 +601,14 @@ const AddCustomMetric = (props) => {
                       <option key={item.id} value={parseInt(item.id)} label={item.categories.name} />
                     ))}
                   </select>
-                </div>
+                </div>}
               </div>
-              <label className="form-label fw-bold">Builder</label>
-              {customNarrativeList.length === 0 && <div className="d-flex">
+              {props.isDisplayByModal
+                ? <div className='d-flex flex-column'>
+                <label className="form-label fw-bold">Builder</label>
+                {customNarrativeList.length === 0 && <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.5rem' }} direction={'next'}/>}
+              </div>
+                : customNarrativeList.length === 0 && <div className="d-flex">
                 <div className="mx-2">
                     <img src={ADD}></img>
                 </div>
@@ -503,7 +616,7 @@ const AddCustomMetric = (props) => {
                   <div className="align-items-center gy-3 row">
                     <div className="col-lg-3 col-sm-6 col-1">
                       <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Data field</span></div>
-                      <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>
+                      {!props.isDisplayByModal && <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>}
                     </div>
                   </div>
                 </div>
@@ -616,7 +729,7 @@ const AddCustomMetric = (props) => {
                             </div>
                             <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.5rem' }} index={addDataItemIndex} direction={'prev'}/>
                           </div>
-                      } else {
+                      } else if (!props.isDisplayByModal) {
                         let textItem = addItem.text
                         return <div className={'customListItem d-inline-flex g-2 position-relative mx-2  mt-2 textArea_container'} style={{ height: '8vw' }}>
                           {/* <AddItemField iconStyle ={{ marginTop: '0.5rem', width: 25, height: 25 }} index={addDataItemIndex} direction={'prev'}/> */}
@@ -634,11 +747,20 @@ const AddCustomMetric = (props) => {
                     })
                   }
               </div>
+              {props.isDisplayByModal && <Editor
+                // placeholder='Add Title'
+                editorState={richText}
+                wrapperClassName="title-richTextEditor-wrapper mb-3"
+                editorClassName="title-richTextEditor-editor"
+                onEditorStateChange={(value) => setRichText(value)}
+              />}
               <div className={'col-md-auto col-sm-auto text-xl-center d-flex justify-content-end mt-3'} style={{ marginTop: '-4%', marginBottom: '20px' }}>
                 {/* <button className="btns mt-20" style={{ color: '#EE5D2C', marginRight: '10px' }}>Delete</button> */}
-                 <Link to={`${SETTINGS_BUSINESS}/${apps.id}/customInsights`} className="btns mt-20" style={{ color: '#3557cc', marginRight: '20px' }}>Cancel</Link>
-                <button disabled={!isbuttonEnable} className={`btn ${isbuttonEnable ? 'btn-primary' : 'btn-disabled'} d-block mt-20`} style={{ marginRight: '10px' }} onClick={() => previewMetric('preview')}>Preview</button>
-                <button disabled={!isbuttonEnable} className={`btn ${isbuttonEnable ? 'btn-primary' : 'btn-disabled'} d-block mt-20`} style={{ marginRight: '10px' }} onClick={() => AddMetric('save')}>Save</button>
+                 {!props.isDisplayByModal
+                   ? <Link to={`${SETTINGS_BUSINESS}/${apps.id}/customInsights`} className="btns mt-20" style={{ color: '#3557cc', marginRight: '20px' }}>Cancel</Link>
+                   : <span onClick={() => closeModal()} className="btns mt-20 form-check-label" style={{ color: '#3557cc', marginRight: '20px' }}>Cancel</span> }
+                {!props.isDisplayByModal && <button disabled={!isbuttonEnable} className={`btn ${isbuttonEnable ? 'btn-primary' : 'btn-disabled'} d-block mt-20`} style={{ marginRight: '10px' }} onClick={() => previewMetric('preview')}>Preview</button>}
+                <button disabled={!isbuttonEnable} className={`btn ${isbuttonEnable ? 'btn-primary' : 'btn-disabled'} d-block mt-20`} style={{ marginRight: '10px' }} onClick={() => !props.isDisplayByModal ? AddMetric('save') : BlogAddMetric('save')}>Save</button>
               </div>
             </div>
           </div>

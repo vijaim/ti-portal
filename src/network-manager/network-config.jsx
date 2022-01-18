@@ -81,6 +81,31 @@ const NetworkManager = {
     return axios.delete(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/narratives/${params.narrativeId}${params.type}`, config(params.cookie))
   },
 
+  // ANBOS SERVICES
+  getAllAnbos: (params) => {
+    const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
+    return axios.get(`${GET_BUSINESS}/${apps.id}/app_narrative_blogs`, config(params.cookie))
+  },
+  getAnbosById: (params) => {
+    const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
+    return axios.get(`${GET_BUSINESS}/${apps.id}/app_narrative_blogs/${params.narrativeId}`, config(params.cookie))
+  },
+  getAnbosByDate: (params) => {
+    const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
+    return axios.get(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/anbos?date=${params.date}&id=${params.id}`, config(params.cookie))
+  },
+  postAnbos: (params, cookie) => {
+    return axios.post(`${GET_BUSINESS}/${params.app_id}/app_narrative_blogs`, params, config(cookie))
+  },
+  putAnbos: (params, cookie, narrativeId) => {
+    const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
+    return axios.put(`${GET_BUSINESS}/${apps.id}/app_narrative_blogs/${narrativeId}`, params, config(cookie))
+  },
+  deleteAnbos: (params) => {
+    const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
+    return axios.delete(`${GET_BUSINESS}/${apps.id}/app_narrative_blogs/${params.narrativeId}`, config(params.cookie))
+  },
+
   // google signin
   googleSignIn: (params) => {
     return axios.post(GOOGLE_SIGNIN, params)

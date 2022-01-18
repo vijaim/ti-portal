@@ -119,10 +119,10 @@ const SettingsBusiness = (props) => {
   }
 
   useEffect(() => {
-    if (location.pathname.split('/').pop() === 'customInsights') {
-      setTabName('customInsights')
-      getAllCustomNarratives(0)
-    }
+    // if (location.pathname.split('/').pop() === 'customInsights') {
+    //   setTabName('customInsights')
+    //   getAllCustomNarratives(0)
+    // }
     businessLists()
     return () => {
       localStorage.setItem('prevPath', '')
@@ -312,7 +312,7 @@ const SettingsBusiness = (props) => {
                Object.keys(selectedBusiness).length > 0 && <div className="col-md-8 col-lg-9">
                   <div className="listing-item pt-20 pb-20">
                     <div className="row position-relative">
-                    <div>
+                    {/* <div>
                       {tabName === 'customInsights' && <Link className="text-end pb-20 position-absolute top-0 end-0" to={ `${FAVORITES}/${activeBusiness.id || apps.id}/createCustomMetric`} >
                         <span className="btn btn-primary disabled-link">Add Custom Insights</span>
                       </Link>}
@@ -323,14 +323,14 @@ const SettingsBusiness = (props) => {
                           ))}
                         </div>
                       </nav>
-                    </div>
-                    <div class="tab-content" id="nav-tabContent">
-                      <div class={`tab-pane fade ${tabName === 'general' ? 'show active' : 'fade'}`} id="general" role="tabpanel" aria-labelledby="general">
+                    </div> */}
+                    {/* <div class="tab-content" id="nav-tabContent">
+                      <div class={`tab-pane fade ${tabName === 'general' ? 'show active' : 'fade'}`} id="general" role="tabpanel" aria-labelledby="general"> */}
                         <div className="col-xl-8">
                           <AddBusiness className="btn btn-primary" buttonTitle="Save" businessData= {selectedBusiness} onClick= {businessLists} />
-                        </div>
-                      </div>
-                      <div class={`tab-pane fade ${tabName === 'customInsights' ? 'show active' : 'fade'}`} id="customInsights" role="tabpanel" aria-labelledby="customInsights">
+                        {/* </div>
+                      </div> */}
+                      {/* <div class={`tab-pane fade ${tabName === 'customInsights' ? 'show active' : 'fade'}`} id="customInsights" role="tabpanel" aria-labelledby="customInsights">
                         { customNarrativeList.length > 0
                           ? renderCustomNarratives()
                           : isLoading
@@ -352,7 +352,7 @@ const SettingsBusiness = (props) => {
                               onPress = {onPressModalButton}
                             />
                         }
-                      </div>
+                      </div> */}
                     </div>
                     </div>
                   </div>

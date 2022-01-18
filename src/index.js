@@ -7,6 +7,8 @@ import { createLogger } from 'redux-logger'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import rootReducer from './redux-store/index'
 import Routes from './routes'
+import { MuiPickersUtilsProvider } from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
 
 const logger = createLogger()
 let middleware = []
@@ -18,6 +20,6 @@ if (process.env.NODE_ENV === 'production') {
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(...middleware)))
 
 ReactDOM.render(
-  <Provider store={store}><Routes /></Provider>,
+  <Provider store={store}><MuiPickersUtilsProvider utils={DateFnsUtils}><Routes /></MuiPickersUtilsProvider></Provider>,
   document.getElementById('root')
 )

@@ -18,9 +18,9 @@ export const ROUTES_PATH_NAME = {
 }
 
 export const NAVIGATION_TABS = [
-  { id: 'all', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'All', type: 'home', isNavigation: true },
-  { id: 'favorites', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Favorites', type: 'home', isNavigation: true },
-  { id: 'hiddens', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Hidden', type: 'home', isNavigation: true },
+  { id: 'all', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Standard Insights ', type: 'home', isNavigation: true },
+  // { id: 'favorites', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Favorites', type: 'home', isNavigation: true },
+  // { id: 'hiddens', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Hidden', type: 'home', isNavigation: true },
   // { id: 'customNarratives', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Custom Narratives', type: 'home', isNavigation: true },
   { id: 'businesses', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Businesses', type: 'settings', isNavigation: true },
   { id: 'profile', routePath: ROUTES_PATH_NAME.SETTINGS_PROFILE, name: 'Profile', type: 'settings', isNavigation: true }
@@ -156,3 +156,5 @@ export const BUSINESS_SETTINGS_TAB = [
   { id: 'general', name: 'General', tabId: '0' },
   { id: 'customInsights', name: 'Custom Insights', tabId: '1' }
 ]
+
+export const BLOGS_SUCESS_MODAL_MESSAGE = 'saved successfully. \n\n\n Note: Generation of Output will take maximum 30 minutes.'

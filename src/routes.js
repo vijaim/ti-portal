@@ -23,6 +23,7 @@ import { ROUTES_PATH_NAME } from './utils/constants'
 import { history } from './utils/util-methods'
 import { getCookie } from './functions/cookie-functions'
 import { ToastContainer } from 'react-toastify'
+import blogInsights from './component/insights/blog-insights'
 
 const Routes = (props) => {
   const {
@@ -65,18 +66,18 @@ const Routes = (props) => {
         <Route exact path={BUSINESS} component={Business} />
         <Route exact path={TRACK_CODE} component={TrackCode} />
         {isLoggedIn && <Route exact path={HOME} component={InSightsBusiness} /> }
-        {isLoggedIn && <Route exact path={`${FAVORITES}/:id/all`} component={Favorites} /> }
-        {isLoggedIn && <Route exact path={`${FAVORITES}/:id/favorites`} component={Favorites} /> }
-        {isLoggedIn && <Route exact path={`${FAVORITES}/:id/hiddens`} component={Favorites} /> }
-        {isLoggedIn && <Route exact path={`${SETTINGS_BUSINESS}/:id/customInsights`} component={SettingsBusiness} /> }
+        {isLoggedIn && <Route exact path={`${FAVORITES}/:id/all`} component={blogInsights} /> }
+        {/* {isLoggedIn && <Route exact path={`${FAVORITES}/:id/favorites`} component={Favorites} /> }
+        {isLoggedIn && <Route exact path={`${FAVORITES}/:id/hiddens`} component={Favorites} /> } */}
+        {/* {isLoggedIn && <Route exact path={`${SETTINGS_BUSINESS}/:id/customInsights`} component={SettingsBusiness} /> } */}
         {isLoggedIn && <Route exact path={SALES} component={Sales} /> }
         {isLoggedIn && <Route exact path={TRACKING} component={Tracking} /> }
         {isLoggedIn && <Route exact path={SETTINGS_BUSINESS} component={SettingsBusiness} /> }
         {isLoggedIn && <Route exact path={`${SETTINGS_BUSINESS}/:id`} component={SettingsBusiness} /> }
         {isLoggedIn && <Route exact path={SETTINGS_PROFILE} component={SettingsProfile} /> }
         {isLoggedIn && <Route exact path={TUTORIAL} component={Tutorial} /> }
-        {isLoggedIn && <Route exact path={`${FAVORITES}/:id${CREATECUSTOMMETRIC}`} component={AddCustomMetric} /> }
-        {isLoggedIn && <Route exact path={`${FAVORITES}/:id${CREATECUSTOMMETRIC}/:narrativeId`} component={AddCustomMetric} /> }
+        {/* {isLoggedIn && <Route exact path={`${FAVORITES}/:id${CREATECUSTOMMETRIC}`} component={AddCustomMetric} /> }
+        {isLoggedIn && <Route exact path={`${FAVORITES}/:id${CREATECUSTOMMETRIC}/:narrativeId`} component={AddCustomMetric} /> } */}
         {isLoggedIn && <Route exact path="*" component={InSightsBusiness} />}
         {!isLoggedIn && <Route exact path="*" component={SignIn} />}
       </Switch>
