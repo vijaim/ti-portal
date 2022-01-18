@@ -758,7 +758,7 @@ const AddCustomMetric = (props) => {
                 {/* <button className="btns mt-20" style={{ color: '#EE5D2C', marginRight: '10px' }}>Delete</button> */}
                  {!props.isDisplayByModal
                    ? <Link to={`${SETTINGS_BUSINESS}/${apps.id}/customInsights`} className="btns mt-20" style={{ color: '#3557cc', marginRight: '20px' }}>Cancel</Link>
-                   : <span onClick={() => closeModal()} className="btns mt-20 form-check-label" style={{ color: '#3557cc', marginRight: '20px' }}>Cancel</span> }
+                   : <span onClick={() => props.handleModal(false)} className="btns mt-20 form-check-label" style={{ color: '#3557cc', marginRight: '20px' }}>Cancel</span> }
                 {!props.isDisplayByModal && <button disabled={!isbuttonEnable} className={`btn ${isbuttonEnable ? 'btn-primary' : 'btn-disabled'} d-block mt-20`} style={{ marginRight: '10px' }} onClick={() => previewMetric('preview')}>Preview</button>}
                 <button disabled={!isbuttonEnable} className={`btn ${isbuttonEnable ? 'btn-primary' : 'btn-disabled'} d-block mt-20`} style={{ marginRight: '10px' }} onClick={() => !props.isDisplayByModal ? AddMetric('save') : BlogAddMetric('save')}>Save</button>
               </div>
