@@ -603,26 +603,34 @@ const AddCustomMetric = (props) => {
                   </select>
                 </div>}
               </div>
-              {props.isDisplayByModal
-                ? <div className='d-flex flex-column'>
-                <label className="form-label fw-bold">Builder</label>
-                {customNarrativeList.length === 0 && <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.5rem' }} direction={'next'}/>}
-              </div>
-                : customNarrativeList.length === 0 && <div className="d-flex">
-                <div className="mx-2">
-                    <img src={ADD}></img>
-                </div>
-                <div className="listing-item" style={{ width: 130 }}>
-                  <div className="align-items-center gy-3 row">
-                    <div className="col-lg-3 col-sm-6 col-1">
-                      <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Data field</span></div>
-                      {!props.isDisplayByModal && <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>}
+              {props.isDisplayByModal && <Editor
+                // placeholder='Add Title'
+                editorState={richText}
+                wrapperClassName="title-richTextEditor-wrapper mb-3"
+                editorClassName="title-richTextEditor-editor"
+                onEditorStateChange={(value) => setRichText(value)}
+                toolbarCustomButtons={[
+                <main>
+                  {props.isDisplayByModal
+                    ? <div className='d-flex flex-column'>
+                      {/* <label className="form-label fw-bold">Builder</label> */}
+                      {customNarrativeList.length === 0 && <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 20, height: 20, marginLeft: '0.5rem' }} direction={'next'}/>}
                     </div>
-                  </div>
-                </div>
-              </div>}
-              <div className="customListcontainer">
-              {
+                    : customNarrativeList.length === 0 && <div className="d-flex">
+                      <div className="mx-2">
+                          <img src={ADD}></img>
+                      </div>
+                      <div className="listing-item" style={{ width: 130 }}>
+                        <div className="align-items-center gy-3 row">
+                          <div className="col-lg-3 col-sm-6 col-1">
+                            <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Data field</span></div>
+                            {!props.isDisplayByModal && <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>}
+                          </div>
+                        </div>
+                      </div>
+                    </div>}
+                  <div className="customListcontainer">
+                  {
                     customNarrativeList.map((addItem, addDataItemIndex) => {
                       if (Object.keys(addItem).includes('data')) {
                         let customNarrative = addItem['data'].filters
@@ -673,14 +681,16 @@ const AddCustomMetric = (props) => {
                                   return <div key={`customFilterItem_${addDataItemIndex}_${customItemIndex}`} className="d-flex justify-content-between g-2 mt-3"
                                     style={{ marginTop: '1%', paddingRight: 0 }}>
                                       <img src={FILTER} className="filterIcon" style={{ width: '3%', height: '2%', marginTop: '1%' }}></img>
-                                      {customItemIndex !== 0 && <select className={`form-select ${dropdownWidth}`} aria-label="And" id="inputPlatform" style={{ maxWidth: 75, fontSize: 12 }}
+                                      {customItemIndex !== 0 &&
+                                      <select className={`form-select ${dropdownWidth}`} aria-label="And" id="inputPlatform" style={{ maxWidth: 75, fontSize: 12 }}
                                       value={customFilterItem.condition}
                                       onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'condition', addDataItemIndex)}
                                       >
                                         {CONDITION_DROP.map((item, index) => (
                                           <option key={item} value={item} label={item} />
                                         ))}
-                                      </select>}
+                                      </select>
+                                      }
                                       <select className={`form-select ${dropdownWidth}`} aria-label="Referer" id="inputPlatform"
                                         value={customFilterItem.id}
                                         onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'id', addDataItemIndex)}
@@ -700,13 +710,13 @@ const AddCustomMetric = (props) => {
                                       {
                                         dataType === 'boolean'
                                           ? <select className={`form-select ${dropdownWidth}`} aria-label="Is equal to" id="inputPlatform" style={{ marginRight: '2%', width: '8vw' }}
-                                          value={customFilterItem.value}
-                                          onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}
-                                        >
-                                          {BOOLEAN_VALUES.map((item, index) => (
-                                            <option key={item.id} value={item.value} label={item.id}></option>
-                                          ))}
-                                        </select>
+                                            value={customFilterItem.value}
+                                            onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}
+                                          >
+                                            {BOOLEAN_VALUES.map((item, index) => (
+                                              <option key={item.id} value={item.value} label={item.id}></option>
+                                            ))}
+                                          </select>
                                           : <Autocomplete
                                           shouldItemRender={(item, value) => item.toLowerCase().indexOf(value.toLowerCase()) > -1}
                                           getItemValue={item => item}
@@ -742,17 +752,12 @@ const AddCustomMetric = (props) => {
                             </div>
                           </div>
                           <AddItemField showAddText={showText} iconStyle ={{ marginTop: '0.5rem', width: 25, height: 25 }} index={addDataItemIndex} direction={'next'}/>
-                       </div>
+                      </div>
                       }
                     })
                   }
-              </div>
-              {props.isDisplayByModal && <Editor
-                // placeholder='Add Title'
-                editorState={richText}
-                wrapperClassName="title-richTextEditor-wrapper mb-3"
-                editorClassName="title-richTextEditor-editor"
-                onEditorStateChange={(value) => setRichText(value)}
+                </div>
+              </main>]}
               />}
               <div className={'col-md-auto col-sm-auto text-xl-center d-flex justify-content-end mt-3'} style={{ marginTop: '-4%', marginBottom: '20px' }}>
                 {/* <button className="btns mt-20" style={{ color: '#EE5D2C', marginRight: '10px' }}>Delete</button> */}
