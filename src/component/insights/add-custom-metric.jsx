@@ -19,6 +19,7 @@ import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-
 import '../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import draftToHtml from 'draftjs-to-html'
 import htmlToDraft from 'html-to-draftjs'
+import Select from 'react-select'
 
 const ThrashIcon = ({ width, height, styles, onPressRemove }) => (
   <svg onClick={onPressRemove} style={styles} xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill="currentColor" className="bi bi-trash icon-color ml-1 form-check-label deleteIconSize" viewBox="0 0 16 16">
@@ -37,6 +38,12 @@ const AddCustomMetric = (props) => {
     showAddFilter: false,
     loader: false
   })
+  const [metricId, setMetricId] = useState([])
+  const [metricAggregator, setMetricAggregator] = useState([])
+  const [metricDataIndex, setMetricDataIndex] = useState([])
+  const [customFilterCondition, setCustomFilterCondition] = useState([])
+  const [customFilterId, setCustomFilterId] = useState([])
+  const [customFilterOperator, setCustomFilterOperator] = useState([])
   let ref = useRef(null)
   let apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
   let selectedInsight = JSON.parse(localStorage.getItem('selectedTab'))
@@ -142,13 +149,13 @@ const AddCustomMetric = (props) => {
   }
 
   const onChangeFilterValues = (event, index, pickValue, fieldName, addFieldIndex) => {
-    customNarrativeList[addFieldIndex]['data'].filters[index][fieldName] = pickValue ? event : fieldName === 'id' ? parseInt(event.target.value) : event.target.value
+    customNarrativeList[addFieldIndex]['data'].filters[index][fieldName] = pickValue ? event : fieldName === 'id' ? parseInt(event.value) : event.value
     if (fieldName === 'value' && !pickValue) {
-      customNarrativeList[addFieldIndex]['data'].filters[index][fieldName] = event.target.value.trim().length === 0 ? event.target.value.trim() : event.target.value
+      customNarrativeList[addFieldIndex]['data'].filters[index][fieldName] = event.value.trim().length === 0 ? event.value.trim() : event.value
     }
     setCustomNarrativeList(customNarrativeList)
     if (fieldName === 'id') {
-      let [filter] = responseFilerValues.filter(item => `${item.id}` === event.target.value)
+      let [filter] = responseFilerValues.filter(item => item.id === event.value)
       let lookupList = autoCompleteLookup.filter(item => item.id === filter.id)
       if (filter.data_type === 'boolean') {
         customNarrativeList[addFieldIndex]['data'].filters[index].value = 'true'
@@ -156,14 +163,31 @@ const AddCustomMetric = (props) => {
       if (lookupList.length === 0 && filter.data_type === 'string') {
         getAutoCompleteLookup(filter.id)
       }
+      if (fieldName === 'id') {
+        console.log('customFilterId', customFilterId)
+        setCustomFilterId(event)
+      }
+    } else if (fieldName === 'condition') {
+      setCustomFilterCondition(event)
+    } else if (fieldName === 'operator') {
+      setCustomFilterOperator(event)
+    } else {
+      console.log('fieldName', fieldName)
     }
     setState(() => ({ loader: !loader }))
   }
 
   const handleFieldValueChange = (event, index, fieldName, objName) => {
-    customNarrativeList[index]['data'][objName][fieldName] = fieldName === 'id' ? parseInt(event.target.value) : event.target.value
+    customNarrativeList[index]['data'][objName][fieldName] = fieldName === 'id' ? parseInt(event.value) : event.value
     setCustomNarrativeList(customNarrativeList)
     setState(() => ({ loader: !loader }))
+    if (fieldName === 'id') {
+      setMetricId(event)
+    } else if (fieldName === 'aggregator') {
+      setMetricAggregator(event)
+    } else {
+      setMetricDataIndex(event)
+    }
   }
   const onTextChange = (event, index, fieldName) => {
     event.preventDefault()
@@ -636,40 +660,44 @@ const AddCustomMetric = (props) => {
                         let customNarrative = addItem['data'].filters
                         let metric = addItem['data'].metric
                         let isHaveCustomNarrative = (customNarrative && customNarrative.length > 0)
-                        let opList, aggregators
+                        let opList, aggregators, responseMetric
                         if (metric) {
                           opList = responseMetricValues.filter(filterItem => `${filterItem.id}` === `${metric.id}`)
                           aggregators = opList.length > 0 ? opList[0].aggregators : []
+                          responseMetric = responseMetricValues.map((item, index) => ({
+                            value: parseInt(item.id),
+                            label: item.name,
+                            key: item.name
+                          }))
                         }
                         return <div key={`customNarrativeList_${addDataItemIndex}`} className={'customListItem d-inline-flex  g-2 position-relative mx-1'}>
                               {/* <AddItemField iconStyle ={{ marginTop: '1.5rem', width: 25, height: 25, marginRight: '1.5rem' }} index={addDataItemIndex} direction={'prev'}/> */}
                               <div className={`customListcontainerItem col-11 border border-2 rounded-3 p-1${addDataItemIndex === 0 ? 'mt-3' : 'mt-2'}`} >
                               <div className="row g-2 position-relative ">
                                 {metric && <div className="d-flex justify-content-between " >
-                                  <select className="form-select dropdownWidth" aria-label="Business category dataField1" id="id" style={{ marginRight: '10px', width: '11vw' }}
-                                    value={metric.id}
+                                  <Select className="form-select dropdownWidth" id="id" style={{ marginRight: '10px', width: '11vw' }}
+                                    value={metricId}
                                     onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'id', 'metric')}
-                                  >
-                                    {responseMetricValues.map((item, index) => (
-                                      <option key={item.name} value={parseInt(item.id)} label={item.name} />
-                                    ))}
-                                  </select>
-                                  <select className="form-select dropdownWidth" aria-label="Business category dataField2" id="aggregator" style={{ marginRight: '10px', width: '8vw' }}
-                                    value={metric.aggregator}
+                                    options={responseMetric}
+                                  />
+                                  <Select className="form-select dropdownWidth" id="aggregator" style={{ marginRight: '10px', width: '8vw' }}
+                                    value={metricAggregator}
                                     onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'aggregator', 'metric')}
-                                  >
-                                    {aggregators.map((item, index) => (
-                                      <option key={item} value={item} label={item} />
-                                    ))}
-                                  </select>
-                                  <select className="form-select dropdownWidth" aria-label="Business category dataField3" id="date_range" style={{ marginRight: '10px', width: '9vw' }}
-                                    value={metric.date_range}
+                                    options={aggregators.map((item, index) => ({
+                                      value: item,
+                                      label: item,
+                                      key: item
+                                    }))}
+                                  />
+                                  <Select className="form-select dropdownWidth" id="date_range" style={{ marginRight: '10px', width: '9vw' }}
+                                    value={metricDataIndex}
                                     onChange={(e) => handleFieldValueChange(e, addDataItemIndex, 'date_range', 'metric')}
-                                  >
-                                    {pickerOptionLookup.date_ranges && pickerOptionLookup.date_ranges.map((item, index) => (
-                                      <option key={item} value={item} label={item} />
-                                    ))}
-                                  </select>
+                                    options={pickerOptionLookup.date_ranges && pickerOptionLookup.date_ranges.map((item, index) => ({
+                                      value: item,
+                                      label: item,
+                                      key: item
+                                    }))}
+                                  />
                                   {/* <div className='vertical-line' style={{ marginBottom: showAddFilter ? '-92%' : '-38%' }}></div> */}
                                   <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'metric')} styles={{ marginLeft: '0%' }} width={20} height={20}/>
                                 </div>}
@@ -681,42 +709,45 @@ const AddCustomMetric = (props) => {
                                   return <div key={`customFilterItem_${addDataItemIndex}_${customItemIndex}`} className="d-flex justify-content-between g-2 mt-3"
                                     style={{ marginTop: '1%', paddingRight: 0 }}>
                                       <img src={FILTER} className="filterIcon" style={{ width: '3%', height: '2%', marginTop: '1%' }}></img>
-                                      {customItemIndex !== 0 &&
-                                      <select className={`form-select ${dropdownWidth}`} aria-label="And" id="inputPlatform" style={{ maxWidth: 75, fontSize: 12 }}
-                                      value={customFilterItem.condition}
-                                      onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'condition', addDataItemIndex)}
-                                      >
-                                        {CONDITION_DROP.map((item, index) => (
-                                          <option key={item} value={item} label={item} />
-                                        ))}
-                                      </select>
+                                      {customItemIndex !== 0 && <Select className={`form-select ${dropdownWidth}`} id="inputPlatform" style={{ maxWidth: 75, fontSize: 12 }}
+                                        value={customFilterCondition}
+                                        onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'condition', addDataItemIndex)}
+                                        options={CONDITION_DROP.map((item, index) => ({
+                                          value: item,
+                                          label: item,
+                                          key: item
+                                        }))}
+                                      />
                                       }
-                                      <select className={`form-select ${dropdownWidth}`} aria-label="Referer" id="inputPlatform"
-                                        value={customFilterItem.id}
+                                      <Select className={`form-select ${dropdownWidth}`} id="inputPlatform"
+                                        value={customFilterId}
                                         onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'id', addDataItemIndex)}
-                                      >
-                                        {responseFilerValues.map((item, index) => (
-                                          <option key={item.name} value={parseInt(item.id)} label={item.name}></option>
-                                        ))}
-                                      </select>
-                                      <select className={`form-select ${dropdownWidth}`} aria-label="Is equal to" id="inputPlatform"
-                                        value={customFilterItem.operator}
+                                        options={responseFilerValues.map((item, index) => ({
+                                          value: parseInt(item.id),
+                                          label: item.name,
+                                          key: item.name
+                                        }))}
+                                      />
+                                      <Select className={`form-select ${dropdownWidth}`} id="inputPlatform"
+                                        value={customFilterOperator}
                                         onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'operator', addDataItemIndex)}
-                                      >
-                                        {operators && operators.map((item, index) => (
-                                          <option key={item} value={item} label={item}></option>
-                                        ))}
-                                      </select>
+                                        options={operators && operators.map((item, index) => ({
+                                          value: item,
+                                          label: item,
+                                          key: item
+                                        }))}
+                                      />
                                       {
                                         dataType === 'boolean'
-                                          ? <select className={`form-select ${dropdownWidth}`} aria-label="Is equal to" id="inputPlatform" style={{ marginRight: '2%', width: '8vw' }}
-                                            value={customFilterItem.value}
-                                            onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}
-                                          >
-                                            {BOOLEAN_VALUES.map((item, index) => (
-                                              <option key={item.id} value={item.value} label={item.id}></option>
-                                            ))}
-                                          </select>
+                                          ? <Select className={`form-select ${dropdownWidth}`} id="inputPlatform"style={{ marginRight: '2%', width: '8vw' }}
+                                              value={customFilterItem.value}
+                                              onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}
+                                              options={BOOLEAN_VALUES.map((item, index) => ({
+                                                value: item.value,
+                                                label: item.id,
+                                                key: item.id
+                                              }))}
+                                            />
                                           : <Autocomplete
                                           shouldItemRender={(item, value) => item.toLowerCase().indexOf(value.toLowerCase()) > -1}
                                           getItemValue={item => item}
