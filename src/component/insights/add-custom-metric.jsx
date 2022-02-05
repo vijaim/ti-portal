@@ -38,12 +38,12 @@ const AddCustomMetric = (props) => {
     showAddFilter: false,
     loader: false
   })
-  const [metricId, setMetricId] = useState([])
-  const [metricAggregator, setMetricAggregator] = useState([])
-  const [metricDataIndex, setMetricDataIndex] = useState([])
-  const [customFilterCondition, setCustomFilterCondition] = useState([])
-  const [customFilterId, setCustomFilterId] = useState([])
-  const [customFilterOperator, setCustomFilterOperator] = useState([])
+  const [metricId, setMetricId] = useState({ value: 1, label: 'Clicks' })
+  const [metricAggregator, setMetricAggregator] = useState({ value: 'Minimum of', label: 'Minimum of' })
+  const [metricDataIndex, setMetricDataIndex] = useState({ value: 'yesterday', label: 'yesterday' })
+  const [customFilterCondition, setCustomFilterCondition] = useState({ value: 'OR', label: 'OR' })
+  const [customFilterId, setCustomFilterId] = useState({ value: 1, label: 'Country' })
+  const [customFilterOperator, setCustomFilterOperator] = useState({ value: 'contains', label: 'contains' })
   let ref = useRef(null)
   let apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
   let selectedInsight = JSON.parse(localStorage.getItem('selectedTab'))
@@ -164,7 +164,6 @@ const AddCustomMetric = (props) => {
         getAutoCompleteLookup(filter.id)
       }
       if (fieldName === 'id') {
-        console.log('customFilterId', customFilterId)
         setCustomFilterId(event)
       }
     } else if (fieldName === 'condition') {
@@ -675,13 +674,19 @@ const AddCustomMetric = (props) => {
                               <div className={`customListcontainerItem col-11 border border-2 rounded-3 p-1${addDataItemIndex === 0 ? 'mt-3' : 'mt-2'}`} >
                               <div className="row g-2 position-relative ">
                                 {metric && <div className="d-flex justify-content-between " >
-                                  <Select className="form-select dropdownWidth" id="id" style={{ marginRight: '10px', width: '11vw' }}
+                                  <Select id="id"
                                     value={metricId}
+                                    components={{
+                                      IndicatorSeparator: () => null
+                                    }}
                                     onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'id', 'metric')}
                                     options={responseMetric}
                                   />
-                                  <Select className="form-select dropdownWidth" id="aggregator" style={{ marginRight: '10px', width: '8vw' }}
+                                  <Select id="aggregator"
                                     value={metricAggregator}
+                                    components={{
+                                      IndicatorSeparator: () => null
+                                    }}
                                     onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'aggregator', 'metric')}
                                     options={aggregators.map((item, index) => ({
                                       value: item,
@@ -689,8 +694,11 @@ const AddCustomMetric = (props) => {
                                       key: item
                                     }))}
                                   />
-                                  <Select className="form-select dropdownWidth" id="date_range" style={{ marginRight: '10px', width: '9vw' }}
+                                  <Select id="date_range"
                                     value={metricDataIndex}
+                                    components={{
+                                      IndicatorSeparator: () => null
+                                    }}
                                     onChange={(e) => handleFieldValueChange(e, addDataItemIndex, 'date_range', 'metric')}
                                     options={pickerOptionLookup.date_ranges && pickerOptionLookup.date_ranges.map((item, index) => ({
                                       value: item,
@@ -709,8 +717,11 @@ const AddCustomMetric = (props) => {
                                   return <div key={`customFilterItem_${addDataItemIndex}_${customItemIndex}`} className="d-flex justify-content-between g-2 mt-3"
                                     style={{ marginTop: '1%', paddingRight: 0 }}>
                                       <img src={FILTER} className="filterIcon" style={{ width: '3%', height: '2%', marginTop: '1%' }}></img>
-                                      {customItemIndex !== 0 && <Select className={`form-select ${dropdownWidth}`} id="inputPlatform" style={{ maxWidth: 75, fontSize: 12 }}
+                                      {customItemIndex !== 0 && <Select id='condition'
                                         value={customFilterCondition}
+                                        components={{
+                                          IndicatorSeparator: () => null
+                                        }}
                                         onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'condition', addDataItemIndex)}
                                         options={CONDITION_DROP.map((item, index) => ({
                                           value: item,
@@ -719,17 +730,23 @@ const AddCustomMetric = (props) => {
                                         }))}
                                       />
                                       }
-                                      <Select className={`form-select ${dropdownWidth}`} id="inputPlatform"
+                                      <Select id='id'
                                         value={customFilterId}
                                         onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'id', addDataItemIndex)}
+                                        components={{
+                                          IndicatorSeparator: () => null
+                                        }}
                                         options={responseFilerValues.map((item, index) => ({
                                           value: parseInt(item.id),
                                           label: item.name,
                                           key: item.name
                                         }))}
                                       />
-                                      <Select className={`form-select ${dropdownWidth}`} id="inputPlatform"
+                                      <Select id='operator'
                                         value={customFilterOperator}
+                                        components={{
+                                          IndicatorSeparator: () => null
+                                        }}
                                         onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'operator', addDataItemIndex)}
                                         options={operators && operators.map((item, index) => ({
                                           value: item,
@@ -739,8 +756,11 @@ const AddCustomMetric = (props) => {
                                       />
                                       {
                                         dataType === 'boolean'
-                                          ? <Select className={`form-select ${dropdownWidth}`} id="inputPlatform"style={{ marginRight: '2%', width: '8vw' }}
+                                          ? <Select id="inputPlatform"
                                               value={customFilterItem.value}
+                                              components={{
+                                                IndicatorSeparator: () => null
+                                              }}
                                               onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}
                                               options={BOOLEAN_VALUES.map((item, index) => ({
                                                 value: item.value,
