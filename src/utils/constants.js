@@ -157,4 +157,4 @@ export const BUSINESS_SETTINGS_TAB = [
   { id: 'customInsights', name: 'Custom Insights', tabId: '1' }
 ]
 
-export const BLOGS_SUCESS_MODAL_MESSAGE = 'saved successfully. \n\n\n Note: Generation of Output will take maximum 30 minutes.'
+export const BLOGS_SUCESS_MODAL_MESSAGE = 'Saved Successfully.'

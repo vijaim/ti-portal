@@ -46,11 +46,13 @@ const BlogInsights = (props) => {
   const [pageNo, setPageNo] = useState(1)
   const [limit, setLimit] = useState(30)
   const [isLoadMore, setIsLoadMore] = useState(false)
+  const [isManageTabLoadMore, setIsManageTabLoadMore] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { cookie, userId, searchValue, setSearchBarValue } = props
   const loginCookie = localStorage.getItem('localLoginCookie')
   const user_Id = localStorage.getItem('userId')
   const anosListContainerRef = React.createRef()
+  const manageTabContainerRef = React.createRef()
   const scrollToRef = (ref) => window.scrollTo(0, ref.current.offsetTop)
   let [anosGraphList, setAnosGraphList] = useState([])
   const [isGraphData, setIsGraphData] = useState(false)
@@ -60,7 +62,7 @@ const BlogInsights = (props) => {
   let [periodRange, setPeriodRange] = useState(PeriodRange)
   let [ShowChartId, setShowChartId] = useState(0)
   let [customOffset, setCustomOffset] = useState(0)
-  let [customLimit, setCustomLimit] = useState(5)
+  let [customLimit, setCustomLimit] = useState(10)
   let [isShowCustomInsightModal, setIsShowCustomInsightModal] = useState(false)
   let [manageInsightModal, setManageInsightModal] = useState(false)
   let [isCustomLoadMore, setIsCustomLoadMore] = useState(false)
@@ -69,9 +71,11 @@ const BlogInsights = (props) => {
   const [successModal, setSuccessModal] = useState(false)
   let [selectedCustomNarrative, setSelectedCustomNarrative] = useState('')
   let [customNarrativeList, setCustomNarrativeList] = useState([])
+  let [isCustomInsight, setIsCustomInsight] = useState(true) // if you want load custom insight design set true otherwise loads blogInsight design
   let [dateValue, setDateValue] = useState(new Date())
   let [blogList, setBlogList] = useState([])
   let [selectedTab, setSelectedTab] = useState(NAVIGATION_TABS[0])
+  let [preViewText, setPreViewText] = useState(null)
   const outputKey = ['count', 'duration', 'past_count', 'current_count', 'percentage', 'bounce_rate', 'bounces', 'clicks', 'average_session_length', 'avg_time']
   // const [isExpandOpen, setIsExpandOpen] = useState(false)
   useEffect(() => {
@@ -80,7 +84,7 @@ const BlogInsights = (props) => {
     if (tabName !== 'customNarratives') {
       inSightsList(tabName, 0)
     }
-    blogInSightsAll()
+    blogInSightsAll(0)
     // blogInSightsList(new Date())
     // getAllCustomNarratives(0)
     return () => {
@@ -91,52 +95,97 @@ const BlogInsights = (props) => {
     }
   }, [])
 
-  const blogInSightsAll = (date) => {
-    const params = {
+  const blogInSightsAll = (customOffset) => {
+    let params = {
       cookie: cookie || loginCookie
     }
     setIsLoadMore(false)
-    NetworkManager.getAllAnbos(params).then(response => {
-      setIsLoading(false)
-      if (response.status === 200 && response.data.response_objects && response.data.response_objects.app_narrative_blogs) {
-        tabList = [...response.data.response_objects.app_narrative_blogs, ...tabList]
-        // blogList = [...response.data.response_objects.app_narrative_blogs, ...blogList]
-        setTabList(tabList)
-        // setBlogList(blogList)
-      }
-    })
-      .catch(error => {
-        setIsLoading(true)
-        console.log('error', error)
-        toast(error.response.data.message, {
-          position: toast.POSITION.TOP_CENTER
-        })
+    if (!isCustomInsight) {
+      NetworkManager.getAllAnbos(params).then(response => {
+        setIsLoading(false)
+        if (response.status === 200 && response.data.response_objects && response.data.response_objects.app_narrative_blogs) {
+          tabList = [...response.data.response_objects.app_narrative_blogs, ...tabList]
+          // blogList = [...response.data.response_objects.app_narrative_blogs, ...blogList]
+          setTabList(tabList)
+          // setBlogList(blogList)
+        }
       })
+        .catch(error => {
+          setIsLoading(true)
+          console.log('error', error)
+          toast(error.response.data.message, {
+            position: toast.POSITION.TOP_CENTER
+          })
+        })
+    } else {
+      params = { ...params, appId: apps.id, offSet: customOffset * customLimit, limit: customLimit }
+      NetworkManager.getAllCustomNarratives(params).then(response => {
+        setIsLoading(false)
+        if (response.status === 200 && response.data.response_objects && response.data.response_objects.custom_narratives) {
+          if (response.data.response_objects.custom_narratives.length >= customLimit) {
+            setIsManageTabLoadMore(true)
+          } else {
+            setIsManageTabLoadMore(false)
+          }
+          tabList = [...response.data.response_objects.custom_narratives, ...tabList]
+          // blogList = [...response.data.response_objects.app_narrative_blogs, ...blogList]
+          setTabList(tabList)
+          // setBlogList(blogList)
+        }
+      })
+        .catch(error => {
+          setIsLoading(true)
+          console.log('error', error)
+          toast(error.response.data.message, {
+            position: toast.POSITION.TOP_CENTER
+          })
+        })
+    }
   }
 
   const blogInSightsList = (date, id) => {
-    const params = {
+    let params = {
       cookie: cookie || loginCookie,
       userId: userId || user_Id,
       date: moment(date).format('MM-DD-YYYY'),
       id: id
     }
     setIsLoadMore(false)
-    NetworkManager.getAnbosByDate(params).then(response => {
-      setIsLoading(false)
-      if (response.status === 200 && response.data.response_objects && response.data.response_objects.anbos) {
-        setBlogList(response.data.response_objects.anbos)
-      } else {
-        setBlogList([])
-      }
-    })
-      .catch(error => {
-        setIsLoading(true)
-        console.log('error', error)
-        toast(error.response.data.message, {
-          position: toast.POSITION.TOP_CENTER
-        })
+    if (isCustomInsight) {
+      params.id = selectedTab.narrative_id
+      params = {...params, narrativeId: selectedTab.id}
+      NetworkManager.getAnosByDate(params).then(response => {
+        setIsLoading(false)
+        if (response.status === 200 && response.data.response_objects && response.data.response_objects.anos) {
+          setBlogList(response.data.response_objects.narratives)
+        } else {
+          setBlogList([])
+        }
       })
+        .catch(error => {
+          setIsLoading(true)
+          console.log('error', error)
+          toast(error.response.data.message, {
+            position: toast.POSITION.TOP_CENTER
+          })
+        })
+    } else {
+      NetworkManager.getAnbosByDate(params).then(response => {
+        setIsLoading(false)
+        if (response.status === 200 && response.data.response_objects && response.data.response_objects.anbos) {
+          setBlogList(response.data.response_objects.anbos)
+        } else {
+          setBlogList([])
+        }
+      })
+        .catch(error => {
+          setIsLoading(true)
+          console.log('error', error)
+          toast(error.response.data.message, {
+            position: toast.POSITION.TOP_CENTER
+          })
+        })
+    }
   }
 
   const inSightsList = (path, offSet) => {
@@ -234,7 +283,8 @@ const BlogInsights = (props) => {
       setIsLoading(true)
       setEmptyList(tab.id, tab.id !== 'customNarratives')
     } else {
-      setSelectedTab(tab)
+      selectedTab = tab
+      setSelectedTab(selectedTab)
       setDateValue(new Date())
       blogInSightsList(new Date(), tab.id)
       localStorage.setItem('selectedTab', JSON.stringify(tab))
@@ -303,6 +353,12 @@ const BlogInsights = (props) => {
   const loadMoreData = (pageNo) => {
     setIsLoading(true)
     inSightsList(tabName, pageNo + 1)
+    scrollToRef(anosListContainerRef)
+  }
+
+  const manageLoadMore = (customOffset) => {
+    setIsLoading(true)
+    blogInSightsAll(customOffset + 1)
     scrollToRef(anosListContainerRef)
   }
 
@@ -457,19 +513,21 @@ const BlogInsights = (props) => {
       </div>
       <div ref={anosListContainerRef} className="container pb-20 pt-10 justify-content-center align-items-center  d-flex flex-wrap" id='accordionSample'>
         { blogList.map((item, blogItemIndex) => {
-          return <div key={`${blogItemIndex}_key_`} className="insightStatus-content d-flex position-relative bg-light px-2 justify-content-md-between align-items-md-center mx-2 my-2" >
-              <div dangerouslySetInnerHTML={{ __html: item.output}} />
+          return <div key={`${blogItemIndex}_key_`} className="insightStatus-content d-flex position-relative bg-light px-2 justify-content-md-between align-items-md-center mx-2 my-2 w-75 p-3" >
+              <div dangerouslySetInnerHTML={{ __html: isCustomInsight ? item.output_html : item.output}} />
+              <span className="disabled-link h5 pr-2 mt-1" style={{ fontSize: 15 }} onClick={() => editCustomNarratives(selectedTab)}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-pencil form-check-label" viewBox="0 0 16 16">
+                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                </svg>
+            </span>
             </div>
         })}
         {
-          blogList.length === 0 && <div className="insightStatus-content d-flex position-relative bg-light px-2 justify-content-md-between align-items-md-center mx-2 my-2 emptyBlogItem w-25" >
-        </div>
+          blogList.length === 0 && <div className="d-flex flex-column align-items-center justify-content-center">
+                <h5 className="fw-bolder">No records found for the selected date.</h5>
+                {/* <span>For new businesses, insights should get generated within 15-30 minutes from the time of setup.</span> */}
+            </div>
         }
-        <span className="disabled-link h5 pr-2 mt-1" style={{ fontSize: 15 }} onClick={() => editCustomNarratives(selectedTab)}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-pencil form-check-label" viewBox="0 0 16 16">
-              <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-          </svg>
-      </span>
       </div>
     </div>
   }
@@ -674,6 +732,8 @@ const BlogInsights = (props) => {
             <DialogContent >
                 <DialogContentText>
                     {modalDetail.message}
+                    {modalDetail.isNoteEnable && <br/>}
+                    {modalDetail.isNoteEnable && <span><b>Note:</b> Generation of Output will take maximum 30 minutes.</span>}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -717,7 +777,7 @@ const BlogInsights = (props) => {
     setSuccessModal(false)
     blogList = []
     tabList = [NAVIGATION_TABS[0]]
-    blogInSightsAll()
+    blogInSightsAll(0)
   }
 
   const deleteCustomNarratives = (customNarrativeItem) => {
@@ -748,18 +808,19 @@ const BlogInsights = (props) => {
     localStorage.setItem('selectedNarrativeId', 67)
     localStorage.setItem('isEdit', true)
     localStorage.setItem('selectedTab', JSON.stringify(item))
+    setSelectedTab(item)
     setTimeout(() => {
       setManageInsightModal(false)
       setIsShowCustomInsightModal(true)
     }, 1000)
   }
   const renderCustomNarratives = () => {
-    return <div ref={anosListContainerRef} className="d-flex flex-column justify-content-end">{tabList.map((customNarrativeItem, index) => {
+    return <div ref={manageTabContainerRef} className="d-flex flex-column justify-content-end">{tabList.map((customNarrativeItem, index) => {
       if (customNarrativeItem.id !== 'all') {
         return <div className="d-flex" key={`index_${index}`} >
                 <div className="col-12 business-listing-item p-3 d-flex justify-content-between align-items-center">
                     <div className="insightStatus-content col-10">
-                        <span className="px-1" > {customNarrativeItem.title ?? 'null'} </span>
+                        <span className="px-1" > { isCustomInsight ? customNarrativeItem.name : customNarrativeItem.title ?? 'null'} </span>
                     </div>
                     <div className="insightAction d-flex ">
                         <span onClick={() => editCustomNarratives(customNarrativeItem)}>
@@ -777,6 +838,14 @@ const BlogInsights = (props) => {
             </div>
       }
     })}
+    {isLoading && <div className="d-flex justify-content-center align-items-center" >
+        <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+        </div>
+    </div>}
+    {isManageTabLoadMore && <div className="text-center pt-20 pb-20" onClick={() => manageLoadMore(customOffset, limit)}>
+        <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
+    </div>}
         </div>
   }
 
@@ -788,7 +857,8 @@ const BlogInsights = (props) => {
         message: BLOGS_SUCESS_MODAL_MESSAGE,
         cancelButtonName: BUTTON_NAME_OK,
         showYesButton: false,
-        showNoButton: true
+        showNoButton: true,
+        isNoteEnable: true
       }
       modalDetail = modalInfo
       setModalDetail(modalDetail)
@@ -826,7 +896,7 @@ const BlogInsights = (props) => {
                                             className={(tabName === navTab.id) ? 'nav-link active' : 'nav-link'}
                                             onClick={ () => setTabValue(navTab)}
                                         >
-                                            {navTab.id === 'all' ? navTab.name : navTab.title ?? 'null'}
+                                            {navTab.id === 'all' ? navTab.name : isCustomInsight ? navTab.name : navTab.title ?? 'null'}
                                         </span>
                                     ))
                                 }
@@ -874,10 +944,10 @@ const BlogInsights = (props) => {
                   }
                     {
                         (isShowCustomInsightModal || manageInsightModal) && <Dialog fullWidth open={isShowCustomInsightModal || manageInsightModal} onClose={() => closeModal()} aria-labelledby="form-dialog-title" >
-                            <DialogTitle className="text-primary" id="form-dialog-title">{`${manageInsightModal ? 'Manage' : localStorage.getItem('isEdit') === 'true' ? 'Edit Blog' : 'Create Blog'} Narratives`}</DialogTitle>
+                            <DialogTitle className="text-primary" id="form-dialog-title">{`${manageInsightModal ? 'Manage' : localStorage.getItem('isEdit') === 'true' ? 'Edit Custom' : 'Create Custom'} Narratives`}</DialogTitle>
                             <DialogContent >
                                 {
-                                    manageInsightModal ? renderCustomNarratives() : <AddCustomMetric dateValue={dateValue} isDisplayByModal={true} customInsightId={selectedTab.id} isEdit={localStorage.getItem('isEdit')} handleModal={handleCustomInsightModal} />}
+                                    manageInsightModal ? renderCustomNarratives() : <AddCustomMetric isCustomInsight = {isCustomInsight} dateValue={dateValue} isDisplayByModal={true} customInsightId={selectedTab.id} isEdit={localStorage.getItem('isEdit')} handleModal={handleCustomInsightModal} />}
                             </DialogContent>
                         </Dialog>
                     }

@@ -27,7 +27,7 @@ export default function DateRangePicker ({ dateValue, dateChange, disable }) {
   return (
       <Fragment >
         <KeyboardDatePicker
-          autoOk={false}
+          autoOk={true}
           value = {dateValue}
           variant="inline"
           readOnly = {disable}

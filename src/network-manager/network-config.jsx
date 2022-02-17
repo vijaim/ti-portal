@@ -72,10 +72,17 @@ const NetworkManager = {
     const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
     return axios.get(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/anos${params.type}?offset=${params.offSet}&limit=${params.limit}`, config(params.cookie))
   },
+
+  getAnosByDate: (params) => {
+    const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
+    return axios.get(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/anos/custom_narrative/${params.id}?date=${params.date}&id=${params.narrativeId}`, config(params.cookie))
+  },
+
   putAnosIconAction: (params) => {
     const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
     return axios.put(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/narratives/${params.narrativeId}${params.type}`, {}, config(params.cookie))
   },
+
   deleteAnosIconAction: (params) => {
     const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
     return axios.delete(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/narratives/${params.narrativeId}${params.type}`, config(params.cookie))

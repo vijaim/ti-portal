@@ -142,6 +142,9 @@
     flex-basis: 45%; 
     margin-bottom: 10px;
   }
+  .textArea_container_width{
+    flex-basis: 93% !important;
+  }
   .addItemWidth{
     width: 45%;
   }
@@ -269,6 +272,7 @@
   .filterIcon{
     width: 4% !important;
     height: 45% !important;
+    margin-right: 5px !important;
   }
   
   .showAdd_text:hover{
@@ -282,6 +286,31 @@
   .action-container{
     width: 100px;
   }
+
+  .css-qb7sho-container  {
+    width: 12vw !important;
+    margin-right: 5px;
+    font-size: 13px;
+  }
+
+  .css-b62m3t-container {
+    width: 8.5vw !important;
+    margin-right: 5px;
+    font-size: 13px;
+  }
+
+  .css-1s2u09g-control {
+    background-color: var(--ti-light) !important;    
+  }
+
+  .filterDropDownWidth_ZeroIndex {
+    height: 38px;
+  }
+
+  .filterDropDownWidth {
+    height: 38px;
+  }
+
   @media (max-width: 992px) {
     .autocomplete {
       max-width: 110px;
