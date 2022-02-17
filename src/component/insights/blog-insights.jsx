@@ -787,21 +787,39 @@ const BlogInsights = (props) => {
       appId: apps.id,
       narrativeId: customNarrativeItem.id
     }
-    NetworkManager.deleteAnbos(params).then(response => {
-      setIsLoading(false)
-      if (response.status === 200) {
-        let filterData = tabList.filter(fiterItem => fiterItem.id !== params.narrativeId)
-        tabList = filterData
-        setTabList(tabList)
-        setSelectedCustomNarrative('')
-        setManageInsightModal(true)
-      }
-    })
-      .catch(error => {
+    if (isCustomInsight) {
+      NetworkManager.deleteCustomNarrative(params).then(response => {
         setIsLoading(false)
-        console.log('error', error)
-        errorModal(error)
+        if (response.status === 200) {
+          let filterData = tabList.filter(fiterItem => fiterItem.id !== params.narrativeId)
+          tabList = filterData
+          setTabList(tabList)
+          setSelectedCustomNarrative('')
+          setManageInsightModal(true)
+        }
       })
+        .catch(error => {
+          setIsLoading(false)
+          console.log('error', error)
+          errorModal(error)
+        })
+    } else {
+      NetworkManager.deleteAnbos(params).then(response => {
+        setIsLoading(false)
+        if (response.status === 200) {
+          let filterData = tabList.filter(fiterItem => fiterItem.id !== params.narrativeId)
+          tabList = filterData
+          setTabList(tabList)
+          setSelectedCustomNarrative('')
+          setManageInsightModal(true)
+        }
+      })
+        .catch(error => {
+          setIsLoading(false)
+          console.log('error', error)
+          errorModal(error)
+        })
+    }
   }
 
   const editCustomNarratives = (item) => {
