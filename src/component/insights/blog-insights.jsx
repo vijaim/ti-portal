@@ -900,7 +900,7 @@ const BlogInsights = (props) => {
             <main>
                 <section className="bg-white pb-20 position-relative shadow-sm">
                     <div className="container">
-                        <InsightsHeader currentTab={tabName} headingTitle={FAVORITES} businessName={apps.name} manageInsights={manageInsightsModal} />
+                        <InsightsHeader isDisableManageBtn = {tabList.length > 1} currentTab={tabName} headingTitle={FAVORITES} businessName={apps.name} manageInsights={manageInsightsModal} />
                     </div>
                 </section>
                 <section className="bg-section">
