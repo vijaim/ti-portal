@@ -11,7 +11,7 @@ import InsightsHeader from './insights-header'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import NetworkManager from '../../network-manager/network-config'
-import { BOOLEAN_VALUES, CONDITION_DROP, FIELD_THREE, IMAGE_URL, PeriodRange, ROUTES_PATH_NAME, HEADING_TITLE } from '../../utils/constants'
+import { BOOLEAN_VALUES, CONDITION_DROP, FIELD_THREE, IMAGE_URL, PeriodRange, ROUTES_PATH_NAME, HEADING_TITLE, CUSTOM_CATEGORY_NAME } from '../../utils/constants'
 import './insights.css'
 import Autocomplete from 'react-autocomplete'
 import { Editor } from 'react-draft-wysiwyg'
@@ -527,7 +527,12 @@ const AddCustomMetric = (props) => {
   const getAllCategory = () => {
     NetworkManager.getAllCategory(apps.id, loginCookie).then(response => {
       setIsLoading(false)
-      if (response.status === 200) {
+      if (response.status === 200 && response.data.response_objects) {
+        response.data.response_objects && response.data.response_objects.map(item => {
+          if (item.categories.name === CUSTOM_CATEGORY_NAME) {
+            setCategory(item.id)
+          }
+        })
         setResonseCategoryList(response.data.response_objects)
         setState(() => ({ loader: !loader }))
       }
@@ -600,27 +605,15 @@ const AddCustomMetric = (props) => {
         </div>
       </section>}
       <section className={`bg-section ${!props.isDisplayByModal ? 'section-padding' : ''}`}>
-        <div className="container pb-40 pt-40">
+        <div className="container pb-20 pt-20">
           <div className="business-item position-relative">
-            <div className="customListcontainerItem d-flex flex-column justify-content-between mb-5" style={{ display: 'flex', paddingTop: '20px' }}>
+            <div className="customListcontainerItem d-flex flex-column justify-content-between mb-0" style={{ display: 'flex', paddingTop: '20px' }}>
               {preViewText ? <p className="d-flex ">Preview: <p className={`${isPreviewHighlighted ? 'bg-warning' : ''}`}>{preViewText}</p></p> : null}
-              <div className={`d-flex flex-column flex-md-row gx-2 align-items-start justify-content-start ${props.isCustomInsight ? 'justify-content-evenly' : 'titleContainer'} mb-2`}>
+              <div className={`d-flex flex-column flex-md-row gx-2 align-items-start justify-content-start ${props.isCustomInsight ? 'justify-content-start' : 'titleContainer'} `}>
                 <div className="mb-20">
                   <label htmlFor="title" className="form-label fw-bold">Title</label>
                   <input className="form-control fullWidth" id="title" onChange={(e) => handleValueChanges(e, 'name')} value={title} placeholder="Title" required/>
                 </div>
-                {(props.isCustomInsight || !props.isDisplayByModal) && <div className="mb-20">
-                  <label htmlFor="id" className="form-label fw-bold">Category</label>
-                  <select className="form-select fullWidth" aria-label="Business category category" id="id"
-                    value={category}
-                    onChange={ (e) => handleValueChanges(e, 'category')}
-                  >
-                    <option disabled label={'Select Category'}/>
-                    {resonseCategoryList.map((item, index) => (
-                      <option key={item.id} value={parseInt(item.id)} label={item.categories.name} />
-                    ))}
-                  </select>
-                </div>}
               </div>
               {props.isCustomInsight && <main>
                 <div className='d-flex flex-column'>
@@ -644,7 +637,7 @@ const AddCustomMetric = (props) => {
                             key: item.name
                           }))
                         }
-                        metricId = opList.length > 0 ? { value: id, label: opList[0].name } : metricId
+                        metricId = opList.length > 0 ? { value: opList[0].id, label: opList[0].name } : metricId
                         metricAggregator = metric ? { value: metric.aggregator, label: metric.aggregator } : metricAggregator
                         metricDataIndex = metric ? { value: metric.date_range, label: metric.date_range } : metricDataIndex
                         return <div key={`customNarrativeList_${addDataItemIndex}`} className={'customListItem d-inline-flex  g-2 position-relative mx-1'}>

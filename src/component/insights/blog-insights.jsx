@@ -128,8 +128,11 @@ const BlogInsights = (props) => {
             setIsManageTabLoadMore(false)
           }
           tabList = [...response.data.response_objects.custom_narratives, ...tabList]
+          selectedTab = tabList[0]
+          setSelectedTab(selectedTab)
           // blogList = [...response.data.response_objects.app_narrative_blogs, ...blogList]
           setTabList(tabList)
+          blogInSightsList(new Date(), selectedTab.id)
           // setBlogList(blogList)
         }
       })
@@ -277,14 +280,16 @@ const BlogInsights = (props) => {
   const setTabValue = (tab) => {
     setIsLoading(true)
     setTabName(tab.id)
+    selectedTab = tab
+    setSelectedTab(selectedTab)
     if (tab.id === 'all') {
       setIsLoadMore(false)
+      blogList = []
+      setBlogList(blogList)
       setIsCustomLoadMore(false)
       setIsLoading(true)
       setEmptyList(tab.id, tab.id !== 'customNarratives')
     } else {
-      selectedTab = tab
-      setSelectedTab(selectedTab)
       setDateValue(new Date())
       blogInSightsList(new Date(), tab.id)
       localStorage.setItem('selectedTab', JSON.stringify(tab))
@@ -515,11 +520,6 @@ const BlogInsights = (props) => {
         { blogList.map((item, blogItemIndex) => {
           return <div key={`${blogItemIndex}_key_`} className="insightStatus-content d-flex position-relative bg-light px-2 justify-content-md-between align-items-md-center mx-2 my-2 w-75 p-3" >
               <div dangerouslySetInnerHTML={{ __html: isCustomInsight ? item.output_html : item.output}} />
-              <span className="disabled-link h5 pr-2 mt-1" style={{ fontSize: 15 }} onClick={() => editCustomNarratives(selectedTab)}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-pencil form-check-label" viewBox="0 0 16 16">
-                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                </svg>
-            </span>
             </div>
         })}
         {
@@ -795,7 +795,7 @@ const BlogInsights = (props) => {
           tabList = filterData
           setTabList(tabList)
           setSelectedCustomNarrative('')
-          setManageInsightModal(true)
+          tabList.length > 1 && setManageInsightModal(true)
         }
       })
         .catch(error => {
@@ -911,7 +911,7 @@ const BlogInsights = (props) => {
                                     tabList.map((navTab, index) => (
                                         <span
                                             key={navTab.id}
-                                            className={(tabName === navTab.id) ? 'nav-link active' : 'nav-link'}
+                                            className={(selectedTab.id === navTab.id) ? 'nav-link active' : 'nav-link'}
                                             onClick={ () => setTabValue(navTab)}
                                         >
                                             {navTab.id === 'all' ? navTab.name : isCustomInsight ? navTab.name : navTab.title ?? 'null'}
@@ -935,17 +935,17 @@ const BlogInsights = (props) => {
                     </div>
                     <div className="container pb-40 pt-40">
                         {/* Insights Data */}
-                        {tabName !== 'all' ? renderBlogList() : (anosList.size > 0) ? renderTabContent(tabName) : (tabName === 'all' && !isLoading) ? <div className="d-flex flex-column align-items-center justify-content-center">
+                        {(selectedTab.id !== 'all') ? renderBlogList() : (anosList.size > 0) ? renderTabContent(tabName) : (tabName === 'all' && !isLoading) ? <div className="d-flex flex-column align-items-center justify-content-center">
                             <h5 className="fw-bolder">No insights yet</h5>
                             <span>For new businesses, insights should get generated within 15-30 minutes from the time of setup.</span>
                         </div> : null}
                         {/* Insights Data end */}
-                        {isLoading && tabName === 'all' && <div className="d-flex justify-content-center align-items-center" >
+                        {isLoading && selectedTab.id === 'all' && <div className="d-flex justify-content-center align-items-center" >
                             <div className="spinner-border text-primary" role="status">
                                 <span className="visually-hidden">Loading...</span>
                             </div>
                         </div>}
-                        {isLoadMore && tabName === 'all' && <div className="text-center pt-20 pb-20" onClick={() => loadMoreData(pageNo, limit)}>
+                        {(isLoadMore && selectedTab.id === 'all') && <div className="text-center pt-20 pb-20" onClick={() => loadMoreData(pageNo, limit)}>
                             <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
                         </div>}
                     </div>
@@ -962,7 +962,7 @@ const BlogInsights = (props) => {
                   }
                     {
                         (isShowCustomInsightModal || manageInsightModal) && <Dialog fullWidth open={isShowCustomInsightModal || manageInsightModal} onClose={() => closeModal()} aria-labelledby="form-dialog-title" >
-                            <DialogTitle className="text-primary" id="form-dialog-title">{`${manageInsightModal ? 'Manage' : localStorage.getItem('isEdit') === 'true' ? 'Edit Custom' : 'Create Custom'} Narratives`}</DialogTitle>
+                            <DialogTitle className="text-primary" id="form-dialog-title">{`${manageInsightModal ? 'Manage' : localStorage.getItem('isEdit') === 'true' ? 'Edit' : 'Create'} Insights`}</DialogTitle>
                             <DialogContent >
                                 {
                                     manageInsightModal ? renderCustomNarratives() : <AddCustomMetric isCustomInsight = {isCustomInsight} dateValue={dateValue} isDisplayByModal={true} customInsightId={selectedTab.id} isEdit={localStorage.getItem('isEdit')} handleModal={handleCustomInsightModal} />}
