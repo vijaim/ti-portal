@@ -118,6 +118,10 @@
     box-shadow: inset 5em 1em #000;
 
   }
+  .toolTopAlign{
+    margin-left: -10% !important;
+    left: -8rem !important;
+  }
   .import-items-tooltiptext {
     opacity: 1;
   }
@@ -137,6 +141,9 @@
   .customListItem{
     flex-basis: 45%; 
     margin-bottom: 10px;
+  }
+  .textArea_container_width{
+    flex-basis: 93% !important;
   }
   .addItemWidth{
     width: 45%;
@@ -158,6 +165,19 @@
   .filterDropDownWidth_ZeroIndex{
     max-width: 120px;
     font-size: 13px;
+  }
+  .title-richTextEditor-wrapper{
+    border: 1px solid;
+  }
+  .rdw-editor-toolbar{
+    border-bottom: 1px solid !important;
+    background: #ececec !important;
+  }
+  .blogItem{
+    flex-basis: 48%;
+  }
+  .emptyBlogItem{
+    height: 40px;
   }
   @media (min-width: 1025px) {
     .fullWidth{
@@ -233,7 +253,7 @@
     
     .import-items-tooltiptext {
       opacity: 1;
-      left: -9rem !important;
+      /* left: -9rem !important; */
     }
     
     .titleContainer{
@@ -252,6 +272,7 @@
   .filterIcon{
     width: 4% !important;
     height: 45% !important;
+    margin-right: 5px !important;
   }
   
   .showAdd_text:hover{
@@ -262,6 +283,34 @@
     background-color: #D9E1EC;
     cursor: auto !important;
   }
+  .action-container{
+    width: 100px;
+  }
+
+  .css-qb7sho-container  {
+    width: 12vw !important;
+    margin-right: 5px;
+    font-size: 13px;
+  }
+
+  .css-b62m3t-container {
+    width: 8.5vw !important;
+    margin-right: 5px;
+    font-size: 13px;
+  }
+
+  .css-1s2u09g-control {
+    background-color: var(--ti-light) !important;    
+  }
+
+  .filterDropDownWidth_ZeroIndex {
+    height: 38px;
+  }
+
+  .filterDropDownWidth {
+    height: 38px;
+  }
+
   @media (max-width: 992px) {
     .autocomplete {
       max-width: 110px;
