@@ -159,3 +159,4 @@ export const BUSINESS_SETTINGS_TAB = [
 
 export const BLOGS_SUCESS_MODAL_MESSAGE = 'Saved Successfully.'
 export const CUSTOM_CATEGORY_NAME = 'Custom'
+export const CUSTOM_CATEGORY_ID = 101

@@ -11,7 +11,7 @@ import InsightsHeader from './insights-header'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import NetworkManager from '../../network-manager/network-config'
-import { BOOLEAN_VALUES, CONDITION_DROP, FIELD_THREE, IMAGE_URL, PeriodRange, ROUTES_PATH_NAME, HEADING_TITLE, CUSTOM_CATEGORY_NAME } from '../../utils/constants'
+import { BOOLEAN_VALUES, CONDITION_DROP, FIELD_THREE, IMAGE_URL, PeriodRange, ROUTES_PATH_NAME, HEADING_TITLE, CUSTOM_CATEGORY_NAME, CUSTOM_CATEGORY_ID } from '../../utils/constants'
 import './insights.css'
 import Autocomplete from 'react-autocomplete'
 import { Editor } from 'react-draft-wysiwyg'
@@ -64,7 +64,7 @@ const AddCustomMetric = (props) => {
   let [preViewText, setPreViewText] = useState(null)
   let [title, setTitle] = useState('')
   let [resonseCategoryList, setResonseCategoryList] = useState([])
-  let [category, setCategory] = useState('')
+  let [category, setCategory] = useState(CUSTOM_CATEGORY_ID)
   const [isPreviewHighlighted, setIsPreviewHighlighted] = useState(false)
   const handleShowDataField = () => {
     let customNarrativeListObj = {
@@ -123,7 +123,7 @@ const AddCustomMetric = (props) => {
 
   useEffect(() => {
     getFilterDropdownValues()
-    getAllCategory()
+    // getAllCategory()
     if (isEdit) {
       getCustomNarrativesById()
     }
@@ -731,11 +731,11 @@ const AddCustomMetric = (props) => {
                                       {
                                         dataType === 'boolean'
                                           ? <Select id="inputPlatform"
-                                              value={customFilterItem.value}
+                                              value={{ value: customFilterItem.value, label: customFilterItem.value === 'true' ? 'Yes' : 'No' }}
                                               components={{
                                                 IndicatorSeparator: () => null
                                               }}
-                                              onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}
+                                              onChange={(e) => onChangeFilterValues(e.value, customItemIndex, true, 'value', addDataItemIndex)}
                                               options={BOOLEAN_VALUES.map((item, index) => ({
                                                 value: item.value,
                                                 label: item.id,
@@ -766,7 +766,7 @@ const AddCustomMetric = (props) => {
                           </div>
                       } else if (props.isCustomInsight || !props.isDisplayByModal) {
                         let textItem = addItem.text
-                        return <div className={`customListItem d-inline-flex g-2 position-relative mt-2 textArea_container ${props.isCustomInsight ? 'textArea_container_width ml-0' : 'mx-2'}`} style={{ height: '8vw' }}>
+                        return <div className={'customListItem d-inline-flex g-2 position-relative mt-2 textArea_containermx-2'} style={{ height: '8vw' }}>
                           {/* <AddItemField iconStyle ={{ marginTop: '0.5rem', width: 25, height: 25 }} index={addDataItemIndex} direction={'prev'}/> */}
                           <div key={`textField_${addDataItemIndex}`} className={`shadow w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 border border-2 rounded-3 d-flex justify-content-start mb-lg-3`} >
                             <textarea className="px-1 customTextField " placeholder="please enter the text" value={textItem ?? ''}
