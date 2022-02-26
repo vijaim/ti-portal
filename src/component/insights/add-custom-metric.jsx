@@ -607,7 +607,7 @@ const AddCustomMetric = (props) => {
       <section className={`bg-section ${!props.isDisplayByModal ? 'section-padding' : ''}`}>
         <div className="container pb-20 pt-20">
           <div className="business-item position-relative">
-            <div className="customListcontainerItem d-flex flex-column justify-content-between mb-0" style={{ display: 'flex'}}>
+            <div className="customListcontainerItem d-flex flex-column justify-content-between mb-0" style={{ display: 'flex' }}>
               {preViewText ? <p className="d-flex ">Preview: <p className={`${isPreviewHighlighted ? 'bg-warning' : ''}`}>{preViewText}</p></p> : null}
               <div className={`d-flex flex-column flex-md-row gx-2 align-items-start justify-content-start ${props.isCustomInsight ? 'justify-content-start' : 'titleContainer'} `}>
                 <div className="mb-20">
