@@ -101,6 +101,10 @@ const NetworkManager = {
     const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
     return axios.get(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/anbos?date=${params.date}&id=${params.id}`, config(params.cookie))
   },
+  getSearchAnos: (params) => {
+    const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
+    return axios.get(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/search_anos?searchText=${params.searchText}&date=${params.date}`, config(params.cookie))
+  },
   postAnbos: (params, cookie) => {
     return axios.post(`${GET_BUSINESS}/${params.app_id}/app_narrative_blogs`, params, config(cookie))
   },

@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function DateRangePicker ({ dateValue, dateChange, disable }) {
+export default function DateRangePicker ({ dateValue, dateChange, disable, minimumDate }) {
   const classes = useStyles()
   return (
       <Fragment >
@@ -33,6 +33,7 @@ export default function DateRangePicker ({ dateValue, dateChange, disable }) {
           readOnly = {disable}
           disableFuture
           format = "MMM-dd-yyyy"
+          minDate={minimumDate}
           onChange={(newValue) => dateChange(newValue, 'dateRange')}
           className={[classes.margin_LR]}
           InputProps={{
