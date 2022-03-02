@@ -1,22 +1,27 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES_PATH_NAME, IMAGE_URL } from '../../utils/constants'
 import { GetRoutesPathName } from '../../utils/util-methods'
-import SearchBar from '../header/search-bar'
+// import SearchBar from '../header/search-bar'
 import { connect } from 'react-redux'
 import { setSearchBar } from '../signin/signin-actions'
+import Autocomplete from 'react-autocomplete'
 
 const InsightsHeader = (props) => {
   const routePath = GetRoutesPathName()
   const { FAVORITES, SALES, TRACKING, CREATECUSTOMMETRIC } = ROUTES_PATH_NAME
-  const [searchValue, setSearchValue] = React.useState('')
-  const { setSearchBarValue, manageInsights, isDisableManageBtn } = props
+  const { manageInsights, isDisableManageBtn, autoCompleteOption, autoCompleteValue, autoCompleteValueChange } = props
+  const [searchValue, setSearchValue] = React.useState(autoCompleteValue)
 
   const onSearchValueChange = (e) => {
-    setSearchBarValue(e.target.value)
     setSearchValue(e.target.value)
+    autoCompleteValueChange(e.target.value, false)
   }
+  useEffect(() => {
+    setSearchValue(autoCompleteValue)
+  }, [autoCompleteValue, autoCompleteOption, isDisableManageBtn])
   const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
   return (
     <>
@@ -37,7 +42,33 @@ const InsightsHeader = (props) => {
      { routePath.includes(FAVORITES) && props.currentTab !== 'customNarratives' && !routePath.includes(CREATECUSTOMMETRIC)
        ? <div className="container mt-3 d-flex justify-content-between">
         <form className='col-6'>
-          <SearchBar searchValue = {searchValue} onSearchValueChange = {(e) => onSearchValueChange(e)}/>
+          {/* <SearchBar searchValue = {searchValue} onSearchValueChange = {(e) => onSearchValueChange(e)}/> */}
+          <Autocomplete
+            shouldItemRender={(item, value) => (item.custom_title) ? item.custom_title.toLowerCase() : item.output_html.toLowerCase()}
+            getItemValue={item => (item.custom_title) ? item.custom_title.toLowerCase() : item.output_html.toLowerCase()}
+            items={ autoCompleteOption}
+            wrapperStyle={{ display: 'flex' }}
+            renderInput= {(props) => <input {...props} placeholder="Search for a metric (e.g. page views, users) " type="text" className="form-control" style={{ marginBottom: 10 }} onChange={(e) => onSearchValueChange(e, false)} />}
+            renderItem={(item, isHighlighted) =>
+               <p style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: 'pointer', wordWrap: 'break-word', padding: 5, marginBottom: 5, marginTop: 5 }}>
+               {<p style={{ marginLeft: 10, marginBottom: 0 }} dangerouslySetInnerHTML={{ __html: (item.custom_title) ? `${item.custom_title}` : `${item.output_html}` }} /> }
+               </p>
+            }
+            menuStyle={{
+              borderRadius: '3px',
+              boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
+              background: 'rgba(255, 255, 255, 0.9)',
+              padding: '2px 0',
+              fontSize: '100%',
+              position: 'fixed',
+              overflow: 'auto',
+              maxHeight: '50%', // TODO: don't cheat, let it flow to the bottom
+              zIndex: 1,
+              maxWidth: 630
+            }}
+            value={searchValue}
+            onSelect={(val, item) => autoCompleteValueChange(val, true, item)}
+          />
         </form>
         {isDisableManageBtn && <button className='btn btn-primary d-flex align-items-center justify-content-evenly col-2 pl-2' style={{ marginRight: '10px' }} onClick={() => manageInsights()}>
         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-filter-left" viewBox="0 0 16 16">

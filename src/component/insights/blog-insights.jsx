@@ -76,6 +76,8 @@ const BlogInsights = (props) => {
   let [blogList, setBlogList] = useState([])
   let [selectedTab, setSelectedTab] = useState(NAVIGATION_TABS[0])
   let [preViewText, setPreViewText] = useState(null)
+  let [autoCompleteValue, setAutoCompleteValue] = useState('')
+  let [autoCompleteOptions, setAutoCompleteOptions] = useState([])
   const outputKey = ['count', 'duration', 'past_count', 'current_count', 'percentage', 'bounce_rate', 'bounces', 'clicks', 'average_session_length', 'avg_time']
   // const [isExpandOpen, setIsExpandOpen] = useState(false)
   useEffect(() => {
@@ -511,9 +513,10 @@ const BlogInsights = (props) => {
     blogInSightsList(date, selectedTab.id)
   }
   const renderBlogList = () => {
+    let pastDate = blogList.length > 0 ? tabList.filter(item => blogList[0].narrative_id === item.narrative_id)[0].created_at : new Date()
     return <div>
       <div className='position-relative d-flex justify-content-center align-items-center mb-3'>
-        {searchValue === '' && <DateRangePicker disable={false} dateValue={dateValue} dateChange = {handleDateChange} />}
+        {searchValue === '' && <DateRangePicker minimumDate={pastDate} disable={false} dateValue={dateValue} dateChange = {handleDateChange} />}
         {/* {searchValue === '' && <img src={TODAY} style={{ cursor: 'pointer' }} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(value.insightsId, tab)} className="icon-base" />} */}
       </div>
       <div ref={anosListContainerRef} className="container pb-20 pt-10 justify-content-center align-items-center  d-flex flex-wrap" id='accordionSample'>
@@ -556,7 +559,7 @@ const BlogInsights = (props) => {
                                       if (!searchValue !== '' && `${subvalueItem.output_html}`.toLowerCase().includes(searchValue.toLowerCase()) || `${subvalue.name}`.includes(searchValue)) {
                                         return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className={`${subvalueItem.isNew ? 'loadedNewItem_list' : ''} business-listing-item accordion-item ${!subvalueItem.date_range ? 'pointerNone' : ''} `} >
                                                 {/* <div className="accordion-header" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}> */}
-                                                <div className="align-items-center gy-2 row accordion-header mx-1 my-2" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}>
+                                                <div className="align-items-center justify-content-between gy-2 row accordion-header mx-1 my-2" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}>
                                                     <div className="col-xl-10">
                                                         <div className="insightStatus-content d-flex align-items-md-center">
                                                             {subvalueItem.showTrend && <div className="trendStatus-content">
@@ -567,15 +570,15 @@ const BlogInsights = (props) => {
                                                         </div>
                                                     </div>
                                                     <div className="col-xl-2">
-                                                        <div className="insightAction d-flex justify-content-evenly align-items-center">
-                                                            <span className={`insightAction-link form-check-label ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
+                                                        <div className="insightAction d-flex justify-content-end align-items-center">
+                                                            {/* <span className={`insightAction-link form-check-label ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
                                                                 <img className="insightAction-icon icon-active" src={!subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
                                                                 <img className="insightAction-icon" src={subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
                                                             </span>
                                                             <span className="insightAction-link  mr-5 form-check-label" onClick={() => iconPressed(subvalueItem, 'hiddens')}>
                                                                 <img className="insightAction-icon icon-active" src={!subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
                                                                 <img className="insightAction-icon mt-1" data-html2canvas-ignore="true" src={subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
-                                                            </span>
+                                                            </span> */}
                                                             {
                                                                 subvalueItem.date_range ? <span className="accordion-button insightAction-link  mr-5 form-check-label" type="button" data-bs-toggle="collapse" data-bs-target={`#narrative_id_${subvalueItem.narrative_id}`} aria-expanded={anosIndex === 0 ? 'true' : 'false'} aria-controls={`narrative_id_${subvalueItem.narrative_id}`} onClick={() => goToBussinesMetric(subvalueItem)}>
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-bar-chart-fill barIcon icon-color" viewBox="0 0 16 16">
@@ -894,13 +897,59 @@ const BlogInsights = (props) => {
     setManageInsightModal(false)
     setIsShowCustomInsightModal(false)
   }
+
+  const autoCompleteValueChange = (value, isPickerClicked, item) => {
+    if (isPickerClicked) {
+      setAutoCompleteValue(value)
+      if (!item.custom_title) {
+        setTabValue(NAVIGATION_TABS[0])
+      } else {
+        setTabValue(...tabList.filter(filterItem => filterItem.narrative_id === item.narrative_id))
+      }
+    } else {
+      setAutoCompleteValue(value)
+      value.length > 2 && getAutoCompleteValue(value)
+      value.length === 0 && setAutoCompleteOptions([])
+    }
+  }
+
+  const getAutoCompleteValue = (value) => {
+    let params = {
+      appId: apps.id,
+      offSet: customOffset * customLimit,
+      limit: customLimit,
+      cookie: cookie || loginCookie,
+      searchText: value,
+      userId: userId || user_Id,
+      date: moment(new Date()).format('YYYY-MM-DD')
+    }
+    NetworkManager.getSearchAnos(params).then(response => {
+      setIsLoading(false)
+      if (response.status === 200 && response.data.response_objects && response.data.response_objects.narratives) {
+        if (response.data.response_objects.narratives.length >= customLimit) {
+          setIsManageTabLoadMore(true)
+        } else {
+          setIsManageTabLoadMore(false)
+        }
+        autoCompleteOptions = [...response.data.response_objects.narratives]
+        setAutoCompleteOptions(autoCompleteOptions)
+      }
+    })
+      .catch(error => {
+        setIsLoading(true)
+        console.log('error', error)
+        toast(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER
+        })
+      })
+  }
   const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
   return (
         <>
             <main>
                 <section className="bg-white pb-20 position-relative shadow-sm">
                     <div className="container">
-                        <InsightsHeader isDisableManageBtn = {tabList.length > 1} currentTab={tabName} headingTitle={FAVORITES} businessName={apps.name} manageInsights={manageInsightsModal} />
+                        <InsightsHeader autoCompleteOption={autoCompleteOptions} autoCompleteValue={autoCompleteValue} autoCompleteValueChange={autoCompleteValueChange} isDisableManageBtn = {tabList.length > 1} currentTab={tabName} headingTitle={FAVORITES} businessName={apps.name} manageInsights={manageInsightsModal} />
                     </div>
                 </section>
                 <section className="bg-section">
