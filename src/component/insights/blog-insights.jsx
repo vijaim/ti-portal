@@ -36,7 +36,7 @@ const BlogInsights = (props) => {
     TODAY, ORDERS, STAR_ACTIVE, STAR, ARROW_LEFT, HIDDEN, VISIBLE, INCREASE, DECREASE
     // DECREASE, TRANSACTIONS, , CUSTOMERS, PRODUCTS, INCREASE, DISLIKE, LOCATION, LIKE, DISLIKE_ACTIVE, LIKE_ACTIVE,
   } = IMAGE_URL
-
+  let timeOutId = 0
   const routePath = GetRoutesPathName()
   const { CREATECUSTOMMETRIC } = ROUTES_PATH_NAME
   const { FAVORITES } = HEADING_TITLE
@@ -513,7 +513,7 @@ const BlogInsights = (props) => {
     blogInSightsList(date, selectedTab.id)
   }
   const renderBlogList = () => {
-    let pastDate = blogList.length > 0 ? tabList.filter(item => blogList[0].narrative_id === item.narrative_id)[0].created_at : new Date()
+    let pastDate = tabList.length > 1 ? tabList.filter(item => selectedTab.narrative_id === item.narrative_id)[0].created_at : new Date()
     return <div>
       <div className='position-relative d-flex justify-content-center align-items-center mb-3'>
         {searchValue === '' && <DateRangePicker minimumDate={pastDate} disable={false} dateValue={dateValue} dateChange = {handleDateChange} />}
@@ -907,9 +907,16 @@ const BlogInsights = (props) => {
         setTabValue(...tabList.filter(filterItem => filterItem.narrative_id === item.narrative_id))
       }
     } else {
-      setAutoCompleteValue(value)
-      value.length > 2 && getAutoCompleteValue(value)
-      value.length === 0 && setAutoCompleteOptions([])
+      // setAutoCompleteValue(value)
+      if (value.length > 2) {
+        if (timeOutId > 0) {
+          clearTimeout(timeOutId)
+        }
+        timeOutId = setTimeout(() => {
+          getAutoCompleteValue(value)
+        }, 500)
+      }
+      value.length <= 2 && setAutoCompleteOptions([])
     }
   }
 
@@ -925,14 +932,16 @@ const BlogInsights = (props) => {
     }
     NetworkManager.getSearchAnos(params).then(response => {
       setIsLoading(false)
-      if (response.status === 200 && response.data.response_objects && response.data.response_objects.narratives) {
-        if (response.data.response_objects.narratives.length >= customLimit) {
+      if (response.status === 200 && response.data.response_objects && response.data.response_objects.search_anos) {
+        if (response.data.response_objects.search_anos.length >= customLimit) {
           setIsManageTabLoadMore(true)
         } else {
           setIsManageTabLoadMore(false)
         }
-        autoCompleteOptions = [...response.data.response_objects.narratives]
+        autoCompleteOptions = [...response.data.response_objects.search_anos]
         setAutoCompleteOptions(autoCompleteOptions)
+      } else {
+        setAutoCompleteOptions([])
       }
     })
       .catch(error => {
