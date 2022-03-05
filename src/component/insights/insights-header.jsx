@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import React, { useEffect } from 'react'
@@ -10,17 +11,23 @@ import { setSearchBar } from '../signin/signin-actions'
 import Autocomplete from 'react-autocomplete'
 
 const InsightsHeader = (props) => {
+  let timer = 0
   const routePath = GetRoutesPathName()
   const { FAVORITES, SALES, TRACKING, CREATECUSTOMMETRIC } = ROUTES_PATH_NAME
   const { manageInsights, isDisableManageBtn, autoCompleteOption, autoCompleteValue, autoCompleteValueChange } = props
-  const [searchValue, setSearchValue] = React.useState(autoCompleteValue)
+  const [searchValue, setSearchValue] = React.useState('')
 
-  const onSearchValueChange = (e) => {
+  const onSearchValueChange = async (e) => {
+    if (timer > 0) {
+      clearTimeout(timer)
+    }
     setSearchValue(e.target.value)
-    autoCompleteValueChange(e.target.value, false)
+    timer = setTimeout(() => {
+      autoCompleteValueChange(e.target.value, false)
+    }, 500)
   }
   useEffect(() => {
-    setSearchValue(autoCompleteValue)
+    // setSearchValue(autoCompleteValue)
   }, [autoCompleteValue, autoCompleteOption, isDisableManageBtn])
   const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
   return (
