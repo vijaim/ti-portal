@@ -11,7 +11,7 @@ import InsightsHeader from './insights-header'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import NetworkManager from '../../network-manager/network-config'
-import { BOOLEAN_VALUES, CONDITION_DROP, FIELD_THREE, IMAGE_URL, PeriodRange, ROUTES_PATH_NAME, HEADING_TITLE, CUSTOM_CATEGORY_NAME, CUSTOM_CATEGORY_ID } from '../../utils/constants'
+import { BOOLEAN_VALUES, CONDITION_DROP, IMAGE_URL, ROUTES_PATH_NAME, HEADING_TITLE, CUSTOM_CATEGORY_NAME, CUSTOM_CATEGORY_ID, SORT_VALUES, SORT_MINIMUM_VALUE_RANGE, SORT_MAXIMUM_VALUE_RANGE, SORT_MAXIMUM_VALUE_LENGTH } from '../../utils/constants'
 import './insights.css'
 import Autocomplete from 'react-autocomplete'
 import { Editor } from 'react-draft-wysiwyg'
@@ -114,7 +114,16 @@ const AddCustomMetric = (props) => {
     setCustomNarrativeList(customNarrativeList)
     setState(() => ({ loader: !loader }))
   }
-
+  const handleShowAddSort = (index) => {
+    let getFilterMetrics = responseMetricValues.filter(filterItem => filterItem.id === customNarrativeList[index]['data']['metric'].id)
+    customNarrativeList[index]['data']['sort'] = {
+      id: getFilterMetrics[0].sorts[0],
+      order: 'asc',
+      limit: 1
+    }
+    setCustomNarrativeList(customNarrativeList)
+    setState(() => ({ loader: !loader }))
+  }
   const hideShowText = () => {
     setShowText(false)
     setShowTextIndex('')
@@ -175,7 +184,22 @@ const AddCustomMetric = (props) => {
   }
 
   const handleFieldValueChange = (event, index, fieldName, objName) => {
-    customNarrativeList[index]['data'][objName][fieldName] = fieldName === 'id' ? parseInt(event.value) : event.value
+    if (objName === 'sort' && fieldName === 'limit') {
+      if (parseInt(event.target.value) <= 10) {
+        customNarrativeList[index]['data'][objName][fieldName] = parseInt(event.target.value)
+      }
+    } else {
+      customNarrativeList[index]['data'][objName][fieldName] = fieldName === 'id' ? parseInt(event.value) : event.value
+    }
+    if (objName === 'metric' && fieldName === 'id') {
+      let getFilterMetrics = responseMetricValues.filter(filterItem => filterItem.id === parseInt(event.value))
+      if (getFilterMetrics && getFilterMetrics[0].sort) {
+        customNarrativeList[index]['data'][objName]['aggregator'] = getFilterMetrics[0].aggregators[0]
+      } else {
+        customNarrativeList[index]['data'][objName]['aggregator'] = getFilterMetrics[0].aggregators[0]
+        delete customNarrativeList[index]['data'].sort
+      }
+    }
     setCustomNarrativeList(customNarrativeList)
     setState(() => ({ loader: !loader }))
     if (fieldName === 'id') {
@@ -626,11 +650,14 @@ const AddCustomMetric = (props) => {
                       if (Object.keys(addItem).includes('data')) {
                         let customNarrative = addItem['data'].filters
                         let metric = addItem['data'].metric
+                        let sort = addItem['data'].sort
+                        let sortValue = sort ? pickerOptionLookup.sorts.filter(filterItem => filterItem.id === sort.id) : []
                         let isHaveCustomNarrative = (customNarrative && customNarrative.length > 0)
-                        let opList, aggregators, responseMetric
+                        let opList, aggregators, responseMetric, isHaveSort
                         if (metric) {
                           opList = responseMetricValues.filter(filterItem => `${filterItem.id}` === `${metric.id}`)
                           aggregators = opList.length > 0 ? opList[0].aggregators : []
+                          isHaveSort = opList.length > 0 ? opList[0].sorts : []
                           responseMetric = responseMetricValues.map((item, index) => ({
                             value: parseInt(item.id),
                             label: item.name,
@@ -759,7 +786,36 @@ const AddCustomMetric = (props) => {
                                       <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'customFilterList', customItemIndex)} width={customItemIndex === 0 ? 20 : 10} height={20} />
                                     </div>
                                 })}
-                                <span><span className="form-check-label text-primary" onClick= {() => handleShowAddFilter(addDataItemIndex)}>Add filter</span></span>
+                                {sort && <div className="d-flex justify-content-between " >
+                                  <Select id="sortName"
+                                    value={{ value: sortValue[0].id, label: sortValue[0].name }}
+                                    components={{
+                                      IndicatorSeparator: () => null
+                                    }}
+                                    onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'id', 'sort')}
+                                    options={pickerOptionLookup.sorts.map((item, index) => ({
+                                      value: item.id,
+                                      label: item.name,
+                                      key: item.name
+                                    }))}
+                                  />
+                                  <Select id="sortOrder"
+                                    value={{ value: sort.order, label: sort.order }}
+                                    components={{
+                                      IndicatorSeparator: () => null
+                                    }}
+                                    onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'order', 'sort')}
+                                    options={SORT_VALUES.map((item, index) => ({
+                                      value: item.value,
+                                      label: item.id,
+                                      key: item.id
+                                    }))}
+                                  />
+                                  <input type="number" style={{ height: 38 }} className="form-control fullWidth" id="sortLimit" onChange={(e) => handleFieldValueChange(e, addDataItemIndex, 'limit', 'sort')} value={sort.limit} placeholder="Limit" maxLength={SORT_MAXIMUM_VALUE_LENGTH} min={SORT_MINIMUM_VALUE_RANGE} max={SORT_MAXIMUM_VALUE_RANGE} />
+                                  {/* <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'metric')} styles={{ marginLeft: '0%' }} width={20} height={20}/> */}
+                                </div>}
+                                <p><span className="form-check-label text-primary " onClick= {() => handleShowAddFilter(addDataItemIndex)}>Add filter</span>
+                                {isHaveSort && <span className="form-check-label text-primary mx-2" onClick= {() => handleShowAddSort(addDataItemIndex)}>Add Sort</span>}</p>
                               </div>
                             </div>
                             <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.5rem' }} index={addDataItemIndex} direction={'prev'}/>

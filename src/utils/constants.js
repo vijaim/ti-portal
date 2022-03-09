@@ -157,6 +157,10 @@ export const BUSINESS_SETTINGS_TAB = [
   { id: 'customInsights', name: 'Custom Insights', tabId: '1' }
 ]
 
+export const SORT_VALUES = [{ id: 'Asc', value: 'asc' }, { id: 'Desc', value: 'desc' }]
+export const SORT_MINIMUM_VALUE_RANGE = '1'
+export const SORT_MAXIMUM_VALUE_RANGE = '10'
+export const SORT_MAXIMUM_VALUE_LENGTH = 2
 export const BLOGS_SUCESS_MODAL_MESSAGE = 'Saved Successfully.'
 export const CUSTOM_CATEGORY_NAME = 'Custom'
 export const CUSTOM_CATEGORY_ID = 101
