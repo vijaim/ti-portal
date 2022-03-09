@@ -513,11 +513,13 @@ const BlogInsights = (props) => {
     blogInSightsList(date, selectedTab.id)
   }
   const renderBlogList = () => {
-    let pastDate = tabList.length > 1 ? tabList.filter(item => selectedTab.narrative_id === item.narrative_id)[0].created_at : new Date()
-    return <div>
+    let pastDate = tabList.length > 1 ? tabList.filter(item => selectedTab.narrative_id === item.narrative_id) : new Date()
+    let insightsId = uuidv4()
+    pastDate = (pastDate instanceof Date || pastDate.length === 0) ? pastDate : pastDate[0].created_at
+    return <div id={insightsId} >
       <div className='position-relative d-flex justify-content-center align-items-center mb-3'>
-        {searchValue === '' && <DateRangePicker minimumDate={pastDate} disable={false} dateValue={dateValue} dateChange = {handleDateChange} />}
-        {/* {searchValue === '' && <img src={TODAY} style={{ cursor: 'pointer' }} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(value.insightsId, tab)} className="icon-base" />} */}
+        {<DateRangePicker minimumDate={pastDate} disable={false} dateValue={dateValue} dateChange = {handleDateChange} />}
+        {blogList.length > 0 && <img src={TODAY} style={{ cursor: 'pointer' }} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(insightsId, selectedTab.name)} className="icon-base" />}
       </div>
       <div ref={anosListContainerRef} className="container pb-20 pt-10 justify-content-center align-items-center  d-flex flex-wrap" id='accordionSample'>
         { blogList.map((item, blogItemIndex) => {
@@ -778,6 +780,7 @@ const BlogInsights = (props) => {
 
   const handleModalClick = () => {
     setSuccessModal(false)
+    setIsLoading(true)
     blogList = []
     tabList = [NAVIGATION_TABS[0]]
     blogInSightsAll(0)
@@ -796,6 +799,8 @@ const BlogInsights = (props) => {
         if (response.status === 200) {
           let filterData = tabList.filter(fiterItem => fiterItem.id !== params.narrativeId)
           tabList = filterData
+          selectedTab = tabList[0]
+          setSelectedTab(selectedTab)
           setTabList(tabList)
           setSelectedCustomNarrative('')
           tabList.length > 1 && setManageInsightModal(true)

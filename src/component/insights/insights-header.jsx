@@ -55,7 +55,7 @@ const InsightsHeader = (props) => {
             getItemValue={item => (item.custom_title) ? item.custom_title.toLowerCase() : item.output_html.toLowerCase()}
             items={ autoCompleteOption}
             wrapperStyle={{ display: 'flex' }}
-            renderInput= {(props) => <input {...props} placeholder="Search for a metric (e.g. page views, users) " type="text" className="form-control" style={{ marginBottom: 10 }} onChange={(e) => onSearchValueChange(e, false)} />}
+            renderInput= {(props) => <input {...props} placeholder="Search for a insight (e.g. page views, users) " type="text" className="form-control" style={{ marginBottom: 10 }} onChange={(e) => onSearchValueChange(e, false)} />}
             renderItem={(item, isHighlighted) =>
                <p style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: 'pointer', wordWrap: 'break-word', padding: 5, marginBottom: 5, marginTop: 5 }}>
                {<p style={{ marginLeft: 10, marginBottom: 0 }} dangerouslySetInnerHTML={{ __html: (item.custom_title) ? `${item.custom_title}` : `${item.output_html}` }} /> }
