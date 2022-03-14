@@ -65,6 +65,7 @@ const AddCustomMetric = (props) => {
   let [title, setTitle] = useState('')
   let [resonseCategoryList, setResonseCategoryList] = useState([])
   let [category, setCategory] = useState(CUSTOM_CATEGORY_ID)
+  const [visibleDropdown, setVisibleDropdown] = useState({ isFocus: 0, display: false })
   const [isPreviewHighlighted, setIsPreviewHighlighted] = useState(false)
   const handleShowDataField = () => {
     let customNarrativeListObj = {
@@ -169,6 +170,9 @@ const AddCustomMetric = (props) => {
     setCustomNarrativeList(customNarrativeList)
     if (fieldName === 'id') {
       let [filter] = responseFilerValues.filter(item => item.id === event.value)
+      if (filter && filter.operators) {
+        customNarrativeList[addFieldIndex]['data'].filters[index]['operator'] = filter.operators[0]
+      }
       let lookupList = autoCompleteLookup.filter(item => item.id === filter.id)
       if (filter.data_type === 'boolean') {
         customNarrativeList[addFieldIndex]['data'].filters[index].value = 'true'
@@ -188,6 +192,11 @@ const AddCustomMetric = (props) => {
     if ((fieldName === 'value' && pickValue) || fieldName !== 'value') {
       previewPostCustomNarrative()
     }
+  }
+
+  const handleAutoCompleteBlur = () => {
+    setVisibleDropdown({ isFocus: 0, display: false })
+    previewPostCustomNarrative()
   }
 
   const handleFieldValueChange = (event, index, fieldName, objName) => {
@@ -795,13 +804,25 @@ const AddCustomMetric = (props) => {
                                           shouldItemRender={(item, value) => item.toLowerCase().indexOf(value.toLowerCase()) > -1}
                                           getItemValue={item => item}
                                           items={ getLookupValue(id) }
-                                          renderInput= {(props) => <input {...props} className={`form-control autocomplete ${dropdownWidth}`} onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)} onBlur={(e) => previewPostCustomNarrative()}/>}
+                                          renderInput= {(props) => <input {...props} className={`form-control autocomplete ${dropdownWidth}`} onFocus={() => setVisibleDropdown({ isFocus: customItemIndex, display: true })} onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)} onBlur={(e) => handleAutoCompleteBlur()}/>}
                                           renderItem={(item, isHighlighted) =>
                                             <p style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: 'pointer', wordBreak: 'break-word', width: 150 }}>
                                             {item}
                                             </p>
                                           }
+                                          open = {(visibleDropdown.isFocus === customItemIndex && visibleDropdown.display)}
                                           value={customFilterItem.value}
+                                          menuStyle={{
+                                            borderRadius: '3px',
+                                            boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
+                                            background: 'rgba(255, 255, 255, 0.9)',
+                                            padding: '2px 0',
+                                            fontSize: '100%',
+                                            position: 'fixed',
+                                            overflowY: 'scroll',
+                                            maxHeight: '50%', // TODO: don't cheat, let it flow to the bottom
+                                            zIndex: 1
+                                          }}
                                           onSelect={(val) => onChangeFilterValues(val, customItemIndex, true, 'value', addDataItemIndex)}
                                         />
                                       }
