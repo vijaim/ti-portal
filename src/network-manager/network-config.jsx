@@ -158,6 +158,9 @@ const NetworkManager = {
   previewCustomNarrative: (appId, cookie, narrativeId) => {
     return axios.get(`${GET_BUSINESS}/${appId}/custom_narratives/${narrativeId}/preview`, config(cookie))
   },
+  previewPostCustomNarrative: (appId, cookie, params) => {
+    return axios.post(`${GET_BUSINESS}/${appId}/custom_narratives/preview`, params, config(cookie))
+  },
   getAllCategory: (appId, cookie) => {
     return axios.get(`${API_ROOT}lookup/getAllCategories`, config(cookie))
   }

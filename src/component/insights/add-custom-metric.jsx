@@ -77,6 +77,7 @@ const AddCustomMetric = (props) => {
     setCustomNarrativeList(customNarrativeList)
     hideShowText()
     setState(() => ({ loader: !loader }))
+    previewPostCustomNarrative()
   }
 
   const handleShowCustomMetric = (index) => {
@@ -92,6 +93,7 @@ const AddCustomMetric = (props) => {
     setCustomNarrativeList(customNarrativeList)
     hideShowText()
     setState(() => ({ loader: !loader }))
+    previewPostCustomNarrative()
   }
 
   const handleShowAddFilter = (index) => {
@@ -113,6 +115,7 @@ const AddCustomMetric = (props) => {
     customNarrativeList[index].data.filters.push(filterJsonValue)
     setCustomNarrativeList(customNarrativeList)
     setState(() => ({ loader: !loader }))
+    previewPostCustomNarrative()
   }
   const handleShowAddSort = (index) => {
     let getFilterMetrics = responseMetricValues.filter(filterItem => filterItem.id === customNarrativeList[index]['data']['metric'].id)
@@ -123,6 +126,7 @@ const AddCustomMetric = (props) => {
     }
     setCustomNarrativeList(customNarrativeList)
     setState(() => ({ loader: !loader }))
+    previewPostCustomNarrative()
   }
   const hideShowText = () => {
     setShowText(false)
@@ -181,6 +185,9 @@ const AddCustomMetric = (props) => {
       setCustomFilterOperator(event)
     }
     setState(() => ({ loader: !loader }))
+    if ((fieldName === 'value' && pickValue) || fieldName !== 'value') {
+      previewPostCustomNarrative()
+    }
   }
 
   const handleFieldValueChange = (event, index, fieldName, objName) => {
@@ -209,6 +216,7 @@ const AddCustomMetric = (props) => {
     } else {
       setMetricDataIndex(event)
     }
+    previewPostCustomNarrative()
   }
   const onTextChange = (event, index, fieldName) => {
     event.preventDefault()
@@ -239,6 +247,7 @@ const AddCustomMetric = (props) => {
       setCustomNarrativeList(customNarrativeList)
     }
     setState(() => ({ loader: !loader }))
+    previewPostCustomNarrative()
   }
 
   const ValidateTextField = () => {
@@ -612,6 +621,19 @@ const AddCustomMetric = (props) => {
     return richText.getCurrentContent().getPlainText().length > 0
   }
 
+  const previewPostCustomNarrative = () => {
+    NetworkManager.previewPostCustomNarrative(apps.id, loginCookie, { narrative: customNarrativeList }).then(response => {
+      if (response.status === 200) {
+        setPreViewText(response.data.response_objects)
+        setIsPreviewHighlighted(true)
+        setState(() => ({ loader: !loader }))
+      }
+    })
+      .catch(error => {
+        errorHandle(error)
+      })
+  }
+
   const closeModal = () => {
     selectedInsight = null
     title = ''
@@ -773,7 +795,7 @@ const AddCustomMetric = (props) => {
                                           shouldItemRender={(item, value) => item.toLowerCase().indexOf(value.toLowerCase()) > -1}
                                           getItemValue={item => item}
                                           items={ getLookupValue(id) }
-                                          renderInput= {(props) => <input {...props} className={`form-control autocomplete ${dropdownWidth}`} onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)}/>}
+                                          renderInput= {(props) => <input {...props} className={`form-control autocomplete ${dropdownWidth}`} onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)} onBlur={(e) => previewPostCustomNarrative()}/>}
                                           renderItem={(item, isHighlighted) =>
                                             <p style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: 'pointer', wordBreak: 'break-word', width: 150 }}>
                                             {item}
@@ -787,6 +809,9 @@ const AddCustomMetric = (props) => {
                                     </div>
                                 })}
                                 {sort && <div className="d-flex justify-content-between " >
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-down-up mx-2" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                  </svg>
                                   <Select id="sortName"
                                     value={{ value: sortValue[0].id, label: sortValue[0].name }}
                                     components={{
@@ -815,7 +840,7 @@ const AddCustomMetric = (props) => {
                                   {/* <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'metric')} styles={{ marginLeft: '0%' }} width={20} height={20}/> */}
                                 </div>}
                                 <p><span className="form-check-label text-primary " onClick= {() => handleShowAddFilter(addDataItemIndex)}>Add filter</span>
-                                {isHaveSort && <span className="form-check-label text-primary mx-2" onClick= {() => handleShowAddSort(addDataItemIndex)}>Add Sort</span>}</p>
+                                {isHaveSort && <span className={`form-check-label ${sort ? 'text-secondary' : 'text-primary'} mx-2`} onClick= {() => sort ? null : handleShowAddSort(addDataItemIndex)}>Add Sort</span>}</p>
                               </div>
                             </div>
                             <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.5rem' }} index={addDataItemIndex} direction={'prev'}/>
@@ -826,7 +851,7 @@ const AddCustomMetric = (props) => {
                           {/* <AddItemField iconStyle ={{ marginTop: '0.5rem', width: 25, height: 25 }} index={addDataItemIndex} direction={'prev'}/> */}
                           <div key={`textField_${addDataItemIndex}`} className={`shadow w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 border border-2 rounded-3 d-flex justify-content-start mb-lg-3`} >
                             <textarea className="px-1 customTextField " placeholder="please enter the text" value={textItem ?? ''}
-                              onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} />
+                              onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} onBlur={(e) => previewPostCustomNarrative()}/>
                             <div className=" " style={{ display: 'flex' }}>
                               <img src={LINE}></img>
                               <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'textAera')} styles={{ marginLeft: 5 }} width={22} height={20}/>
