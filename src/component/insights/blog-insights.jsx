@@ -14,7 +14,7 @@ import NavigationTab from '../settings/navigation-tab'
 // import { Link } from 'react-router-dom'
 import {
   ROUTES_PATH_NAME, IMAGE_URL, HEADING_TITLE, PeriodRange, CHART_TYPE_LINE, DELETE_MODAL_CONFIRM, BUTTON_NAME_YES, BUTTON_NAME_NO,
-  BUTTON_NAME_OK, MODAL_BUSINESS_TITLE, ERROR_MESSAGE_NETWORK, MODAL_TITLE_DELETE_CUSTOM_NARRATIVE, MODAL_TITLE_CUSTOM_NARRATIVE_DELETE, NAVIGATION_TABS, BLOGS_SUCESS_MODAL_MESSAGE
+  BUTTON_NAME_OK, MODAL_BUSINESS_TITLE, ERROR_MESSAGE_NETWORK, MODAL_TITLE_DELETE_CUSTOM_NARRATIVE, MODAL_TITLE_CUSTOM_NARRATIVE_DELETE, NAVIGATION_TABS, BLOGS_SUCESS_MODAL_MESSAGE, MODAL_CUSTOM_INSIGHT_TITLE
 } from '../../utils/constants'
 import NetworkManager from '../../network-manager/network-config'
 import { toast } from 'react-toastify'
@@ -879,12 +879,12 @@ const BlogInsights = (props) => {
     setIsShowCustomInsightModal(flag)
     if (isServiceCall) {
       let modalInfo = {
-        title: MODAL_BUSINESS_TITLE,
+        title: HEADING_TITLE.FAVORITES,
         message: BLOGS_SUCESS_MODAL_MESSAGE,
         cancelButtonName: BUTTON_NAME_OK,
         showYesButton: false,
         showNoButton: true,
-        isNoteEnable: true
+        isNoteEnable: false
       }
       modalDetail = modalInfo
       setModalDetail(modalDetail)
