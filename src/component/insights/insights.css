@@ -179,6 +179,13 @@
   .emptyBlogItem{
     height: 40px;
   }
+  .preview-header {
+    background-color: #fff;
+    padding: 0.5rem;
+    position: sticky;
+    top: -10px;
+    z-index: 111;
+  }
   @media (min-width: 1025px) {
     .fullWidth{
       width: 200px;

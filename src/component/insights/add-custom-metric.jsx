@@ -613,7 +613,7 @@ const AddCustomMetric = (props) => {
       {showTextIndex === index && <div ref={ref} className={ `${(showTextIndex === index && showAddText) ? 'visible' : 'invisible'} customListcontainerItem import-items-tooltiptext ${customNarrativeList.length === 0 ? '' : 'toolTopAlign'} shadow` }style={marginLeft}>
         <div className="align-items-center gy-3">
           <div className="col-lg-3 col-sm-6 col-1">
-            <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Data field</span></div>
+            <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Metric</span></div>
             {(props.isCustomInsight || !props.isDisplayByModal) && <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>}
           </div>
         </div>
@@ -633,8 +633,12 @@ const AddCustomMetric = (props) => {
   const previewPostCustomNarrative = () => {
     NetworkManager.previewPostCustomNarrative(apps.id, loginCookie, { narrative: customNarrativeList }).then(response => {
       if (response.status === 200) {
-        setPreViewText(response.data.response_objects)
-        setIsPreviewHighlighted(true)
+        if (`${response.data.response_objects}`.trim().length > 0) {
+          setPreViewText(response.data.response_objects)
+          setIsPreviewHighlighted(true)
+        } else {
+          setPreViewText(null)
+        }
         setState(() => ({ loader: !loader }))
       }
     })
@@ -663,7 +667,7 @@ const AddCustomMetric = (props) => {
         <div className="container pb-20 pt-20">
           <div className="business-item position-relative">
             <div className="customListcontainerItem d-flex flex-column justify-content-between mb-0" style={{ display: 'flex' }}>
-              {preViewText ? <p className="d-flex ">Preview: <p className={`${isPreviewHighlighted ? 'bg-warning' : ''}`}>{preViewText}</p></p> : null}
+              {(preViewText) ? <p className={`d-flex form-label fw-bold ${(preViewText) ? 'preview-header' : ''}`}>Preview: <p className={`${isPreviewHighlighted ? 'bg-warning text-secondary' : ''}`}>{preViewText}</p></p> : null}
               <div className={`d-flex flex-column flex-md-row gx-2 align-items-start justify-content-start ${props.isCustomInsight ? 'justify-content-start' : 'titleContainer'} `}>
                 <div className="mb-20">
                   <label htmlFor="title" className="form-label fw-bold">Title</label>
