@@ -94,7 +94,7 @@ const AddCustomMetric = (props) => {
     setCustomNarrativeList(customNarrativeList)
     hideShowText()
     setState(() => ({ loader: !loader }))
-    previewPostCustomNarrative()
+    // previewPostCustomNarrative()
   }
 
   const handleShowAddFilter = (index) => {
@@ -116,7 +116,7 @@ const AddCustomMetric = (props) => {
     customNarrativeList[index].data.filters.push(filterJsonValue)
     setCustomNarrativeList(customNarrativeList)
     setState(() => ({ loader: !loader }))
-    previewPostCustomNarrative()
+    // previewPostCustomNarrative()
   }
   const handleShowAddSort = (index) => {
     let getFilterMetrics = responseMetricValues.filter(filterItem => filterItem.id === customNarrativeList[index]['data']['metric'].id)
@@ -194,9 +194,11 @@ const AddCustomMetric = (props) => {
     }
   }
 
-  const handleAutoCompleteBlur = () => {
+  const handleAutoCompleteBlur = (index, pickValue, fieldName, addFieldIndex) => {
     setVisibleDropdown({ isFocus: 0, display: false })
-    previewPostCustomNarrative()
+    if (customNarrativeList[addFieldIndex]['data'].filters[index][fieldName].length > 0) {
+      previewPostCustomNarrative()
+    }
   }
 
   const handleFieldValueChange = (event, index, fieldName, objName) => {
@@ -250,6 +252,9 @@ const AddCustomMetric = (props) => {
       if (filterIndex === 0 && customNarrativeList[index]['data'].filters.length > 0) {
         delete customNarrativeList[index]['data'].filters[0]['condition']
       }
+      setCustomNarrativeList(customNarrativeList)
+    } else if (listName === 'sort') {
+      delete customNarrativeList[index]['data'][listName]
       setCustomNarrativeList(customNarrativeList)
     } else {
       customNarrativeList.splice(index, 1)
@@ -459,19 +464,25 @@ const AddCustomMetric = (props) => {
       cookie: loginCookie
     }
     if (props.isCustomInsight || !props.isDisplayByModal) {
-      NetworkManager.getCustomNarrativesById(params).then(response => {
+      NetworkManager.getCustomNarrativesById(params).then(async response => {
         setIsLoading(false)
         if (response.status === 200 && response.data.response_objects && response.data.response_objects.custom_narratives) {
           let narrative = response.data.response_objects.custom_narratives.narrative
+          let lookupIdArray = []
           previewCustomNarrative(apps.id, loginCookie, params.narrativeId, false)
           setTitle(response.data.response_objects.custom_narratives.name ?? '')
           setCategory(response.data.response_objects.custom_narratives.category_id ?? '')
-          narrative.map(item => {
+          await narrative.map(item => {
             if (Object.keys(item).includes('data')) {
-              item.data.filters && item.data.filters.map(filterItem => {
-                getAutoCompleteLookup(filterItem.id)
+              item.data.filters && item.data.filters.map(async filterItem => {
+                if (!lookupIdArray.includes(filterItem.id)) {
+                  await lookupIdArray.push(filterItem.id)
+                }
               })
             }
+          })
+          await lookupIdArray && lookupIdArray.map(item => {
+            getAutoCompleteLookup(item)
           })
           setCustomNarrativeList(narrative)
           setState(() => ({ loader: !loader }))
@@ -613,7 +624,7 @@ const AddCustomMetric = (props) => {
       {showTextIndex === index && <div ref={ref} className={ `${(showTextIndex === index && showAddText) ? 'visible' : 'invisible'} customListcontainerItem import-items-tooltiptext ${customNarrativeList.length === 0 ? '' : 'toolTopAlign'} shadow` }style={marginLeft}>
         <div className="align-items-center gy-3">
           <div className="col-lg-3 col-sm-6 col-1">
-            <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Data field</span></div>
+            <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Metric</span></div>
             {(props.isCustomInsight || !props.isDisplayByModal) && <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>}
           </div>
         </div>
@@ -808,13 +819,12 @@ const AddCustomMetric = (props) => {
                                           shouldItemRender={(item, value) => item.toLowerCase().indexOf(value.toLowerCase()) > -1}
                                           getItemValue={item => item}
                                           items={ getLookupValue(id) }
-                                          renderInput= {(props) => <input {...props} className={`form-control autocomplete ${dropdownWidth}`} onFocus={() => setVisibleDropdown({ isFocus: customItemIndex, display: true })} onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)} onBlur={(e) => handleAutoCompleteBlur()}/>}
+                                          renderInput= {(props) => <input {...props} className={`form-control autocomplete ${dropdownWidth}`} onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)} />}
                                           renderItem={(item, isHighlighted) =>
                                             <p style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: 'pointer', wordBreak: 'break-word', width: 150 }}>
                                             {item}
                                             </p>
                                           }
-                                          open = {(visibleDropdown.isFocus === customItemIndex && visibleDropdown.display)}
                                           value={customFilterItem.value}
                                           menuStyle={{
                                             borderRadius: '3px',
@@ -828,6 +838,7 @@ const AddCustomMetric = (props) => {
                                             zIndex: 1
                                           }}
                                           onSelect={(val) => onChangeFilterValues(val, customItemIndex, true, 'value', addDataItemIndex)}
+                                          inputProps={{ onBlur () { handleAutoCompleteBlur(customItemIndex, false, 'value', addDataItemIndex) } }}
                                         />
                                       }
                                       <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'customFilterList', customItemIndex)} width={customItemIndex === 0 ? 20 : 10} height={20} />
@@ -862,7 +873,7 @@ const AddCustomMetric = (props) => {
                                     }))}
                                   />
                                   <input type="number" style={{ height: 38 }} className="form-control fullWidth" id="sortLimit" onChange={(e) => handleFieldValueChange(e, addDataItemIndex, 'limit', 'sort')} value={sort.limit} placeholder="Limit" maxLength={SORT_MAXIMUM_VALUE_LENGTH} min={SORT_MINIMUM_VALUE_RANGE} max={SORT_MAXIMUM_VALUE_RANGE} />
-                                  {/* <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'metric')} styles={{ marginLeft: '0%' }} width={20} height={20}/> */}
+                                  <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'sort')} styles={{ marginLeft: '0%' }} width={20} height={20}/>
                                 </div>}
                                 <p><span className="form-check-label text-primary " onClick= {() => handleShowAddFilter(addDataItemIndex)}>Add filter</span>
                                 {isHaveSort && <span className={`form-check-label ${sort ? 'text-secondary' : 'text-primary'} mx-2`} onClick= {() => sort ? null : handleShowAddSort(addDataItemIndex)}>Add Sort</span>}</p>
@@ -876,7 +887,7 @@ const AddCustomMetric = (props) => {
                           {/* <AddItemField iconStyle ={{ marginTop: '0.5rem', width: 25, height: 25 }} index={addDataItemIndex} direction={'prev'}/> */}
                           <div key={`textField_${addDataItemIndex}`} className={`shadow w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 border border-2 rounded-3 d-flex justify-content-start mb-lg-3`} >
                             <textarea className="px-1 customTextField " placeholder="please enter the text" value={textItem ?? ''}
-                              onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} onBlur={(e) => previewPostCustomNarrative()}/>
+                              onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} onBlur={(e) => (textItem && textItem.length > 0) ? previewPostCustomNarrative() : null }/>
                             <div className=" " style={{ display: 'flex' }}>
                               <img src={LINE}></img>
                               <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'textAera')} styles={{ marginLeft: 5 }} width={22} height={20}/>
