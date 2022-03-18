@@ -201,6 +201,18 @@ const AddCustomMetric = (props) => {
     }
   }
 
+  const handleAutoCompleteFocus = async (id) => {
+    let lookupIdArray = []
+    await autoCompleteLookup.map(async (item, index) => {
+      if (!lookupIdArray.includes(item.id)) {
+        await lookupIdArray.push(item.id)
+      }
+    })
+    if (!lookupIdArray.includes(id)) {
+      getAutoCompleteLookup(id)
+    }
+  }
+
   const handleFieldValueChange = (event, index, fieldName, objName) => {
     if (objName === 'sort' && fieldName === 'limit') {
       if (parseInt(event.target.value) <= 10) {
@@ -482,7 +494,7 @@ const AddCustomMetric = (props) => {
             }
           })
           await lookupIdArray && lookupIdArray.map(item => {
-            getAutoCompleteLookup(item)
+            // getAutoCompleteLookup(item)
           })
           setCustomNarrativeList(narrative)
           setState(() => ({ loader: !loader }))
@@ -838,7 +850,10 @@ const AddCustomMetric = (props) => {
                                             zIndex: 1
                                           }}
                                           onSelect={(val) => onChangeFilterValues(val, customItemIndex, true, 'value', addDataItemIndex)}
-                                          inputProps={{ onBlur () { handleAutoCompleteBlur(customItemIndex, false, 'value', addDataItemIndex) } }}
+                                          inputProps={{
+                                            onBlur () { handleAutoCompleteBlur(customItemIndex, false, 'value', addDataItemIndex) },
+                                            onFocus () { handleAutoCompleteFocus(id) }
+                                          }}
                                         />
                                       }
                                       <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'customFilterList', customItemIndex)} width={customItemIndex === 0 ? 20 : 10} height={20} />
