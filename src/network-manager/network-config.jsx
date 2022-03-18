@@ -75,7 +75,7 @@ const NetworkManager = {
 
   getAnosByDate: (params) => {
     const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
-    return axios.get(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/anos/custom_narrative/${params.id}?date=${params.date}&id=${params.narrativeId}`, config(params.cookie))
+    return axios.get(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/anos/custom_narratives/${params.id}?date=${params.date}&id=${params.narrativeId}`, config(params.cookie))
   },
 
   putAnosIconAction: (params) => {
