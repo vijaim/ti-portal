@@ -690,7 +690,7 @@ const AddCustomMetric = (props) => {
         <div className="container pb-20 pt-20">
           <div className="business-item position-relative">
             <div className="customListcontainerItem d-flex flex-column justify-content-between mb-0" style={{ display: 'flex' }}>
-              {(preViewText) ? <p className={`d-flex form-label fw-bold ${(preViewText) ? 'preview-header' : ''}`}>Preview: <p className={`${isPreviewHighlighted ? 'bg-warning text-secondary' : ''}`}>{preViewText}</p></p> : null}
+              {(preViewText) ? <p className={`d-flex form-label fw-bold ${(preViewText) ? 'preview-header' : ''}`}><p className={`${isPreviewHighlighted ? 'bg-warning text-secondary' : ''}`}>{preViewText}</p></p> : null}
               <div className={`d-flex flex-column flex-md-row gx-2 align-items-start justify-content-start ${props.isCustomInsight ? 'justify-content-start' : 'titleContainer'} `}>
                 <div className="mb-20">
                   <label htmlFor="title" className="form-label fw-bold">Title</label>
