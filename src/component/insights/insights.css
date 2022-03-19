@@ -181,7 +181,6 @@
   }
   .preview-header {
     background-color: #fff;
-    padding: 0.5rem;
     position: sticky;
     top: -10px;
     z-index: 111;
