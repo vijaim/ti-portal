@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 const useStyles = makeStyles((theme) => ({
   margin_LR: {
     marginLeft: '1rem',
-    marginRight: '1rem',
+    marginRight: '0rem',
     border: 'none'
     // cursor: 'pointer'
   },

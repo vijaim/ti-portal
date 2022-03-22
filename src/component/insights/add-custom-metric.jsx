@@ -67,14 +67,18 @@ const AddCustomMetric = (props) => {
   let [category, setCategory] = useState(CUSTOM_CATEGORY_ID)
   const [visibleDropdown, setVisibleDropdown] = useState({ isFocus: 0, display: false })
   const [isPreviewHighlighted, setIsPreviewHighlighted] = useState(false)
-  const handleShowDataField = () => {
+  const handleShowDataField = (index) => {
     let customNarrativeListObj = {
       data: {
       	metric: { id: 1, aggregator: pickerOptionLookup.aggregator ? pickerOptionLookup.aggregator[0] : 'Average of', date_range: pickerOptionLookup.date_ranges ? pickerOptionLookup.date_ranges[0] : 'yesterday' },
       	filters: []
       }
     }
-    customNarrativeList.push(customNarrativeListObj)
+    if (typeof index === 'number') {
+      customNarrativeList.splice(index + 1, 0, customNarrativeListObj)
+    } else {
+      customNarrativeList.push(customNarrativeListObj)
+    }
     setCustomNarrativeList(customNarrativeList)
     hideShowText()
     setState(() => ({ loader: !loader }))
@@ -90,7 +94,11 @@ const AddCustomMetric = (props) => {
 
   const handleShowText = (index) => {
     let textObj = { text: '' }
-    customNarrativeList.push(textObj)
+    if (typeof index === 'number') {
+      customNarrativeList.splice(index + 1, 0, textObj)
+    } else {
+      customNarrativeList.push(textObj)
+    }
     setCustomNarrativeList(customNarrativeList)
     hideShowText()
     setState(() => ({ loader: !loader }))
@@ -636,8 +644,8 @@ const AddCustomMetric = (props) => {
       {showTextIndex === index && <div ref={ref} className={ `${(showTextIndex === index && showAddText) ? 'visible' : 'invisible'} customListcontainerItem import-items-tooltiptext ${customNarrativeList.length === 0 ? '' : 'toolTopAlign'} shadow` }style={marginLeft}>
         <div className="align-items-center gy-3">
           <div className="col-lg-3 col-sm-6 col-1">
-            <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Metric</span></div>
-            {(props.isCustomInsight || !props.isDisplayByModal) && <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText()} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>}
+            <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField(showTextIndex)} style={{ color: 'black', whiteSpace: 'nowrap' }}>Metric</span></div>
+            {(props.isCustomInsight || !props.isDisplayByModal) && <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText(showTextIndex)} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>}
           </div>
         </div>
       </div>}
