@@ -769,6 +769,25 @@ const BlogInsights = (props) => {
     setShowModal(true)
   }
 
+  const duplicateCustomNarrativeConfirm = (customNarrativeItem) => {
+    let params = {
+      app_id: customNarrativeItem.app_id,
+      user_id: localStorage.getItem('userId'),
+      name: `${customNarrativeItem.name} Copy`,
+      category_id: customNarrativeItem.category_id,
+      narrative: customNarrativeItem.narrative
+    }
+    NetworkManager.postCustomNarrative(params, loginCookie).then(response => {
+      if (response.status === 200) {
+        tabList = [NAVIGATION_TABS[0]]
+        blogInSightsAll(0)
+      }
+    })
+      .catch(error => {
+        errorModal(error)
+      })
+  }
+
   const onPressModalButton = (action) => {
     if (action === 'ok') {
       deleteCustomNarratives(selectedCustomNarrative)
@@ -863,6 +882,19 @@ const BlogInsights = (props) => {
                         <svg onClick={() => deleteCustomNarrativeConfirm(customNarrativeItem)} xmlns="http://www.w3.org/2000/svg" width={20} height={20} fill="currentColor" className="bi bi-trash icon-color mr-1 form-check-label" viewBox="0 0 16 16">
                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
                             <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                        </svg>
+                        <div className="mx-2"></div>
+                        <svg onClick={() => duplicateCustomNarrativeConfirm(customNarrativeItem)} version="1.0" fill='currentColor' className=" icon-color mr-1 form-check-label" xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 50 50">
+                          <g transform="translate(0.000000,50.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
+                              <path d="M190 473 c0 -16 5 -35 10 -43 7 -11 10 -7 10 18 l0 32 75 0 75 0 0
+                              -60 0 -60 60 0 60 0 0 -130 0 -130 -75 0 c-43 0 -75 -4 -75 -10 0 -6 35 -10
+                              85 -10 l85 0 0 148 0 148 -63 62 -63 62 -92 0 -92 0 0 -27z m235 -53 l39 -40
+                              -42 0 -42 0 0 40 c0 22 1 40 3 40 2 0 21 -18 42 -40z"/>
+                              <path d="M0 210 l0 -210 155 0 155 0 0 148 0 148 -63 62 -63 62 -92 0 -92 0 0
+                              -210z m170 130 l0 -60 60 0 60 0 0 -130 0 -130 -135 0 -135 0 0 190 0 190 75
+                              0 75 0 0 -60z m65 0 l39 -40 -42 0 -42 0 0 40 c0 22 1 40 3 40 2 0 21 -18 42
+                              -40z"/>
+                            </g>
                         </svg>
                     </div>
                 </div>
@@ -995,7 +1027,7 @@ const BlogInsights = (props) => {
                             </svg>
                           </span>} */}
                           <span className="btn btn-primary disabled-link h4" style={{ fontSize: 14 }} onClick={() => setIsShowCustomInsightModal(true)}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-lg" viewBox="0 0 16 16">
                                   <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
                               </svg>
                           </span>
