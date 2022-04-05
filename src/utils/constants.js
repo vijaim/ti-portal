@@ -18,10 +18,7 @@ export const ROUTES_PATH_NAME = {
 }
 
 export const NAVIGATION_TABS = [
-  { id: 'all', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Standard Insights ', type: 'home', isNavigation: true },
-  // { id: 'favorites', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Favorites', type: 'home', isNavigation: true },
-  // { id: 'hiddens', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Hidden', type: 'home', isNavigation: true },
-  // { id: 'customNarratives', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Custom Narratives', type: 'home', isNavigation: true },
+  { id: 'all', routePath: ROUTES_PATH_NAME.FAVORITES, name: 'Overview', type: 'home', isNavigation: true },
   { id: 'businesses', routePath: ROUTES_PATH_NAME.SETTINGS_BUSINESS, name: 'Businesses', type: 'settings', isNavigation: true },
   { id: 'profile', routePath: ROUTES_PATH_NAME.SETTINGS_PROFILE, name: 'Profile', type: 'settings', isNavigation: true }
 ]
