@@ -67,6 +67,7 @@ const AddCustomMetric = (props) => {
   let [category, setCategory] = useState(CUSTOM_CATEGORY_ID)
   const [visibleDropdown, setVisibleDropdown] = useState({ isFocus: 0, display: false })
   const [isPreviewHighlighted, setIsPreviewHighlighted] = useState(false)
+  let [copyObj, setCopyObj] = useState(null)
   const handleShowDataField = (index) => {
     let customNarrativeListObj = {
       data: {
@@ -83,6 +84,21 @@ const AddCustomMetric = (props) => {
     hideShowText()
     setState(() => ({ loader: !loader }))
     previewPostCustomNarrative()
+  }
+
+  const handleCopy = (copyIndex) => {
+    if (copyObj !== null) {
+      let copyObject = customNarrativeList[copyObj]
+      customNarrativeList.splice(copyIndex + 1, 0, copyObject)
+      copyObj = null
+      setCustomNarrativeList(customNarrativeList)
+      previewPostCustomNarrative()
+    } else {
+      copyObj = copyIndex
+    }
+    hideShowText()
+    setCopyObj(copyObj)
+    setState(() => ({ loader: !loader }))
   }
 
   const handleShowCustomMetric = (index) => {
@@ -151,6 +167,7 @@ const AddCustomMetric = (props) => {
     }
     document.addEventListener('click', handleClickOutside, true)
     return () => {
+      copyObj = null
       removeNarrativeId()
       closeModal()
       document.removeEventListener('click', handleClickOutside, true)
@@ -646,6 +663,7 @@ const AddCustomMetric = (props) => {
           <div className="col-lg-3 col-sm-6 col-1">
             <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField(showTextIndex)} style={{ color: 'black', whiteSpace: 'nowrap' }}>Metric</span></div>
             {(props.isCustomInsight || !props.isDisplayByModal) && <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText(showTextIndex)} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>}
+            <div><span className="form-check-label showAdd_text" onClick= {() => handleCopy(showTextIndex)} style={{ color: 'black', whiteSpace: 'nowrap' }}>{copyObj === null ? 'Copy' : 'Paste'}</span></div>
           </div>
         </div>
       </div>}
@@ -700,9 +718,9 @@ const AddCustomMetric = (props) => {
             <div className="customListcontainerItem d-flex flex-column justify-content-between mb-0" style={{ display: 'flex' }}>
               {(preViewText) ? <p className={`d-flex form-label fw-bold ${(preViewText) ? 'preview-header' : ''}`}><p className={`${isPreviewHighlighted ? 'bg-warning text-secondary' : ''}`}>{preViewText}</p></p> : null}
               <div className={`d-flex flex-column flex-md-row gx-2 align-items-start justify-content-start ${props.isCustomInsight ? 'justify-content-start' : 'titleContainer'} `}>
-                <div className="mb-20">
+                <div className="mb-20 w-100">
                   <label htmlFor="title" className="form-label fw-bold">Title</label>
-                  <input className="form-control fullWidth" id="title" onChange={(e) => handleValueChanges(e, 'name')} value={title} placeholder="Title" required/>
+                  <input className="form-control" id="title" onChange={(e) => handleValueChanges(e, 'name')} value={title} placeholder="Title" required/>
                 </div>
               </div>
               {props.isCustomInsight && <main>

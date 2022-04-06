@@ -184,6 +184,8 @@
     position: sticky;
     top: -10px;
     z-index: 111;
+    height: 75px;
+    overflow-y: scroll;
   }
   @media (min-width: 1025px) {
     .fullWidth{
