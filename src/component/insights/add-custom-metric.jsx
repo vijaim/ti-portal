@@ -663,7 +663,8 @@ const AddCustomMetric = (props) => {
           <div className="col-lg-3 col-sm-6 col-1">
             <div><span className="form-check-label showAdd_text" onClick= {() => handleShowDataField(showTextIndex)} style={{ color: 'black', whiteSpace: 'nowrap' }}>Metric</span></div>
             {(props.isCustomInsight || !props.isDisplayByModal) && <div><span className="form-check-label showAdd_text" onClick= {() => handleShowText(showTextIndex)} style={{ color: 'black', whiteSpace: 'nowrap' }}>Text</span></div>}
-            <div><span className="form-check-label showAdd_text" onClick= {() => handleCopy(showTextIndex)} style={{ color: 'black', whiteSpace: 'nowrap' }}>{copyObj === null ? 'Copy' : 'Paste'}</span></div>
+            <div><span className="form-check-label showAdd_text" onClick= {() => handleCopy(showTextIndex)} style={{ color: 'black', whiteSpace: 'nowrap' }}>{'Copy'}</span></div>
+            {copyObj !== null && <div><span className="form-check-label showAdd_text" onClick= {() => handleCopy(showTextIndex)} style={{ color: 'black', whiteSpace: 'nowrap' }}>{'Paste'}</span></div>}
           </div>
         </div>
       </div>}

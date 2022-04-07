@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     // cursor: 'pointer'
   },
   datePickerStyle: {
-    width: 200,
+    width: 160,
     fontSize: 20,
     fontWeight: 'bold',
     paddingTop: '5%',
@@ -38,9 +38,9 @@ export default function DateRangePicker ({ dateValue, dateChange, disable, minim
           className={[classes.margin_LR]}
           InputProps={{
             disableUnderline: true,
-            className: [classes.datePickerStyle, 'h2'],
+            className: [classes.datePickerStyle],
             disabled: true,
-            style: { color: '#000', fontWeight: 'bold', fontSize: '1.5rem' }
+            style: { color: '#000', fontSize: '1.2rem', fontWeight: '500' }
           }}
           InputAdornmentProps={{ position: 'end' }}
         />
