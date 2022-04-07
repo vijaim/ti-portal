@@ -91,7 +91,7 @@ const AddCustomMetric = (props) => {
       let copyObject = customNarrativeList[copyObj]
       customNarrativeList.splice(copyIndex + 1, 0, copyObject)
       copyObj = null
-      setCustomNarrativeList(customNarrativeList)
+      setCustomNarrativeList(JSON.parse(JSON.stringify(customNarrativeList)))
       previewPostCustomNarrative()
     } else {
       copyObj = copyIndex
