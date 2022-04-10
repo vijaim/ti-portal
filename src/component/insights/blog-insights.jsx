@@ -517,18 +517,21 @@ const BlogInsights = (props) => {
     let insightsId = uuidv4()
     pastDate = (pastDate instanceof Date || pastDate.length === 0) ? pastDate : moment.utc(pastDate[0].created_at)
     return <div id={insightsId} >
-      <div className='position-relative d-flex justify-content-center align-items-center mb-3'>
-        {<DateRangePicker minimumDate={pastDate} disable={false} dateValue={dateValue} dateChange = {handleDateChange} />}
-          <span className="disabled-link h5 pr-3 mt-1 px-3" onClick={() => editCustomNarratives(selectedTab)}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-pencil icon-color form-check-label" viewBox="0 0 16 16">
-                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-            </svg>
-          </span>
-          {blogList.length > 0 && <img src={TODAY} style={{ cursor: 'pointer' }} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(insightsId, selectedTab.name)} className="icon-base ml-2" />}
-      </div>
       <div ref={anosListContainerRef} className="container pb-20 pt-10 justify-content-center align-items-center  d-flex flex-wrap" id='accordionSample'>
         { blogList.map((item, blogItemIndex) => {
-          return <div key={`${blogItemIndex}_key_`} className="insightStatus-content d-flex position-relative bg-light px-2 justify-content-md-between align-items-md-start mx-2 my-2 w-100 p-3" >
+          return <div key={`${blogItemIndex}_key_`} className="insightStatus-content d-flex flex-column position-relative bg-light px-2 justify-content-md-between align-items-md-start mx-2 my-2 w-100 p-3" >
+              <div className='position-relative d-flex justify-content-end align-items-center mb-3 w-100'>
+                <span className='mt-1'>Generated on :</span>
+                <div className='d-flex align-items-center'>
+                  {<DateRangePicker minimumDate={pastDate} disable={false} dateValue={dateValue} dateChange = {handleDateChange} />}
+                    <span className="disabled-link pr-3 mt-1 px-3" onClick={() => editCustomNarratives(selectedTab)}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" className="bi bi-pencil icon-color form-check-label" viewBox="0 0 16 16">
+                          <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                      </svg>
+                    </span>
+                  {blogList.length > 0 && <img src={TODAY} style={{ cursor: 'pointer' }} width={20} height={20} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(insightsId, selectedTab.name)} className="mt-2 ml-2" />}
+                </div>
+              </div>
               <div dangerouslySetInnerHTML={{ __html: isCustomInsight ? item.output_html : item.output}} />
             </div>
         })}
