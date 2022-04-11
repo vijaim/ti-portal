@@ -73,6 +73,11 @@ const NetworkManager = {
     return axios.get(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/anos${params.type}?offset=${params.offSet}&limit=${params.limit}`, config(params.cookie))
   },
 
+  getOverViewAnosByDate: (params) => {
+    const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
+    return axios.get(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/anos${params.type}?date=${params.date}`, config(params.cookie))
+  },
+
   getAnosByDate: (params) => {
     const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
     return axios.get(`${GET_ALL_USERS}${params.userId}/apps/${apps.id}/anos/custom_narratives/${params.id}?date=${params.date}&id=${params.narrativeId}`, config(params.cookie))
