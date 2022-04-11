@@ -5,20 +5,21 @@ import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
   margin_LR: {
-    marginLeft: '1rem',
+    marginLeft: '0.5rem',
     marginRight: '0rem',
     border: 'none'
     // cursor: 'pointer'
   },
   datePickerStyle: {
-    width: 160,
+    width: 150,
     fontSize: 20,
     fontWeight: 'bold',
     paddingTop: '5%',
     cursor: 'pointer !important',
     '&:hover': {
       cursor: 'pointer !important'
-    }
+    },
+    '& .MuiSvgIcon-root': { fill: '#3557cc;' }
   }
 }))
 
@@ -40,7 +41,7 @@ export default function DateRangePicker ({ dateValue, dateChange, disable, minim
             disableUnderline: true,
             className: [classes.datePickerStyle],
             disabled: true,
-            style: { color: '#000', fontSize: '1.2rem', fontWeight: '500' }
+            style: { color: '#000', fontSize: '1.1rem', fontWeight: '400', fontFamily: 'Red Hat Text, sans-serif' }
           }}
           InputAdornmentProps={{ position: 'end' }}
         />

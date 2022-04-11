@@ -193,17 +193,18 @@ const BlogInsights = (props) => {
     }
   }
 
-  const inSightsList = (path, offSet) => {
+  const inSightsList = (path, offSet, date) => {
     const params = {
       cookie: cookie || loginCookie,
       userId: userId || user_Id,
       type: path === 'all' ? '' : `/${path}`,
       offSet: offSet * limit,
-      limit: limit
+      limit: limit,
+      date: moment(date || new Date()).format('MM-DD-YYYY')
     }
     setIsLoadMore(false)
     setPageNo(offSet)
-    NetworkManager.getAnos(params).then(response => {
+    NetworkManager.getOverViewAnosByDate(params).then(response => {
       setIsLoading(false)
       if (response.status === 200 && response.data.response_objects && response.data.response_objects.narratives) {
         const newResponseList = response.data.response_objects
@@ -510,7 +511,13 @@ const BlogInsights = (props) => {
   }
   const handleDateChange = (date) => {
     setDateValue(date)
-    blogInSightsList(date, selectedTab.id)
+    if (selectedTab.id === 'all') {
+      responseList = []
+      setAnosList(new Map())
+      inSightsList(selectedTab.id, 0, date)
+    } else {
+      blogInSightsList(date, selectedTab.id)
+    }
   }
   const renderBlogList = () => {
     let pastDate = tabList.length > 1 ? tabList.filter(item => selectedTab.narrative_id === item.narrative_id) : new Date()
@@ -521,7 +528,7 @@ const BlogInsights = (props) => {
         { blogList.map((item, blogItemIndex) => {
           return <div key={`${blogItemIndex}_key_`} className="insightStatus-content d-flex flex-column position-relative bg-light px-2 justify-content-md-between align-items-md-start mx-2 my-2 w-100 p-3" >
               <div className='position-relative d-flex justify-content-end align-items-center mb-3 w-100'>
-                <span className='mt-1'>Generated on :</span>
+                <span className='mt-1 text-dark'>Generated on :</span>
                 <div className='d-flex align-items-center'>
                   {<DateRangePicker minimumDate={pastDate} disable={false} dateValue={dateValue} dateChange = {handleDateChange} />}
                     <span className="disabled-link pr-3 mt-1 px-3" onClick={() => editCustomNarratives(selectedTab)}>
@@ -552,9 +559,13 @@ const BlogInsights = (props) => {
       const categoryList = Array.from(value.value, ([name, value]) => ({ name, value }))
       return <div ref={anosListContainerRef} key={`${value.name}_key_`} className="container pb-20 pt-10 accordion" id='accordionSample'>
                 <div id={value.insightsId} className=" gy-3 mb-40 row">
-                    {searchValue === '' && <h2 className="fw-bold h4 mb-40 text-center text-dark">{displayDateFormat(value.name)}
-                      <img src={TODAY} style={{ cursor: 'pointer' }} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(value.insightsId, tab)} className="ms-3 icon-base" />
-                    </h2>}
+                    {searchValue === '' && <div className='position-relative d-flex justify-content-end align-items-center mb-3 w-100'>
+                      <span className='mt-1 text-dark'>Generated on :</span>
+                      <div className='d-flex align-items-center'>
+                        {<DateRangePicker minimumDate={false} disable={false} dateValue={dateValue} dateChange = {handleDateChange} />}
+                        <img src={TODAY} style={{ cursor: 'pointer' }} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(value.insightsId, tab)} className="ms-3 icon-base" />
+                      </div>
+                    </div>}
                     {categoryList.map((subvalue, subKey) => {
                       const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS
                       const outputvalueCheck = subvalue.value.map(item => `${item.output_html}`.toLowerCase().includes(searchValue.toLowerCase()))
@@ -1008,7 +1019,7 @@ const BlogInsights = (props) => {
                 </section>
                 <section className="bg-section">
                     <div className="container position-relative d-flex justify-content-between">
-                        <div>
+                    <div>
                             <nav className="nav page-tabs ">
                                 {
                                     tabList.map((navTab, index) => (
@@ -1048,9 +1059,9 @@ const BlogInsights = (props) => {
                                 <span className="visually-hidden">Loading...</span>
                             </div>
                         </div>}
-                        {(isLoadMore && selectedTab.id === 'all') && <div className="text-center pt-20 pb-20" onClick={() => loadMoreData(pageNo, limit)}>
+                        {/* {(isLoadMore && selectedTab.id === 'all') && <div className="text-center pt-20 pb-20" onClick={() => loadMoreData(pageNo, limit)}>
                             <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
-                        </div>}
+                        </div>} */}
                     </div>
                     {
                         showModal && <Modal
