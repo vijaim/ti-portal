@@ -120,7 +120,7 @@
   }
   .toolTopAlign{
     margin-left: -10% !important;
-    left: -8rem !important;
+    left: 2rem !important;
   }
   .import-items-tooltiptext {
     opacity: 1;
@@ -141,6 +141,9 @@
   .customListItem{
     flex-basis: 45%; 
     margin-bottom: 10px;
+  }
+  .flexBasisAuto{
+    flex-basis: auto; 
   }
   .textArea_container_width{
     flex-basis: 93% !important;
