@@ -24,6 +24,7 @@ import { Link } from 'react-router-dom'
 import { ImageSaver, GetRoutesPathName } from '../../utils/util-methods'
 import { v4 as uuidv4 } from 'uuid'
 import ChartComponent from './Charts'
+import Grid from '@material-ui/core/Grid'
 import { Dialog, DialogActions, DialogTitle, DialogContent, DialogContentText } from '@material-ui/core'
 import AddCustomMetric from './add-custom-metric'
 import DateRangePicker from './datePicker'
@@ -1075,8 +1076,17 @@ const BlogInsights = (props) => {
                       />
                   }
                     {
-                        (isShowCustomInsightModal || manageInsightModal) && <Dialog maxWidth={'lg'} fullWidth open={isShowCustomInsightModal || manageInsightModal} onClose={() => closeModal()} aria-labelledby="form-dialog-title" >
-                            <DialogTitle className="text-primary" id="form-dialog-title">{`${manageInsightModal ? 'Manage' : localStorage.getItem('isEdit') === 'true' ? 'Edit' : 'Create'} Insights`}</DialogTitle>
+                        (isShowCustomInsightModal || manageInsightModal) && <Dialog disableBackdropClick ={!manageInsightModal} maxWidth={'lg'} fullWidth open={isShowCustomInsightModal || manageInsightModal} onClose={() => closeModal()} aria-labelledby="form-dialog-title" >
+                          <Grid container direction="row" justify="space-between" alignItems="center" >
+                            <DialogTitle className="text-primary" id="form-dialog-title">
+                              {`${manageInsightModal ? 'Manage' : localStorage.getItem('isEdit') === 'true' ? 'Edit' : 'Create'} Insights`}
+                            </DialogTitle>
+                            {!manageInsightModal && <DialogActions>
+                              <svg onClick={ () => handleCustomInsightModal(false)} xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                              </svg>
+                            </DialogActions>}
+                          </Grid>
                             <DialogContent >
                                 {
                                     manageInsightModal ? renderCustomNarratives() : <AddCustomMetric isCustomInsight = {isCustomInsight} dateValue={dateValue} isDisplayByModal={true} customInsightId={selectedTab.id} isEdit={localStorage.getItem('isEdit')} handleModal={handleCustomInsightModal} />}

@@ -6,7 +6,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-tabs */
 /* eslint-disable no-mixed-spaces-and-tabs */
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, Fragment } from 'react'
 import InsightsHeader from './insights-header'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -61,13 +61,15 @@ const AddCustomMetric = (props) => {
   const { showAddFilter, loader } = state
   let isEdit = props.isDisplayByModal ? props.isEdit === 'true' : localStorage.getItem('isEdit') === 'true'
   let customInSightId = props.customInsightId
-  let [preViewText, setPreViewText] = useState(null)
+  let [preViewText, setPreViewText] = useState([])
   let [title, setTitle] = useState('')
   let [resonseCategoryList, setResonseCategoryList] = useState([])
   let [category, setCategory] = useState(CUSTOM_CATEGORY_ID)
   const [visibleDropdown, setVisibleDropdown] = useState({ isFocus: 0, display: false })
   const [isPreviewHighlighted, setIsPreviewHighlighted] = useState(false)
   let [copyObj, setCopyObj] = useState(null)
+  let [selectedCollapseIndex, setSelectedCollapseIndex] = useState(null)
+  let [showHoverItemIndex, setShowHoverItemIndex] = useState(null)
   const handleShowDataField = (index) => {
     let customNarrativeListObj = {
       data: {
@@ -81,6 +83,7 @@ const AddCustomMetric = (props) => {
       customNarrativeList.push(customNarrativeListObj)
     }
     setCustomNarrativeList(customNarrativeList)
+    // setCustomNarrativeList(JSON.parse(JSON.stringify(customNarrativeList)))
     hideShowText()
     setState(() => ({ loader: !loader }))
     previewPostCustomNarrative()
@@ -117,6 +120,10 @@ const AddCustomMetric = (props) => {
     }
     setCustomNarrativeList(customNarrativeList)
     hideShowText()
+    if (isEdit) {
+      preViewText.splice(index + 1, 0, '')
+      setPreViewText(preViewText)
+    }
     setState(() => ({ loader: !loader }))
     // previewPostCustomNarrative()
   }
@@ -168,6 +175,7 @@ const AddCustomMetric = (props) => {
     document.addEventListener('click', handleClickOutside, true)
     return () => {
       copyObj = null
+      // preViewText = []
       removeNarrativeId()
       closeModal()
       document.removeEventListener('click', handleClickOutside, true)
@@ -270,6 +278,10 @@ const AddCustomMetric = (props) => {
     event.preventDefault()
     customNarrativeList[index][fieldName] = event.target.value.trim().length === 0 ? event.target.value.trim() : event.target.value.replace(/[\r\n]+/gm, ' ')
     setCustomNarrativeList(customNarrativeList)
+    if (isEdit && event.target.value.trim().length === 0) {
+      preViewText.splice(index, 0, '')
+      setPreViewText(preViewText)
+    }
     setState(() => ({ loader: !loader }))
   }
   const getLookupValue = (itemId) => {
@@ -506,7 +518,8 @@ const AddCustomMetric = (props) => {
         if (response.status === 200 && response.data.response_objects && response.data.response_objects.custom_narratives) {
           let narrative = response.data.response_objects.custom_narratives.narrative
           let lookupIdArray = []
-          previewCustomNarrative(apps.id, loginCookie, params.narrativeId, false)
+          // previewCustomNarrative(apps.id, loginCookie, params.narrativeId, false)
+          await previewPostCustomNarrative(narrative)
           setTitle(response.data.response_objects.custom_narratives.name ?? '')
           setCategory(response.data.response_objects.custom_narratives.category_id ?? '')
           await narrative.map(item => {
@@ -680,12 +693,21 @@ const AddCustomMetric = (props) => {
     return richText.getCurrentContent().getPlainText().length > 0
   }
 
-  const previewPostCustomNarrative = () => {
-    NetworkManager.previewPostCustomNarrative(apps.id, loginCookie, { narrative: customNarrativeList }).then(response => {
+  const previewPostCustomNarrative = (narrative) => {
+    NetworkManager.previewPostCustomNarrative(apps.id, loginCookie, { narrative: narrative || customNarrativeList }).then(response => {
       if (response.status === 200) {
         if (`${response.data.response_objects}`.trim().length > 0) {
+          // response.data.response_objects = [
+          //   '**Overview**\\n', 'The **Cowpea Microgreens | Sns Microgreens** page had', '7',
+          //   'page views this week. The total number of new users visited is', '1', 'with', '2', 'active users.',
+          //   'The average session duration is', '0', 'seconds.', 'Most visits came from', 'United States of America', '.',
+          //   '\n\n**Referral**\nThis week, the top referrers are', 'www.google.com', 'with a total of', '1',
+          //   'visits from all the referral sites.', '1', 'visits came from Organic search.',
+          //   '\n\n**Bounces**\nThis week the **Cowpea Microgreens | Sns Microgreens** page had', '1', 'single page visits.'
+          // ]
           setPreViewText(response.data.response_objects)
           setIsPreviewHighlighted(true)
+          setState(() => ({ loader: !loader }))
         } else {
           setPreViewText(null)
         }
@@ -704,6 +726,200 @@ const AddCustomMetric = (props) => {
     richText = EditorState.createEmpty()
     // setTimeout(() => props.handleModal(false), 1000)
   }
+
+  const getRenderDataObject = (addItem, addDataItemIndex) => {
+    let customNarrative = addItem['data'].filters
+    let metric = addItem['data'].metric
+    let sort = addItem['data'].sort
+    let sortValue = sort ? pickerOptionLookup.sorts.filter(filterItem => filterItem.id === sort.id) : []
+    let isHaveCustomNarrative = (customNarrative && customNarrative.length > 0)
+    let opList, aggregators, responseMetric, isHaveSort
+    if (metric) {
+      opList = responseMetricValues.filter(filterItem => `${filterItem.id}` === `${metric.id}`)
+      aggregators = opList.length > 0 ? opList[0].aggregators : []
+      isHaveSort = opList.length > 0 ? opList[0].sorts : []
+      responseMetric = responseMetricValues.map((item, index) => ({
+        value: parseInt(item.id),
+        label: item.name,
+        key: item.name
+      }))
+    }
+    metricId = opList.length > 0 ? { value: opList[0].id, label: opList[0].name } : metricId
+    metricAggregator = metric ? { value: metric.aggregator, label: metric.aggregator } : metricAggregator
+    metricDataIndex = metric ? { value: metric.date_range, label: metric.date_range } : metricDataIndex
+    return <div id={`data_accordion_${addDataItemIndex}`} key={`customNarrativeList_${addDataItemIndex}`} className={` ${isEdit ? 'collapse' : 'customListItem d-inline-flex  g-2 position-relative mx-1'} ${selectedCollapseIndex === addDataItemIndex ? 'show' : ''}`}>
+          {/* <AddItemField iconStyle ={{ marginTop: '1.5rem', width: 25, height: 25, marginRight: '1.5rem' }} index={addDataItemIndex} direction={'prev'}/> */}
+          <div className={`customListcontainerItem col-11  mx-2 p-1${addDataItemIndex === 0 ? 'mt-3' : 'mt-2'}`} >
+          <div className={` ${isEdit ? '' : 'row g-2'} position-relative `}>
+            {metric && <div className="d-flex justify-content-between " >
+              <Select id="id"
+                value={metricId}
+                components={{
+                  IndicatorSeparator: () => null
+                }}
+                onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'id', 'metric')}
+                options={responseMetric}
+              />
+              <Select id="aggregator"
+                value={metricAggregator}
+                components={{
+                  IndicatorSeparator: () => null
+                }}
+                onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'aggregator', 'metric')}
+                options={aggregators.map((item, index) => ({
+                  value: item,
+                  label: item,
+                  key: item
+                }))}
+              />
+              <Select id="date_range"
+                value={metricDataIndex}
+                components={{
+                  IndicatorSeparator: () => null
+                }}
+                onChange={(e) => handleFieldValueChange(e, addDataItemIndex, 'date_range', 'metric')}
+                options={pickerOptionLookup.date_ranges && pickerOptionLookup.date_ranges.map((item, index) => ({
+                  value: item,
+                  label: item,
+                  key: item
+                }))}
+              />
+              {/* <div className='vertical-line' style={{ marginBottom: showAddFilter ? '-92%' : '-38%' }}></div> */}
+              <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'metric')} styles={{ marginLeft: '0%' }} width={20} height={20}/>
+            </div>}
+            { isHaveCustomNarrative && customNarrative.map((customFilterItem, customItemIndex) => {
+              let opList = responseFilerValues.filter(item => `${item.id}` === `${customFilterItem.id}`)
+              let { id, operators } = opList.length > 0 ? opList[0] : []
+              let dataType = opList.length > 0 ? opList[0].data_type : []
+              let dropdownWidth = customItemIndex === 0 ? 'filterDropDownWidth_ZeroIndex' : 'filterDropDownWidth'
+              let condition = { value: customFilterItem.condition, label: customFilterItem.condition }
+              let customFilterIdValue = opList.length > 0 ? { value: id, label: opList[0].name } : customFilterId
+              let operatorValue = { value: customFilterItem.operator, label: customFilterItem.operator }
+              return <div key={`customFilterItem_${addDataItemIndex}_${customItemIndex}`} className="d-flex justify-content-between g-2 mt-3"
+                style={{ marginTop: '1%', paddingRight: 0 }}>
+                  <img src={FILTER} className="filterIcon" style={{ width: '3%', height: '2%', marginTop: '1%' }}></img>
+                  {customItemIndex !== 0 && <Select id='condition'
+                    value={condition}
+                    components={{
+                      IndicatorSeparator: () => null
+                    }}
+                    onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'condition', addDataItemIndex)}
+                    options={CONDITION_DROP.map((item, index) => ({
+                      value: item,
+                      label: item,
+                      key: item
+                    }))}
+                  />
+                  }
+                  <Select id='id'
+                    value={customFilterIdValue}
+                    onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'id', addDataItemIndex)}
+                    components={{
+                      IndicatorSeparator: () => null
+                    }}
+                    options={responseFilerValues.map((item, index) => ({
+                      value: parseInt(item.id),
+                      label: item.name,
+                      key: item.name
+                    }))}
+                  />
+                  <Select id='operator'
+                    value={operatorValue}
+                    components={{
+                      IndicatorSeparator: () => null
+                    }}
+                    onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'operator', addDataItemIndex)}
+                    options={operators && operators.map((item, index) => ({
+                      value: item,
+                      label: item,
+                      key: item
+                    }))}
+                  />
+                  {
+                    dataType === 'boolean'
+                      ? <Select id="inputPlatform"
+                          value={{ value: customFilterItem.value, label: customFilterItem.value === 'true' ? 'Yes' : 'No' }}
+                          components={{
+                            IndicatorSeparator: () => null
+                          }}
+                          onChange={(e) => onChangeFilterValues(e.value, customItemIndex, true, 'value', addDataItemIndex)}
+                          options={BOOLEAN_VALUES.map((item, index) => ({
+                            value: item.value,
+                            label: item.id,
+                            key: item.id
+                          }))}
+                        />
+                      : <Autocomplete
+                      shouldItemRender={(item, value) => item.toLowerCase().indexOf(value.toLowerCase()) > -1}
+                      getItemValue={item => item}
+                      items={ getLookupValue(id) }
+                      renderInput= {(props) => <input {...props} className={`form-control autocomplete ${dropdownWidth}`} onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)} />}
+                      renderItem={(item, isHighlighted) =>
+                        <p style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: 'pointer', wordBreak: 'break-word', width: 150 }}>
+                        {item}
+                        </p>
+                      }
+                      value={customFilterItem.value}
+                      menuStyle={{
+                        borderRadius: '3px',
+                        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        padding: '2px 0',
+                        fontSize: '100%',
+                        position: 'fixed',
+                        overflowY: 'scroll',
+                        maxHeight: '50%', // TODO: don't cheat, let it flow to the bottom
+                        zIndex: 1
+                      }}
+                      onSelect={(val) => onChangeFilterValues(val, customItemIndex, true, 'value', addDataItemIndex)}
+                      inputProps={{
+                        onBlur () { handleAutoCompleteBlur(customItemIndex, false, 'value', addDataItemIndex) },
+                        onFocus () { handleAutoCompleteFocus(id) }
+                      }}
+                    />
+                  }
+                  <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'customFilterList', customItemIndex)} width={customItemIndex === 0 ? 20 : 10} height={20} />
+                </div>
+            })}
+            {sort && <div className="d-flex justify-content-between " >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-down-up mx-2" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+              </svg>
+              <Select id="sortName"
+                value={{ value: sortValue[0].id, label: sortValue[0].name }}
+                components={{
+                  IndicatorSeparator: () => null
+                }}
+                onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'id', 'sort')}
+                options={pickerOptionLookup.sorts.map((item, index) => ({
+                  value: item.id,
+                  label: item.name,
+                  key: item.name
+                }))}
+              />
+              <Select id="sortOrder"
+                value={{ value: sort.order, label: sort.order }}
+                components={{
+                  IndicatorSeparator: () => null
+                }}
+                onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'order', 'sort')}
+                options={SORT_VALUES.map((item, index) => ({
+                  value: item.value,
+                  label: item.id,
+                  key: item.id
+                }))}
+              />
+              <input type="number" style={{ height: 38 }} className="form-control fullWidth" id="sortLimit" onChange={(e) => handleFieldValueChange(e, addDataItemIndex, 'limit', 'sort')} value={sort.limit} placeholder="Limit" maxLength={SORT_MAXIMUM_VALUE_LENGTH} min={SORT_MINIMUM_VALUE_RANGE} max={SORT_MAXIMUM_VALUE_RANGE} />
+              <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'sort')} styles={{ marginLeft: '0%' }} width={20} height={20}/>
+            </div>}
+            <p><span className="form-check-label text-primary " onClick= {() => handleShowAddFilter(addDataItemIndex)}>Add filter</span>
+            {isHaveSort && <span className={`form-check-label ${sort ? 'text-secondary' : 'text-primary'} mx-2`} onClick= {() => sort ? null : handleShowAddSort(addDataItemIndex)}>Add Sort</span>}</p>
+          </div>
+        </div>
+        {!isEdit && <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.5rem' }} index={addDataItemIndex} direction={'prev'}/>}
+      </div>
+  }
+
   let isbuttonEnable = (props.isCustomInsight) ? customNarrativeList.length > 0 && title.length > 0 && (typeof category === 'number') && ValidateTextField() : (!props.isCustomInsight && props.isDisplayByModal) ? (customNarrativeList.length > 0 && title.length > 0 && checkTextField()) : (customNarrativeList.length > 0 && title.length > 0 && (typeof category === 'number'))
   return (
   <>
@@ -717,7 +933,7 @@ const AddCustomMetric = (props) => {
         <div className="container pb-20 pt-20">
           <div className="business-item position-relative">
             <div className="customListcontainerItem d-flex flex-column justify-content-between mb-0" style={{ display: 'flex' }}>
-              {(preViewText) ? <p className={`d-flex form-label fw-bold ${(preViewText) ? 'preview-header' : ''}`}><p className={`${isPreviewHighlighted ? 'bg-warning text-secondary' : ''}`}>{preViewText}</p></p> : null}
+              {/* {(preViewText) ? <p className={`d-flex form-label fw-bold ${(preViewText) ? 'preview-header' : ''}`}><p className={`${isPreviewHighlighted ? 'bg-warning text-secondary' : ''}`}>{preViewText}</p></p> : null} */}
               <div className={`d-flex flex-column flex-md-row gx-2 align-items-start justify-content-start ${props.isCustomInsight ? 'justify-content-start' : 'titleContainer'} `}>
                 <div className="mb-20 w-100">
                   <label htmlFor="title" className="form-label fw-bold">Title</label>
@@ -733,210 +949,65 @@ const AddCustomMetric = (props) => {
                   {
                     customNarrativeList.map((addItem, addDataItemIndex) => {
                       if (Object.keys(addItem).includes('data')) {
-                        let customNarrative = addItem['data'].filters
-                        let metric = addItem['data'].metric
-                        let sort = addItem['data'].sort
-                        let sortValue = sort ? pickerOptionLookup.sorts.filter(filterItem => filterItem.id === sort.id) : []
-                        let isHaveCustomNarrative = (customNarrative && customNarrative.length > 0)
-                        let opList, aggregators, responseMetric, isHaveSort
-                        if (metric) {
-                          opList = responseMetricValues.filter(filterItem => `${filterItem.id}` === `${metric.id}`)
-                          aggregators = opList.length > 0 ? opList[0].aggregators : []
-                          isHaveSort = opList.length > 0 ? opList[0].sorts : []
-                          responseMetric = responseMetricValues.map((item, index) => ({
-                            value: parseInt(item.id),
-                            label: item.name,
-                            key: item.name
-                          }))
-                        }
-                        metricId = opList.length > 0 ? { value: opList[0].id, label: opList[0].name } : metricId
-                        metricAggregator = metric ? { value: metric.aggregator, label: metric.aggregator } : metricAggregator
-                        metricDataIndex = metric ? { value: metric.date_range, label: metric.date_range } : metricDataIndex
-                        return <div key={`customNarrativeList_${addDataItemIndex}`} className={'customListItem d-inline-flex  g-2 position-relative mx-1'}>
-                              {/* <AddItemField iconStyle ={{ marginTop: '1.5rem', width: 25, height: 25, marginRight: '1.5rem' }} index={addDataItemIndex} direction={'prev'}/> */}
-                              <div className={`customListcontainerItem col-11 border border-2 rounded-3 p-1${addDataItemIndex === 0 ? 'mt-3' : 'mt-2'}`} >
-                              <div className="row g-2 position-relative ">
-                                {metric && <div className="d-flex justify-content-between " >
-                                  <Select id="id"
-                                    value={metricId}
-                                    components={{
-                                      IndicatorSeparator: () => null
-                                    }}
-                                    onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'id', 'metric')}
-                                    options={responseMetric}
-                                  />
-                                  <Select id="aggregator"
-                                    value={metricAggregator}
-                                    components={{
-                                      IndicatorSeparator: () => null
-                                    }}
-                                    onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'aggregator', 'metric')}
-                                    options={aggregators.map((item, index) => ({
-                                      value: item,
-                                      label: item,
-                                      key: item
-                                    }))}
-                                  />
-                                  <Select id="date_range"
-                                    value={metricDataIndex}
-                                    components={{
-                                      IndicatorSeparator: () => null
-                                    }}
-                                    onChange={(e) => handleFieldValueChange(e, addDataItemIndex, 'date_range', 'metric')}
-                                    options={pickerOptionLookup.date_ranges && pickerOptionLookup.date_ranges.map((item, index) => ({
-                                      value: item,
-                                      label: item,
-                                      key: item
-                                    }))}
-                                  />
-                                  {/* <div className='vertical-line' style={{ marginBottom: showAddFilter ? '-92%' : '-38%' }}></div> */}
-                                  <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'metric')} styles={{ marginLeft: '0%' }} width={20} height={20}/>
-                                </div>}
-                                { isHaveCustomNarrative && customNarrative.map((customFilterItem, customItemIndex) => {
-                                  let opList = responseFilerValues.filter(item => `${item.id}` === `${customFilterItem.id}`)
-                                  let { id, operators } = opList.length > 0 ? opList[0] : []
-                                  let dataType = opList.length > 0 ? opList[0].data_type : []
-                                  let dropdownWidth = customItemIndex === 0 ? 'filterDropDownWidth_ZeroIndex' : 'filterDropDownWidth'
-                                  let condition = { value: customFilterItem.condition, label: customFilterItem.condition }
-                                  let customFilterIdValue = opList.length > 0 ? { value: id, label: opList[0].name } : customFilterId
-                                  let operatorValue = { value: customFilterItem.operator, label: customFilterItem.operator }
-                                  return <div key={`customFilterItem_${addDataItemIndex}_${customItemIndex}`} className="d-flex justify-content-between g-2 mt-3"
-                                    style={{ marginTop: '1%', paddingRight: 0 }}>
-                                      <img src={FILTER} className="filterIcon" style={{ width: '3%', height: '2%', marginTop: '1%' }}></img>
-                                      {customItemIndex !== 0 && <Select id='condition'
-                                        value={condition}
-                                        components={{
-                                          IndicatorSeparator: () => null
-                                        }}
-                                        onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'condition', addDataItemIndex)}
-                                        options={CONDITION_DROP.map((item, index) => ({
-                                          value: item,
-                                          label: item,
-                                          key: item
-                                        }))}
-                                      />
-                                      }
-                                      <Select id='id'
-                                        value={customFilterIdValue}
-                                        onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'id', addDataItemIndex)}
-                                        components={{
-                                          IndicatorSeparator: () => null
-                                        }}
-                                        options={responseFilerValues.map((item, index) => ({
-                                          value: parseInt(item.id),
-                                          label: item.name,
-                                          key: item.name
-                                        }))}
-                                      />
-                                      <Select id='operator'
-                                        value={operatorValue}
-                                        components={{
-                                          IndicatorSeparator: () => null
-                                        }}
-                                        onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'operator', addDataItemIndex)}
-                                        options={operators && operators.map((item, index) => ({
-                                          value: item,
-                                          label: item,
-                                          key: item
-                                        }))}
-                                      />
-                                      {
-                                        dataType === 'boolean'
-                                          ? <Select id="inputPlatform"
-                                              value={{ value: customFilterItem.value, label: customFilterItem.value === 'true' ? 'Yes' : 'No' }}
-                                              components={{
-                                                IndicatorSeparator: () => null
-                                              }}
-                                              onChange={(e) => onChangeFilterValues(e.value, customItemIndex, true, 'value', addDataItemIndex)}
-                                              options={BOOLEAN_VALUES.map((item, index) => ({
-                                                value: item.value,
-                                                label: item.id,
-                                                key: item.id
-                                              }))}
-                                            />
-                                          : <Autocomplete
-                                          shouldItemRender={(item, value) => item.toLowerCase().indexOf(value.toLowerCase()) > -1}
-                                          getItemValue={item => item}
-                                          items={ getLookupValue(id) }
-                                          renderInput= {(props) => <input {...props} className={`form-control autocomplete ${dropdownWidth}`} onChange={(e) => onChangeFilterValues(e, customItemIndex, false, 'value', addDataItemIndex)} />}
-                                          renderItem={(item, isHighlighted) =>
-                                            <p style={{ background: isHighlighted ? 'lightgray' : 'white', cursor: 'pointer', wordBreak: 'break-word', width: 150 }}>
-                                            {item}
-                                            </p>
-                                          }
-                                          value={customFilterItem.value}
-                                          menuStyle={{
-                                            borderRadius: '3px',
-                                            boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
-                                            background: 'rgba(255, 255, 255, 0.9)',
-                                            padding: '2px 0',
-                                            fontSize: '100%',
-                                            position: 'fixed',
-                                            overflowY: 'scroll',
-                                            maxHeight: '50%', // TODO: don't cheat, let it flow to the bottom
-                                            zIndex: 1
-                                          }}
-                                          onSelect={(val) => onChangeFilterValues(val, customItemIndex, true, 'value', addDataItemIndex)}
-                                          inputProps={{
-                                            onBlur () { handleAutoCompleteBlur(customItemIndex, false, 'value', addDataItemIndex) },
-                                            onFocus () { handleAutoCompleteFocus(id) }
-                                          }}
-                                        />
-                                      }
-                                      <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'customFilterList', customItemIndex)} width={customItemIndex === 0 ? 20 : 10} height={20} />
-                                    </div>
-                                })}
-                                {sort && <div className="d-flex justify-content-between " >
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-down-up mx-2" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
-                                  </svg>
-                                  <Select id="sortName"
-                                    value={{ value: sortValue[0].id, label: sortValue[0].name }}
-                                    components={{
-                                      IndicatorSeparator: () => null
-                                    }}
-                                    onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'id', 'sort')}
-                                    options={pickerOptionLookup.sorts.map((item, index) => ({
-                                      value: item.id,
-                                      label: item.name,
-                                      key: item.name
-                                    }))}
-                                  />
-                                  <Select id="sortOrder"
-                                    value={{ value: sort.order, label: sort.order }}
-                                    components={{
-                                      IndicatorSeparator: () => null
-                                    }}
-                                    onChange={ (e) => handleFieldValueChange(e, addDataItemIndex, 'order', 'sort')}
-                                    options={SORT_VALUES.map((item, index) => ({
-                                      value: item.value,
-                                      label: item.id,
-                                      key: item.id
-                                    }))}
-                                  />
-                                  <input type="number" style={{ height: 38 }} className="form-control fullWidth" id="sortLimit" onChange={(e) => handleFieldValueChange(e, addDataItemIndex, 'limit', 'sort')} value={sort.limit} placeholder="Limit" maxLength={SORT_MAXIMUM_VALUE_LENGTH} min={SORT_MINIMUM_VALUE_RANGE} max={SORT_MAXIMUM_VALUE_RANGE} />
-                                  <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'sort')} styles={{ marginLeft: '0%' }} width={20} height={20}/>
-                                </div>}
-                                <p><span className="form-check-label text-primary " onClick= {() => handleShowAddFilter(addDataItemIndex)}>Add filter</span>
-                                {isHaveSort && <span className={`form-check-label ${sort ? 'text-secondary' : 'text-primary'} mx-2`} onClick= {() => sort ? null : handleShowAddSort(addDataItemIndex)}>Add Sort</span>}</p>
-                              </div>
-                            </div>
-                            <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.5rem' }} index={addDataItemIndex} direction={'prev'}/>
+                        return isEdit
+                          ? <div key={`customNarrativeList_${addDataItemIndex}`} className={`customListItem flexBasisAuto d-flex flex-column g-2 position-relative mx-1 ${isEdit ? 'my-0' : 'my-1'}`} style={{ height: 'fit-content' }}>
+                        <div className="d-flex justify-content-between align-items-center" onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
+                          <a style={{ height: '5vh' }} className={`w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 d-flex justify-content-start align-items-center text-decoration-underline`} type="button" data-bs-toggle="collapse" data-bs-target={`#data_accordion_${addDataItemIndex}`} aria-expanded={'false'} onClick={ () => setSelectedCollapseIndex(addDataItemIndex)}>
+                            <span dangerouslySetInnerHTML={{ __html: preViewText[addDataItemIndex] }} />
+                          </a>
+                          <div className={showHoverItemIndex === addDataItemIndex ? '' : 'd-none'} onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
+                            <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.2rem' }} index={addDataItemIndex} direction={'prev'}/>
                           </div>
+                        </div>
+                        <div class="flexBasisAuto mt-2">
+                          <div class="customListItem">
+                            { getRenderDataObject(addItem, addDataItemIndex)}
+                          </div>
+                        </div>
+                        </div>
+                          : getRenderDataObject(addItem, addDataItemIndex)
                       } else if (props.isCustomInsight || !props.isDisplayByModal) {
                         let textItem = addItem.text
-                        return <div className={'customListItem d-inline-flex g-2 position-relative mt-2 textArea_containermx-2'} style={{ height: '8vw' }}>
+                        return <div className={`customListItem ${isEdit ? 'flexBasisAuto' : ''} d-inline-flex g-2 position-relative textArea_container mx-2 ${isEdit ? 'flex-column' : ''}`} style={{ height: 'fit-content' }}>
                           {/* <AddItemField iconStyle ={{ marginTop: '0.5rem', width: 25, height: 25 }} index={addDataItemIndex} direction={'prev'}/> */}
-                          <div key={`textField_${addDataItemIndex}`} className={`shadow w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 border border-2 rounded-3 d-flex justify-content-start mb-lg-3`} >
-                            <textarea className="px-1 customTextField " placeholder="please enter the text" value={textItem ?? ''}
-                              onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} onBlur={(e) => (textItem && textItem.length > 0) ? previewPostCustomNarrative() : null }/>
-                            <div className=" " style={{ display: 'flex' }}>
-                              <img src={LINE}></img>
-                              <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'textAera')} styles={{ marginLeft: 5 }} width={22} height={20}/>
+                          {isEdit
+                            ? <Fragment>
+                          <div id={`text_accordion_${addDataItemIndex}`} className="d-flex justify-content-between align-items-center" onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
+                            <a style={{ height: '5vh' }} className={`w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 d-flex justify-content-start align-items-center mb-lg-1 text-decoration-underline`} type="button" data-bs-toggle="collapse" data-bs-target={`#text_accordion_${addDataItemIndex}`} aria-expanded={'false'} onClick={ () => setSelectedCollapseIndex(addDataItemIndex)}>
+                              <span dangerouslySetInnerHTML={{ __html: preViewText[addDataItemIndex] }} />
+                            </a>
+                            <div className={showHoverItemIndex === addDataItemIndex ? '' : 'd-none'} onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
+                              <AddItemField showAddText={showText} iconStyle ={{ width: 25, height: 25, marginLeft: '0.2rem' }} index={addDataItemIndex} direction={'next'}/>
                             </div>
                           </div>
-                          <AddItemField showAddText={showText} iconStyle ={{ marginTop: '0.5rem', width: 25, height: 25 }} index={addDataItemIndex} direction={'next'}/>
-                      </div>
+                          <div class={ `${selectedCollapseIndex === addDataItemIndex ? 'row' : ' d-none'}`}>
+                            <div class="col-11">
+                              <div id={`text_accordion_${addDataItemIndex}`} key={`textField_${addDataItemIndex}`} className={`collapse ${selectedCollapseIndex === addDataItemIndex ? 'show' : ''}`} >
+                                <div key={`textField_${addDataItemIndex}`} className={`shadow w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 border border-2 rounded-3 d-flex justify-content-start mb-lg-3`} >
+                                  <textarea className="px-1 customTextField " placeholder="please enter the text" value={textItem.length > 0 ? textItem : ' '}
+                                    onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} onBlur={(e) => (textItem && textItem.length > 0) ? previewPostCustomNarrative() : null }/>
+                                  <div className=" " style={{ display: 'flex' }}>
+                                    <img src={LINE}></img>
+                                    <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'textAera')} styles={{ marginLeft: 5 }} width={22} height={20}/>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          </Fragment>
+                            : <Fragment>
+                              <div key={`textField_${addDataItemIndex}`} className={`shadow w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 d-flex justify-content-start mb-lg-3`} >
+                              <textarea className="px-1 customTextField " placeholder="please enter the text" value={textItem ?? ''}
+                                onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} onBlur={(e) => (textItem && textItem.length > 0) ? previewPostCustomNarrative() : null }/>
+                              <div className=" " style={{ display: 'flex' }}>
+                                <img src={LINE}></img>
+                                <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'textAera')} styles={{ marginLeft: 5 }} width={22} height={20}/>
+                              </div>
+                            </div>
+                            <AddItemField showAddText={showText} iconStyle ={{ marginTop: '0.5rem', width: 25, height: 25 }} index={addDataItemIndex} direction={'next'}/>
+                          </Fragment>
+                        }
+                        </div>
                       }
                     })
                   }
