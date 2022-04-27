@@ -84,6 +84,7 @@ const BlogInsights = (props) => {
   useEffect(() => {
     setIsLoading(true)
     localStorage.setItem('selectedNarrativeId', undefined)
+    getBussinessDetails()
     if (tabName !== 'customNarratives') {
       inSightsList(tabName, 0)
     }
@@ -148,7 +149,22 @@ const BlogInsights = (props) => {
         })
     }
   }
-
+  const getBussinessDetails = (loginCookie) => {
+    const payload = {
+      cookie: localStorage.getItem('localLoginCookie'),
+      appId: props.history.location.pathname.split('/')[2]
+    }
+    NetworkManager.getBusinessById(payload).then(response => {
+      if (response.status === 200) {
+        localStorage.setItem('selectedAppsInfo', JSON.stringify(response.data.response_objects))
+      }
+    })
+      .catch(error => {
+        toast(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER
+        })
+      })
+  }
   const blogInSightsList = (date, id) => {
     let params = {
       cookie: cookie || loginCookie,

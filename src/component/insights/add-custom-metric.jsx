@@ -1,3 +1,4 @@
+/* eslint-disable multiline-ternary */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-return-assign */
 /* eslint-disable dot-notation */
@@ -70,6 +71,7 @@ const AddCustomMetric = (props) => {
   let [copyObj, setCopyObj] = useState(null)
   let [selectedCollapseIndex, setSelectedCollapseIndex] = useState(null)
   let [showHoverItemIndex, setShowHoverItemIndex] = useState(null)
+  let [loading, setLoading] = useState(false)
   const handleShowDataField = (index) => {
     let customNarrativeListObj = {
       data: {
@@ -170,6 +172,7 @@ const AddCustomMetric = (props) => {
     getFilterDropdownValues()
     // getAllCategory()
     if (isEdit) {
+      setLoading(true)
       getCustomNarrativesById()
     }
     document.addEventListener('click', handleClickOutside, true)
@@ -223,14 +226,14 @@ const AddCustomMetric = (props) => {
     }
     setState(() => ({ loader: !loader }))
     if ((fieldName === 'value' && pickValue) || fieldName !== 'value') {
-      previewPostCustomNarrative()
+      previewPostCustomNarrative([customNarrativeList[addFieldIndex]], addFieldIndex)
     }
   }
 
   const handleAutoCompleteBlur = (index, pickValue, fieldName, addFieldIndex) => {
     setVisibleDropdown({ isFocus: 0, display: false })
     if (customNarrativeList[addFieldIndex]['data'].filters[index][fieldName].length > 0) {
-      previewPostCustomNarrative()
+      previewPostCustomNarrative(customNarrativeList[addFieldIndex], addFieldIndex)
     }
   }
 
@@ -272,7 +275,7 @@ const AddCustomMetric = (props) => {
     } else {
       setMetricDataIndex(event)
     }
-    previewPostCustomNarrative()
+    previewPostCustomNarrative([customNarrativeList[index]], index)
   }
   const onTextChange = (event, index, fieldName) => {
     event.preventDefault()
@@ -539,6 +542,7 @@ const AddCustomMetric = (props) => {
         }
       })
         .catch(error => {
+          setLoading(false)
           errorHandle(error)
         })
     } else {
@@ -693,7 +697,7 @@ const AddCustomMetric = (props) => {
     return richText.getCurrentContent().getPlainText().length > 0
   }
 
-  const previewPostCustomNarrative = (narrative) => {
+  const previewPostCustomNarrative = (narrative, index) => {
     NetworkManager.previewPostCustomNarrative(apps.id, loginCookie, { narrative: narrative || customNarrativeList }).then(response => {
       if (response.status === 200) {
         if (`${response.data.response_objects}`.trim().length > 0) {
@@ -705,8 +709,14 @@ const AddCustomMetric = (props) => {
           //   'visits from all the referral sites.', '1', 'visits came from Organic search.',
           //   '\n\n**Bounces**\nThis week the **Cowpea Microgreens | Sns Microgreens** page had', '1', 'single page visits.'
           // ]
-          setPreViewText(response.data.response_objects)
+          if (narrative && index) {
+            preViewText[index] = response.data.response_objects
+            setPreViewText(preViewText)
+          } else {
+            setPreViewText(response.data.response_objects)
+          }
           setIsPreviewHighlighted(true)
+          setLoading(false)
           setState(() => ({ loader: !loader }))
         } else {
           setPreViewText(null)
@@ -715,6 +725,7 @@ const AddCustomMetric = (props) => {
       }
     })
       .catch(error => {
+        setLoading(false)
         errorHandle(error)
       })
   }
@@ -881,7 +892,7 @@ const AddCustomMetric = (props) => {
                   <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'customFilterList', customItemIndex)} width={customItemIndex === 0 ? 20 : 10} height={20} />
                 </div>
             })}
-            {sort && <div className="d-flex justify-content-between " >
+            {sort && <div className="d-flex justify-content-between g-2 mt-3" >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-down-up mx-2" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
               </svg>
@@ -941,25 +952,30 @@ const AddCustomMetric = (props) => {
                 </div>
               </div>
               {props.isCustomInsight && <main>
+                { loading ? <div className="d-flex justify-content-center align-items-center" >
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div> : <>
                 <div className='d-flex flex-column'>
                   <label className="form-label fw-bold">Builder</label>
                   {customNarrativeList.length === 0 && <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 20, height: 20, marginLeft: '0.5rem' }} direction={'next'}/>}
                 </div>
-                <div className="customListcontainer">
+                  <div className="customListcontainer">
                   {
                     customNarrativeList.map((addItem, addDataItemIndex) => {
                       if (Object.keys(addItem).includes('data')) {
                         return isEdit
                           ? <div key={`customNarrativeList_${addDataItemIndex}`} className={`customListItem flexBasisAuto d-flex flex-column g-2 position-relative mx-1 ${isEdit ? 'my-0' : 'my-1'}`} style={{ height: 'fit-content' }}>
                         <div className="d-flex justify-content-between align-items-center" onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
-                          <a style={{ height: '5vh' }} className={`w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 d-flex justify-content-start align-items-center text-decoration-underline`} type="button" data-bs-toggle="collapse" data-bs-target={`#data_accordion_${addDataItemIndex}`} aria-expanded={'false'} onClick={ () => setSelectedCollapseIndex(addDataItemIndex)}>
+                          <a style={{ height: 'fit-content' }} className={`w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 d-flex justify-content-start align-items-center text-decoration-underline`} type="button" data-bs-toggle="collapse" data-bs-target={`#data_accordion_${addDataItemIndex}`} aria-expanded={'false'} onClick={ () => setSelectedCollapseIndex(addDataItemIndex)}>
                             <span dangerouslySetInnerHTML={{ __html: preViewText[addDataItemIndex] }} />
                           </a>
                           <div className={showHoverItemIndex === addDataItemIndex ? '' : 'd-none'} onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
                             <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.2rem' }} index={addDataItemIndex} direction={'prev'}/>
                           </div>
                         </div>
-                        <div class="flexBasisAuto mt-2">
+                        <div class="flexBasisAuto mt-2" style={{ width: 'fit-content' }}>
                           <div class="customListItem">
                             { getRenderDataObject(addItem, addDataItemIndex)}
                           </div>
@@ -985,7 +1001,7 @@ const AddCustomMetric = (props) => {
                               <div id={`text_accordion_${addDataItemIndex}`} key={`textField_${addDataItemIndex}`} className={`collapse ${selectedCollapseIndex === addDataItemIndex ? 'show' : ''}`} >
                                 <div key={`textField_${addDataItemIndex}`} className={`shadow w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 border border-2 rounded-3 d-flex justify-content-start mb-lg-3`} >
                                   <textarea className="px-1 customTextField " placeholder="please enter the text" value={textItem.length > 0 ? textItem : ' '}
-                                    onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} onBlur={(e) => (textItem && textItem.length > 0) ? previewPostCustomNarrative() : null }/>
+                                    onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} onBlur={(e) => (textItem && textItem.length > 0) ? previewPostCustomNarrative([{ text: textItem }], addDataItemIndex) : null }/>
                                   <div className=" " style={{ display: 'flex' }}>
                                     <img src={LINE}></img>
                                     <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'textAera')} styles={{ marginLeft: 5 }} width={22} height={20}/>
@@ -1012,6 +1028,7 @@ const AddCustomMetric = (props) => {
                     })
                   }
                 </div>
+                </>}
               </main>
               }
               <div className={'col-md-auto col-sm-auto text-xl-center d-flex justify-content-end mt-3'} style={{ marginTop: '-4%', marginBottom: '20px' }}>
