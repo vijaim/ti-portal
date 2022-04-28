@@ -758,7 +758,7 @@ const AddCustomMetric = (props) => {
     metricId = opList.length > 0 ? { value: opList[0].id, label: opList[0].name } : metricId
     metricAggregator = metric ? { value: metric.aggregator, label: metric.aggregator } : metricAggregator
     metricDataIndex = metric ? { value: metric.date_range, label: metric.date_range } : metricDataIndex
-    return <div id={`data_accordion_${addDataItemIndex}`} key={`customNarrativeList_${addDataItemIndex}`} className={` ${isEdit ? 'collapse' : 'customListItem d-inline-flex  g-2 position-relative mx-1'} ${selectedCollapseIndex === addDataItemIndex ? 'show' : ''}`}>
+    return <div id={`data_accordion_${addDataItemIndex}`} key={`customNarrativeList_${addDataItemIndex}`} className={`collapse customListItem d-inline-flex  g-2 position-relative mx-1 ${selectedCollapseIndex === addDataItemIndex ? 'show' : ''}`}>
           {/* <AddItemField iconStyle ={{ marginTop: '1.5rem', width: 25, height: 25, marginRight: '1.5rem' }} index={addDataItemIndex} direction={'prev'}/> */}
           <div className={`customListcontainerItem col-11  mx-2 p-1${addDataItemIndex === 0 ? 'mt-3' : 'mt-2'}`} >
           <div className={` ${isEdit ? '' : 'row g-2'} position-relative `}>
@@ -927,7 +927,7 @@ const AddCustomMetric = (props) => {
             {isHaveSort && <span className={`form-check-label ${sort ? 'text-secondary' : 'text-primary'} mx-2`} onClick= {() => sort ? null : handleShowAddSort(addDataItemIndex)}>Add Sort</span>}</p>
           </div>
         </div>
-        {!isEdit && <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.5rem' }} index={addDataItemIndex} direction={'prev'}/>}
+        {/* {!isEdit && <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.5rem' }} index={addDataItemIndex} direction={'prev'}/>} */}
       </div>
   }
 
@@ -965,32 +965,27 @@ const AddCustomMetric = (props) => {
                   {
                     customNarrativeList.map((addItem, addDataItemIndex) => {
                       if (Object.keys(addItem).includes('data')) {
-                        return isEdit
-                          ? <div key={`customNarrativeList_${addDataItemIndex}`} className={`customListItem flexBasisAuto d-flex flex-column g-2 position-relative mx-1 ${isEdit ? 'my-0' : 'my-1'}`} style={{ height: 'fit-content' }}>
+                        return <div key={`customNarrativeList_${addDataItemIndex}`} className={'customListItem flexBasisAuto d-flex flex-column g-2 position-relative mx-1 my-0 my-1'} style={{ height: 'fit-content' }}>
                         <div className="d-flex justify-content-between align-items-center" onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
-                          <a style={{ height: 'fit-content' }} className={`w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 d-flex justify-content-start align-items-center text-decoration-underline`} type="button" data-bs-toggle="collapse" data-bs-target={`#data_accordion_${addDataItemIndex}`} aria-expanded={'false'} onClick={ () => setSelectedCollapseIndex(addDataItemIndex)}>
-                            <span dangerouslySetInnerHTML={{ __html: preViewText[addDataItemIndex] }} />
+                          <a style={{ height: 'fit-content' }} className={`w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 d-flex justify-content-start align-items-center text-decoration-underline`} type="button" data-bs-toggle="collapse" data-bs-target={`#data_accordion_${addDataItemIndex}`} aria-expanded={'false'} onClick={ () => setSelectedCollapseIndex(selectedCollapseIndex === addDataItemIndex ? null : addDataItemIndex)}>
+                            <span dangerouslySetInnerHTML={{ __html: preViewText ? preViewText[addDataItemIndex] : '' }} />
                           </a>
                           <div className={showHoverItemIndex === addDataItemIndex ? '' : 'd-none'} onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
                             <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.2rem' }} index={addDataItemIndex} direction={'prev'}/>
                           </div>
                         </div>
-                        <div class="flexBasisAuto mt-2" style={{ width: 'fit-content' }}>
+                        <div class={`flexBasisAuto mt-2 ${selectedCollapseIndex === addDataItemIndex ? 'row' : ' d-none'}`} style={{ width: 'fit-content' }}>
                           <div class="customListItem">
                             { getRenderDataObject(addItem, addDataItemIndex)}
                           </div>
                         </div>
                         </div>
-                          : getRenderDataObject(addItem, addDataItemIndex)
                       } else if (props.isCustomInsight || !props.isDisplayByModal) {
                         let textItem = addItem.text
-                        return <div className={`customListItem ${isEdit ? 'flexBasisAuto' : ''} d-inline-flex g-2 position-relative textArea_container mx-2 ${isEdit ? 'flex-column' : ''}`} style={{ height: 'fit-content' }}>
-                          {/* <AddItemField iconStyle ={{ marginTop: '0.5rem', width: 25, height: 25 }} index={addDataItemIndex} direction={'prev'}/> */}
-                          {isEdit
-                            ? <Fragment>
+                        return <div className={`customListItem ${isEdit ? 'flexBasisAuto' : 'flexBasisAuto'} d-inline-flex g-2 position-relative textArea_container mx-2 flex-column`} style={{ height: 'fit-content' }}>
                           <div id={`text_accordion_${addDataItemIndex}`} className="d-flex justify-content-between align-items-center" onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
                             <a style={{ height: '5vh' }} className={`w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 d-flex justify-content-start align-items-center mb-lg-1 text-decoration-underline`} type="button" data-bs-toggle="collapse" data-bs-target={`#text_accordion_${addDataItemIndex}`} aria-expanded={'false'} onClick={ () => setSelectedCollapseIndex(addDataItemIndex)}>
-                              <span dangerouslySetInnerHTML={{ __html: preViewText[addDataItemIndex] }} />
+                              <span className={`${textItem.length === 0 ? 'showPlacceHolderText' : ''}`} dangerouslySetInnerHTML={{ __html: preViewText ? preViewText[addDataItemIndex] : '' }} />
                             </a>
                             <div className={showHoverItemIndex === addDataItemIndex ? '' : 'd-none'} onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
                               <AddItemField showAddText={showText} iconStyle ={{ width: 25, height: 25, marginLeft: '0.2rem' }} index={addDataItemIndex} direction={'next'}/>
@@ -1010,19 +1005,6 @@ const AddCustomMetric = (props) => {
                               </div>
                             </div>
                           </div>
-                          </Fragment>
-                            : <Fragment>
-                              <div key={`textField_${addDataItemIndex}`} className={`shadow w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 d-flex justify-content-start mb-lg-3`} >
-                              <textarea className="px-1 customTextField " placeholder="please enter the text" value={textItem ?? ''}
-                                onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} onBlur={(e) => (textItem && textItem.length > 0) ? previewPostCustomNarrative() : null }/>
-                              <div className=" " style={{ display: 'flex' }}>
-                                <img src={LINE}></img>
-                                <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'textAera')} styles={{ marginLeft: 5 }} width={22} height={20}/>
-                              </div>
-                            </div>
-                            <AddItemField showAddText={showText} iconStyle ={{ marginTop: '0.5rem', width: 25, height: 25 }} index={addDataItemIndex} direction={'next'}/>
-                          </Fragment>
-                        }
                         </div>
                       }
                     })

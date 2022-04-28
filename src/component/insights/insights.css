@@ -22,7 +22,14 @@
   .icon-color {
     color: #3557cc;
   }
-  
+  .addCustomBtn{
+    min-width: 40px;
+  }
+  .showPlacceHolderText::before{
+    content: "Please Enter Text ";
+    color:#828282;
+    text-decoration: underline;
+  }
   .vertical-line {
     border-left: 3px solid #D9E1EC;
     height: auto;
