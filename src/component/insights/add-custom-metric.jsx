@@ -80,15 +80,20 @@ const AddCustomMetric = (props) => {
       }
     }
     if (typeof index === 'number') {
+      index = index + 1
+      preViewText.splice(index, 0, '')
       customNarrativeList.splice(index + 1, 0, customNarrativeListObj)
     } else {
+      index = 0
+      preViewText = ['']
+      setSelectedCollapseIndex(index)
       customNarrativeList.push(customNarrativeListObj)
     }
     setCustomNarrativeList(customNarrativeList)
     // setCustomNarrativeList(JSON.parse(JSON.stringify(customNarrativeList)))
     hideShowText()
     setState(() => ({ loader: !loader }))
-    previewPostCustomNarrative()
+    previewPostCustomNarrative([customNarrativeListObj], index)
   }
 
   const handleCopy = (copyIndex) => {
@@ -122,10 +127,11 @@ const AddCustomMetric = (props) => {
     }
     setCustomNarrativeList(customNarrativeList)
     hideShowText()
-    if (isEdit) {
-      preViewText.splice(index + 1, 0, '')
-      setPreViewText(preViewText)
-    }
+    // if (isEdit) {
+    preViewText.splice(index + 1, 0, '')
+    setPreViewText(preViewText)
+    // }
+    // setIsUpdate(false)
     setState(() => ({ loader: !loader }))
     // previewPostCustomNarrative()
   }
@@ -312,6 +318,11 @@ const AddCustomMetric = (props) => {
       customNarrativeList.splice(index, 1)
       setCustomNarrativeList(customNarrativeList)
     }
+    if (preViewText) {
+      preViewText.splice(index, 1)
+      setPreViewText(preViewText || [])
+    }
+    setShowTextIndex('')
     setState(() => ({ loader: !loader }))
     previewPostCustomNarrative()
   }
@@ -522,7 +533,7 @@ const AddCustomMetric = (props) => {
           let narrative = response.data.response_objects.custom_narratives.narrative
           let lookupIdArray = []
           // previewCustomNarrative(apps.id, loginCookie, params.narrativeId, false)
-          await previewPostCustomNarrative(narrative)
+          await previewPostCustomNarrative(narrative, undefined, true)
           setTitle(response.data.response_objects.custom_narratives.name ?? '')
           setCategory(response.data.response_objects.custom_narratives.category_id ?? '')
           await narrative.map(item => {
@@ -538,6 +549,9 @@ const AddCustomMetric = (props) => {
             // getAutoCompleteLookup(item)
           })
           setCustomNarrativeList(narrative)
+          setState(() => ({ loader: !loader }))
+        } else {
+          setLoading(false)
           setState(() => ({ loader: !loader }))
         }
       })
@@ -697,20 +711,16 @@ const AddCustomMetric = (props) => {
     return richText.getCurrentContent().getPlainText().length > 0
   }
 
-  const previewPostCustomNarrative = (narrative, index) => {
+  const previewPostCustomNarrative = (narrative, index, isInitial) => {
     NetworkManager.previewPostCustomNarrative(apps.id, loginCookie, { narrative: narrative || customNarrativeList }).then(response => {
       if (response.status === 200) {
         if (`${response.data.response_objects}`.trim().length > 0) {
-          // response.data.response_objects = [
-          //   '**Overview**\\n', 'The **Cowpea Microgreens | Sns Microgreens** page had', '7',
-          //   'page views this week. The total number of new users visited is', '1', 'with', '2', 'active users.',
-          //   'The average session duration is', '0', 'seconds.', 'Most visits came from', 'United States of America', '.',
-          //   '\n\n**Referral**\nThis week, the top referrers are', 'www.google.com', 'with a total of', '1',
-          //   'visits from all the referral sites.', '1', 'visits came from Organic search.',
-          //   '\n\n**Bounces**\nThis week the **Cowpea Microgreens | Sns Microgreens** page had', '1', 'single page visits.'
-          // ]
-          if (narrative && index) {
-            preViewText[index] = response.data.response_objects
+          if (narrative) {
+            if (isInitial) {
+              preViewText = response.data.response_objects
+            } else {
+              preViewText[index] = response.data.response_objects
+            }
             setPreViewText(preViewText)
           } else {
             setPreViewText(response.data.response_objects)
@@ -719,7 +729,12 @@ const AddCustomMetric = (props) => {
           setLoading(false)
           setState(() => ({ loader: !loader }))
         } else {
-          setPreViewText(null)
+          if (narrative) {
+            setLoading(false)
+          } else {
+            setPreViewText([])
+            setLoading(false)
+          }
         }
         setState(() => ({ loader: !loader }))
       }
@@ -964,48 +979,53 @@ const AddCustomMetric = (props) => {
                   <div className="customListcontainer">
                   {
                     customNarrativeList.map((addItem, addDataItemIndex) => {
-                      if (Object.keys(addItem).includes('data')) {
-                        return <div key={`customNarrativeList_${addDataItemIndex}`} className={'customListItem flexBasisAuto d-flex flex-column g-2 position-relative mx-1 my-0 my-1'} style={{ height: 'fit-content' }}>
-                        <div className="d-flex justify-content-between align-items-center" onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
-                          <a style={{ height: 'fit-content' }} className={`w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 d-flex justify-content-start align-items-center text-decoration-underline`} type="button" data-bs-toggle="collapse" data-bs-target={`#data_accordion_${addDataItemIndex}`} aria-expanded={'false'} onClick={ () => setSelectedCollapseIndex(selectedCollapseIndex === addDataItemIndex ? null : addDataItemIndex)}>
-                            <span dangerouslySetInnerHTML={{ __html: preViewText ? preViewText[addDataItemIndex] : '' }} />
-                          </a>
-                          <div className={showHoverItemIndex === addDataItemIndex ? '' : 'd-none'} onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
-                            <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.2rem' }} index={addDataItemIndex} direction={'prev'}/>
-                          </div>
-                        </div>
-                        <div class={`flexBasisAuto mt-2 ${selectedCollapseIndex === addDataItemIndex ? 'row' : ' d-none'}`} style={{ width: 'fit-content' }}>
-                          <div class="customListItem">
-                            { getRenderDataObject(addItem, addDataItemIndex)}
-                          </div>
-                        </div>
-                        </div>
-                      } else if (props.isCustomInsight || !props.isDisplayByModal) {
-                        let textItem = addItem.text
-                        return <div className={`customListItem ${isEdit ? 'flexBasisAuto' : 'flexBasisAuto'} d-inline-flex g-2 position-relative textArea_container mx-2 flex-column`} style={{ height: 'fit-content' }}>
-                          <div id={`text_accordion_${addDataItemIndex}`} className="d-flex justify-content-between align-items-center" onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
-                            <a style={{ height: '5vh' }} className={`w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 d-flex justify-content-start align-items-center mb-lg-1 text-decoration-underline`} type="button" data-bs-toggle="collapse" data-bs-target={`#text_accordion_${addDataItemIndex}`} aria-expanded={'false'} onClick={ () => setSelectedCollapseIndex(addDataItemIndex)}>
-                              <span className={`${textItem.length === 0 ? 'showPlacceHolderText' : ''}`} dangerouslySetInnerHTML={{ __html: preViewText ? preViewText[addDataItemIndex] : '' }} />
-                            </a>
-                            <div className={showHoverItemIndex === addDataItemIndex ? '' : 'd-none'} onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
-                              <AddItemField showAddText={showText} iconStyle ={{ width: 25, height: 25, marginLeft: '0.2rem' }} index={addDataItemIndex} direction={'next'}/>
-                            </div>
-                          </div>
-                          <div class={ `${selectedCollapseIndex === addDataItemIndex ? 'row' : ' d-none'}`}>
-                            <div class="col-11">
-                              <div id={`text_accordion_${addDataItemIndex}`} key={`textField_${addDataItemIndex}`} className={`collapse ${selectedCollapseIndex === addDataItemIndex ? 'show' : ''}`} >
-                                <div key={`textField_${addDataItemIndex}`} className={`shadow w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 border border-2 rounded-3 d-flex justify-content-start mb-lg-3`} >
-                                  <textarea className="px-1 customTextField " placeholder="please enter the text" value={textItem.length > 0 ? textItem : ' '}
-                                    onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} onBlur={(e) => (textItem && textItem.length > 0) ? previewPostCustomNarrative([{ text: textItem }], addDataItemIndex) : null }/>
-                                  <div className=" " style={{ display: 'flex' }}>
-                                    <img src={LINE}></img>
-                                    <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'textAera')} styles={{ marginLeft: 5 }} width={22} height={20}/>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                      if (Object.keys(addItem).includes('data') && preViewText.length > 0) {
+                        return <Fragment>{ preViewText.length > 0 && preViewText[addDataItemIndex].includes('\n') && <div className='w-100' />}<div key={`customNarrativeList_${addDataItemIndex}`} className={'customListItem flexBasisAuto d-flex flex-column g-2 position-relative mx-1 my-0'} >
+                           <div className="d-flex justify-content-between align-items-center" onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
+                             <a style={{ height: 'fit-content' }} className={`w-100 ${props.isCustomInsight ? 'ml-0' : 'mx-3'} p-1 d-flex justify-content-start align-items-center `} type="button" data-bs-toggle="collapse" data-bs-target={`#data_accordion_${addDataItemIndex}`} aria-expanded={'false'} onClick={ () => setSelectedCollapseIndex(selectedCollapseIndex === addDataItemIndex ? null : addDataItemIndex)}>
+                               <span dangerouslySetInnerHTML={{ __html: preViewText ? preViewText[addDataItemIndex] : '' }} />
+                             </a>
+                             <div className={showHoverItemIndex === addDataItemIndex ? '' : 'd-none'} onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
+                               <AddItemField showAddText={showText} container="filter" iconStyle ={{ width: 25, height: 25, marginLeft: '0.2rem' }} index={addDataItemIndex} direction={'prev'}/>
+                             </div>
+                           </div>
+                           <div class={`flexBasisAuto mt-2 ${selectedCollapseIndex === addDataItemIndex ? 'row' : ' d-none'}`} style={{ width: 'fit-content', height: 'fit-content' }}>
+                             <div class="customListItem">
+                               { getRenderDataObject(addItem, addDataItemIndex)}
+                             </div>
+                           </div>
+                           </div>
+                           { preViewText[addDataItemIndex].includes('\n') && <div className='w-100' />}
+                         </Fragment>
+                      } else if ((props.isCustomInsight || !props.isDisplayByModal) && preViewText.length > 0) {
+                        let textItem = customNarrativeList[addDataItemIndex]?.text
+                        return <Fragment>
+                           { preViewText[addDataItemIndex].includes('\n') && <div className='w-100' />}
+                           <div className={`customListItem ${isEdit ? 'flexBasisAuto' : 'flexBasisAuto'} d-inline-flex g-2 position-relative textArea_container mx-1 flex-column`} style={{ height: 'fit-content' }}>
+                             <div id={`text_accordion_${addDataItemIndex}`} className="d-flex justify-content-between align-items-center" onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
+                               <a style={{ height: 'fit-content' }} className={`w-100 ${props.isCustomInsight ? 'ml-0' : 'mx-3'} p-1 d-flex justify-content-start align-items-center`} type="button" data-bs-toggle="collapse" data-bs-target={`#text_accordion_${addDataItemIndex}`} aria-expanded={'false'} onClick={ () => setSelectedCollapseIndex(addDataItemIndex)}>
+                                 <span className={`${textItem.length === 0 ? 'showPlacceHolderText' : ''}`} dangerouslySetInnerHTML={{ __html: preViewText ? preViewText[addDataItemIndex] : '' }} />
+                               </a>
+                               <div className={showHoverItemIndex === addDataItemIndex ? '' : 'd-none'} onMouseEnter={() => setShowHoverItemIndex(addDataItemIndex)} onMouseLeave={() => setShowHoverItemIndex(null)}>
+                                 <AddItemField showAddText={showText} iconStyle ={{ width: 25, height: 25, marginLeft: '0.2rem' }} index={addDataItemIndex} direction={'next'}/>
+                               </div>
+                             </div>
+                             <div class={ `${selectedCollapseIndex === addDataItemIndex ? 'row' : ' d-none'}`}>
+                               <div class="col-11">
+                                 <div id={`text_accordion_${addDataItemIndex}`} key={`textField_${addDataItemIndex}`} className={`collapse ${selectedCollapseIndex === addDataItemIndex ? 'show' : ''}`} >
+                                   <div key={`textField_${addDataItemIndex}`} className={`shadow w-100 ${props.isCustomInsight ? 'mx-2 ml-0' : 'mx-3'} p-1 border border-2 rounded-3 d-flex justify-content-start mb-lg-3`} >
+                                     <textarea className="px-1 customTextField " placeholder="please enter the text" value={textItem.length > 0 ? textItem : ' '}
+                                       onChange={(e) => onTextChange(e, addDataItemIndex, 'text')} onBlur={(e) => (textItem && textItem.length > 0) ? previewPostCustomNarrative([{ text: textItem }], addDataItemIndex) : null }/>
+                                     <div className=" " style={{ display: 'flex' }}>
+                                       <img src={LINE}></img>
+                                       <ThrashIcon onPressRemove={ () => removeItem(addDataItemIndex, 'textAera')} styles={{ marginLeft: 5 }} width={22} height={20}/>
+                                     </div>
+                                   </div>
+                                 </div>
+                               </div>
+                             </div>
+                           </div> { preViewText[addDataItemIndex].includes('\n') && <div className='w-100' />}
+                           </Fragment>
                       }
                     })
                   }

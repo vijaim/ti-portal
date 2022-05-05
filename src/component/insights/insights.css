@@ -28,7 +28,7 @@
   .showPlacceHolderText::before{
     content: "Please Enter Text ";
     color:#828282;
-    text-decoration: underline;
+    /* text-decoration: underline; */
   }
   .vertical-line {
     border-left: 3px solid #D9E1EC;
@@ -147,10 +147,12 @@
 
   .customListItem{
     flex-basis: 45%; 
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
   }
   .flexBasisAuto{
     flex-basis: auto; 
+    align-self: baseline;
+    height: fit-content;
   }
   .textArea_container_width{
     flex-basis: 93% !important;
