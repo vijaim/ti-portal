@@ -88,7 +88,6 @@ const BlogInsights = (props) => {
     if (tabName !== 'customNarratives') {
       inSightsList(tabName, 0)
     }
-    blogInSightsAll(0)
     // blogInSightsList(new Date())
     // getAllCustomNarratives(0)
     return () => {
@@ -122,6 +121,7 @@ const BlogInsights = (props) => {
           })
         })
     } else {
+      let apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
       params = { ...params, appId: apps.id, offSet: customOffset * customLimit, limit: customLimit }
       NetworkManager.getAllCustomNarratives(params).then(response => {
         setIsLoading(false)
@@ -157,6 +157,7 @@ const BlogInsights = (props) => {
     NetworkManager.getBusinessById(payload).then(response => {
       if (response.status === 200) {
         localStorage.setItem('selectedAppsInfo', JSON.stringify(response.data.response_objects))
+        blogInSightsAll(0)
       }
     })
       .catch(error => {
