@@ -77,11 +77,6 @@ const InsightsHeader = (props) => {
             onSelect={(val, item) => autoCompleteValueChange(val, true, item)}
           />
         </form>
-        {isDisableManageBtn && <button className='btn btn-primary d-flex align-items-center justify-content-evenly col-2 pl-2' style={{ marginRight: '10px' }} onClick={() => manageInsights()}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-filter-left" viewBox="0 0 16 16">
-            <path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
-          </svg>
-          Manage Insights</button>}
       </div>
        : ''}
        {props.currentTab === 'customNarratives' && <div className="d-flex justify-content-between">
