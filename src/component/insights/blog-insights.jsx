@@ -176,7 +176,7 @@ const BlogInsights = (props) => {
     setIsLoadMore(false)
     if (isCustomInsight) {
       params.id = selectedTab.narrative_id
-      params = {...params, narrativeId: selectedTab.id}
+      params = { ...params, narrativeId: selectedTab.id }
       NetworkManager.getAnosByDate(params).then(response => {
         setIsLoading(false)
         if (response.status === 200 && response.data.response_objects && response.data.response_objects.anos) {
@@ -543,28 +543,28 @@ const BlogInsights = (props) => {
     pastDate = (pastDate instanceof Date || pastDate.length === 0) ? pastDate : moment.utc(pastDate[0].created_at)
     return <div id={insightsId} >
       <div ref={anosListContainerRef} className="container pb-20 pt-10 justify-content-center align-items-center  d-flex flex-wrap" id='accordionSample'>
-        { blogList.map((item, blogItemIndex) => {
+        {blogList.map((item, blogItemIndex) => {
           return <div key={`${blogItemIndex}_key_`} className="insightStatus-content d-flex flex-column position-relative bg-light px-2 justify-content-md-between align-items-md-start mx-2 my-2 w-100 p-3" >
-              <div className='position-relative d-flex justify-content-end align-items-center mb-3 w-100'>
-                <span className='mt-1 text-dark'>Generated on :</span>
-                <div className='d-flex align-items-center'>
-                  {<DateRangePicker minimumDate={pastDate} disable={false} dateValue={dateValue} dateChange = {handleDateChange} />}
-                    <span className="disabled-link pr-3 mt-1 px-3" onClick={() => editCustomNarratives(selectedTab)}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" className="bi bi-pencil icon-color form-check-label" viewBox="0 0 16 16">
-                          <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                      </svg>
-                    </span>
-                  {blogList.length > 0 && <img src={TODAY} style={{ cursor: 'pointer' }} width={20} height={20} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(insightsId, selectedTab.name)} className="mt-2 ml-2" />}
-                </div>
+            <div className='position-relative d-flex justify-content-end align-items-center mb-3 w-100'>
+              <span className='mt-1 text-dark'>Generated on :</span>
+              <div className='d-flex align-items-center'>
+                {<DateRangePicker minimumDate={pastDate} disable={false} dateValue={dateValue} dateChange={handleDateChange} />}
+                <span className="disabled-link pr-3 mt-1 px-3" onClick={() => editCustomNarratives(selectedTab)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" className="bi bi-pencil icon-color form-check-label" viewBox="0 0 16 16">
+                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                  </svg>
+                </span>
+                {blogList.length > 0 && <img src={TODAY} style={{ cursor: 'pointer' }} width={20} height={20} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(insightsId, selectedTab.name)} className="mt-2 ml-2" />}
               </div>
-              <div dangerouslySetInnerHTML={{ __html: isCustomInsight ? item.output_html : item.output}} />
             </div>
+            <div dangerouslySetInnerHTML={{ __html: isCustomInsight ? item.output_html : item.output }} />
+          </div>
         })}
         {
           blogList.length === 0 && <div className="d-flex flex-column align-items-center justify-content-center">
-                <h5 className="fw-bolder">No records found for the selected date.</h5>
-                {/* <span>For new businesses, insights should get generated within 15-30 minutes from the time of setup.</span> */}
-            </div>
+            <h5 className="fw-bolder">No records found for the selected date.</h5>
+            {/* <span>For new businesses, insights should get generated within 15-30 minutes from the time of setup.</span> */}
+          </div>
         }
       </div>
     </div>
@@ -576,41 +576,41 @@ const BlogInsights = (props) => {
       value.insightsId = insightsId
       const categoryList = Array.from(value.value, ([name, value]) => ({ name, value }))
       return <div ref={anosListContainerRef} key={`${value.name}_key_`} className="container pb-20 pt-10 accordion" id='accordionSample'>
-                <div id={value.insightsId} className=" gy-3 mb-40 row">
-                    {searchValue === '' && <div className='position-relative d-flex justify-content-end align-items-center mb-3 w-100'>
-                      <span className='mt-1 text-dark'>Generated on :</span>
-                      <div className='d-flex align-items-center'>
-                        {<DateRangePicker minimumDate={false} disable={false} dateValue={dateValue} dateChange = {handleDateChange} />}
-                        <img src={TODAY} style={{ cursor: 'pointer' }} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(value.insightsId, tab)} className="ms-3 icon-base" />
-                      </div>
-                    </div>}
-                    {categoryList.map((subvalue, subKey) => {
-                      const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS
-                      const outputvalueCheck = subvalue.value.map(item => `${item.output_html}`.toLowerCase().includes(searchValue.toLowerCase()))
-                      if (!searchValue !== '' && (`${subvalue.name}`.toLowerCase().includes(searchValue.toLowerCase()) || outputvalueCheck.includes(true))) {
-                        return <React.Fragment key={`${subvalue.name}_key_`}> <div className="col-lg-3 col-xl-2">
-                                <h3 className="insightTitle">
-                                    <img src={categoryTypeImage} width={24} height={24} alt="Computer" className="me-2 icon-base" />{`${subvalue.name}`}
-                                </h3>
+        <div id={value.insightsId} className=" gy-3 mb-40 row">
+          {searchValue === '' && <div className='position-relative d-flex justify-content-end align-items-center mb-3 w-100'>
+            <span className='mt-1 text-dark'>Generated on :</span>
+            <div className='d-flex align-items-center'>
+              {<DateRangePicker minimumDate={false} disable={false} dateValue={dateValue} dateChange={handleDateChange} />}
+              <img src={TODAY} style={{ cursor: 'pointer' }} width={24} height={24} alt="Computer" data-html2canvas-ignore="true" onClick={() => ImageSaver(value.insightsId, tab)} className="ms-3 icon-base" />
+            </div>
+          </div>}
+          {categoryList.map((subvalue, subKey) => {
+            const categoryTypeImage = subvalue.value[0].category_image_url ? subvalue.value[0].category_image_url : ORDERS
+            const outputvalueCheck = subvalue.value.map(item => `${item.output_html}`.toLowerCase().includes(searchValue.toLowerCase()))
+            if (!searchValue !== '' && (`${subvalue.name}`.toLowerCase().includes(searchValue.toLowerCase()) || outputvalueCheck.includes(true))) {
+              return <React.Fragment key={`${subvalue.name}_key_`}> <div className="col-lg-3 col-xl-2">
+                <h3 className="insightTitle">
+                  <img src={categoryTypeImage} width={24} height={24} alt="Computer" className="me-2 icon-base" />{`${subvalue.name}`}
+                </h3>
+              </div>
+                <div className="col-lg-9 col-xl-10 ">
+                  {subvalue.value.map((subvalueItem, anosIndex) => {
+                    if (!searchValue !== '' && `${subvalueItem.output_html}`.toLowerCase().includes(searchValue.toLowerCase()) || `${subvalue.name}`.includes(searchValue)) {
+                      return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className={`${subvalueItem.isNew ? 'loadedNewItem_list' : ''} business-listing-item accordion-item ${!subvalueItem.date_range ? 'pointerNone' : ''} `} >
+                        {/* <div className="accordion-header" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}> */}
+                        <div className="align-items-center justify-content-between gy-2 row accordion-header mx-1 my-2" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}>
+                          <div className="col-xl-10">
+                            <div className="insightStatus-content d-flex align-items-md-center">
+                              {subvalueItem.showTrend && <div className="trendStatus-content">
+                                <img className="insightStatus-icon" src={subvalueItem.trendIcon} alt="Increase Icon" height={8} width={14} />
+                                <span className={`fs--6 fw-bold text-${subvalueItem.isTrendIncrease ? 'success' : 'danger'}`}>{subvalueItem.trendPercentage}</span>
+                              </div>}
+                              <span className="px-1" dangerouslySetInnerHTML={{ __html: subvalueItem.output_html }} />
                             </div>
-                                <div className="col-lg-9 col-xl-10 ">
-                                    {subvalue.value.map((subvalueItem, anosIndex) => {
-                                      if (!searchValue !== '' && `${subvalueItem.output_html}`.toLowerCase().includes(searchValue.toLowerCase()) || `${subvalue.name}`.includes(searchValue)) {
-                                        return <div key={`${subvalueItem.narrative_id}_key_${anosIndex}`} className={`${subvalueItem.isNew ? 'loadedNewItem_list' : ''} business-listing-item accordion-item ${!subvalueItem.date_range ? 'pointerNone' : ''} `} >
-                                                {/* <div className="accordion-header" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}> */}
-                                                <div className="align-items-center justify-content-between gy-2 row accordion-header mx-1 my-2" id={`narrative_id_Heading_${subvalueItem.narrative_id}`}>
-                                                    <div className="col-xl-10">
-                                                        <div className="insightStatus-content d-flex align-items-md-center">
-                                                            {subvalueItem.showTrend && <div className="trendStatus-content">
-                                                                <img className="insightStatus-icon" src={subvalueItem.trendIcon} alt="Increase Icon" height={8} width={14} />
-                                                                <span className={`fs--6 fw-bold text-${subvalueItem.isTrendIncrease ? 'success' : 'danger'}`}>{subvalueItem.trendPercentage}</span>
-                                                            </div>}
-                                                            <span className="px-1" dangerouslySetInnerHTML={{ __html: subvalueItem.output_html }} />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-xl-2">
-                                                        <div className="insightAction d-flex justify-content-end align-items-center">
-                                                            {/* <span className={`insightAction-link form-check-label ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
+                          </div>
+                          <div className="col-xl-2">
+                            <div className="insightAction d-flex justify-content-end align-items-center">
+                              {/* <span className={`insightAction-link form-check-label ${subvalueItem.isFavorite ? 'active' : ''}`} onClick={() => iconPressed(subvalueItem, 'favorites')}>
                                                                 <img className="insightAction-icon icon-active" src={!subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
                                                                 <img className="insightAction-icon" src={subvalueItem.isFavorite ? STAR_ACTIVE : STAR} alt="Icon Star" height={24} width={24} />
                                                             </span>
@@ -618,62 +618,62 @@ const BlogInsights = (props) => {
                                                                 <img className="insightAction-icon icon-active" src={!subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
                                                                 <img className="insightAction-icon mt-1" data-html2canvas-ignore="true" src={subvalueItem.isHidden ? HIDDEN : VISIBLE} alt="EYE Icon Down Active" height={24} width={24} />
                                                             </span> */}
-                                                            {
-                                                                subvalueItem.date_range ? <span className="accordion-button insightAction-link  mr-5 form-check-label" type="button" data-bs-toggle="collapse" data-bs-target={`#narrative_id_${subvalueItem.narrative_id}`} aria-expanded={anosIndex === 0 ? 'true' : 'false'} aria-controls={`narrative_id_${subvalueItem.narrative_id}`} onClick={() => goToBussinesMetric(subvalueItem)}>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-bar-chart-fill barIcon icon-color" viewBox="0 0 16 16">
-                                                                        <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2z" />
-                                                                    </svg>
-                                                                </span>
-                                                                  : <span className="accordion-button insightAction-link inSightAction-PaddingRight mr-40  invisible" >
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-award icon-color" viewBox="0 0 16 16">
-                                                                            <path d="M9.669.864 8 0 6.331.864l-1.858.282-.842 1.68-1.337 1.32L2.6 6l-.306 1.854 1.337 1.32.842 1.68 1.858.282L8 12l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 6l.306-1.854-1.337-1.32-.842-1.68L9.669.864zm1.196 1.193.684 1.365 1.086 1.072L12.387 6l.248 1.506-1.086 1.072-.684 1.365-1.51.229L8 10.874l-1.355-.702-1.51-.229-.684-1.365-1.086-1.072L3.614 6l-.25-1.506 1.087-1.072.684-1.365 1.51-.229L8 1.126l1.356.702 1.509.229z" />
-                                                                            <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z" />
-                                                                        </svg>
-                                                                    </span>
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {/* </div> */}
-                                                <div id={`narrative_id_${subvalueItem.narrative_id}`} className="accordion-collapse collapse" aria-labelledby={`narrative_id_Heading_${subvalueItem.narrative_id}`} data-bs-parent='#accordionSample'>
-                                                    <div className="accordion-body">
-                                                        {
-                                                            // isExpandOpen &&
-                                                            isGraphData ? <div className="d-flex justify-content-center align-items-center" >
-                                                                <div className="spinner-border text-primary" role="status">
-                                                                    <span className="visually-hidden">Loading...</span>
-                                                                </div>
-                                                            </div> : <>
-                                                                <div className="d-flex justify-content-end">
-                                                                    <div className="w-25 my-3">
-                                                                        <select className="form-select border-primary" aria-label="Default select example" value={dateRangePeriod} onChange={(event) => selectPeriodRange(event)}>
-                                                                            {
-                                                                                periodRange.map(item => {
-                                                                                  return <option key={item} value={item}>{item}</option>
-                                                                                })
-                                                                            }
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <RenderGraph data={anosGraphList} chartType={chartType} dateRangePeriod={dateRangePeriod} />
-                                                            </>
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                      } else {
-                                        return null
-                                      }
-                                    })
-                                    }
+                              {
+                                subvalueItem.date_range ? <span className="accordion-button insightAction-link  mr-5 form-check-label" type="button" data-bs-toggle="collapse" data-bs-target={`#narrative_id_${subvalueItem.narrative_id}`} aria-expanded={anosIndex === 0 ? 'true' : 'false'} aria-controls={`narrative_id_${subvalueItem.narrative_id}`} onClick={() => goToBussinesMetric(subvalueItem)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-bar-chart-fill barIcon icon-color" viewBox="0 0 16 16">
+                                    <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2z" />
+                                  </svg>
+                                </span>
+                                  : <span className="accordion-button insightAction-link inSightAction-PaddingRight mr-40  invisible" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-award icon-color" viewBox="0 0 16 16">
+                                      <path d="M9.669.864 8 0 6.331.864l-1.858.282-.842 1.68-1.337 1.32L2.6 6l-.306 1.854 1.337 1.32.842 1.68 1.858.282L8 12l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 6l.306-1.854-1.337-1.32-.842-1.68L9.669.864zm1.196 1.193.684 1.365 1.086 1.072L12.387 6l.248 1.506-1.086 1.072-.684 1.365-1.51.229L8 10.874l-1.355-.702-1.51-.229-.684-1.365-1.086-1.072L3.614 6l-.25-1.506 1.087-1.072.684-1.365 1.51-.229L8 1.126l1.356.702 1.509.229z" />
+                                      <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z" />
+                                    </svg>
+                                  </span>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                        {/* </div> */}
+                        <div id={`narrative_id_${subvalueItem.narrative_id}`} className="accordion-collapse collapse" aria-labelledby={`narrative_id_Heading_${subvalueItem.narrative_id}`} data-bs-parent='#accordionSample'>
+                          <div className="accordion-body">
+                            {
+                              // isExpandOpen &&
+                              isGraphData ? <div className="d-flex justify-content-center align-items-center" >
+                                <div className="spinner-border text-primary" role="status">
+                                  <span className="visually-hidden">Loading...</span>
                                 </div>
-                            </React.Fragment>
-                      } else {
-                        return null
-                      }
-                    })}
+                              </div> : <>
+                                <div className="d-flex justify-content-end">
+                                  <div className="w-25 my-3">
+                                    <select className="form-select border-primary" aria-label="Default select example" value={dateRangePeriod} onChange={(event) => selectPeriodRange(event)}>
+                                      {
+                                        periodRange.map(item => {
+                                          return <option key={item} value={item}>{item}</option>
+                                        })
+                                      }
+                                    </select>
+                                  </div>
+                                </div>
+                                <RenderGraph data={anosGraphList} chartType={chartType} dateRangePeriod={dateRangePeriod} />
+                              </>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    } else {
+                      return null
+                    }
+                  })
+                  }
                 </div>
-            </div>
+              </React.Fragment>
+            } else {
+              return null
+            }
+          })}
+        </div>
+      </div>
     })
   }
 
@@ -688,37 +688,37 @@ const BlogInsights = (props) => {
       return <ChartComponent chartData={data} chartType={getChartName(chartType)} period={period} />
     } else {
       return <div className="table-responsive" style={{ height: data.length > 10 ? '400px' : 'auto' }}>
-                <table className="table table-striped table-hover" >
-                    <thead style={{ display: 'flex' }} >
-                        {/* <th scope="col">#</th> */}
-                        {
-                            data[0].map(column => {
-                              return <th style={{ flex: 1 }} key={column} scope="col">{column}</th>
-                            })
-                        }
-                    </thead>
-                    <tbody>
-                        {
-                            data.map((row, index) => {
-                              if (index !== 0) {
-                                return <tr style={{ display: 'flex' }} key={`${index}_row_index`}>
-                                        {/* <td>{index}</td> */}
-                                        {
-                                            row.map((row, cIndex) => {
-                                              return <td key={`${cIndex}_index`} style={{ flex: 1, width: 'auto', wordBreak: 'break-word' }}>
-                                                    {
-                                                        row === null ? '-' : row
-                                                    }
-                                                </td>
-                                            })
-                                        }
-                                    </tr>
-                              }
-                            })
-                        }
-                    </tbody>
-                </table>
-            </div>
+        <table className="table table-striped table-hover" >
+          <thead style={{ display: 'flex' }} >
+            {/* <th scope="col">#</th> */}
+            {
+              data[0].map(column => {
+                return <th style={{ flex: 1 }} key={column} scope="col">{column}</th>
+              })
+            }
+          </thead>
+          <tbody>
+            {
+              data.map((row, index) => {
+                if (index !== 0) {
+                  return <tr style={{ display: 'flex' }} key={`${index}_row_index`}>
+                    {/* <td>{index}</td> */}
+                    {
+                      row.map((row, cIndex) => {
+                        return <td key={`${cIndex}_index`} style={{ flex: 1, width: 'auto', wordBreak: 'break-word' }}>
+                          {
+                            row === null ? '-' : row
+                          }
+                        </td>
+                      })
+                    }
+                  </tr>
+                }
+              })
+            }
+          </tbody>
+        </table>
+      </div>
     }
   }
 
@@ -770,19 +770,19 @@ const BlogInsights = (props) => {
   }
   const Modal = ({ modalDetail, onPress }) => {
     return <Dialog fullWidth open={showModal || successModal} onClose={() => onPress('cancel')} aria-labelledby="form-dialog-title" >
-            <DialogTitle className="text-primary" id="form-dialog-title">{modalDetail.title}</DialogTitle>
-            <DialogContent >
-                <DialogContentText>
-                    {modalDetail.message}
-                    {modalDetail.isNoteEnable && <br/>}
-                    {modalDetail.isNoteEnable && <span><b>Note:</b> Generation of Output will take maximum 30 minutes.</span>}
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                {modalDetail.showNoButton && <button type="button" onClick={() => onPress('cancel')} className="btn btn-secondary" data-bs-dismiss="modal">{modalDetail.cancelButtonName}</button>}
-                {modalDetail.showYesButton && <button type="button" onClick={() => onPress('ok')} className="btn btn-primary">{modalDetail.okButtonName}</button>}
-            </DialogActions>
-        </Dialog>
+      <DialogTitle className="text-primary" id="form-dialog-title">{modalDetail.title}</DialogTitle>
+      <DialogContent >
+        <DialogContentText>
+          {modalDetail.message}
+          {modalDetail.isNoteEnable && <br />}
+          {modalDetail.isNoteEnable && <span><b>Note:</b> Generation of Output will take maximum 30 minutes.</span>}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        {modalDetail.showNoButton && <button type="button" onClick={() => onPress('cancel')} className="btn btn-secondary" data-bs-dismiss="modal">{modalDetail.cancelButtonName}</button>}
+        {modalDetail.showYesButton && <button type="button" onClick={() => onPress('ok')} className="btn btn-primary">{modalDetail.okButtonName}</button>}
+      </DialogActions>
+    </Dialog>
   }
 
   const deleteCustomNarrativeConfirm = (customNarrativeItem) => {
@@ -900,48 +900,48 @@ const BlogInsights = (props) => {
     return <div ref={manageTabContainerRef} className="d-flex flex-column justify-content-end">{tabList.map((customNarrativeItem, index) => {
       if (customNarrativeItem.id !== 'all') {
         return <div className="d-flex" key={`index_${index}`} >
-                <div className="col-12 business-listing-item p-3 d-flex justify-content-between align-items-center">
-                    <div className="insightStatus-content col-10">
-                        <span className="px-1" > { isCustomInsight ? customNarrativeItem.name : customNarrativeItem.title ?? 'null'} </span>
-                    </div>
-                    <div className="insightAction d-flex ">
-                        <span onClick={() => editCustomNarratives(customNarrativeItem)}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-pencil icon-color form-check-label" viewBox="0 0 16 16">
-                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                            </svg>
-                        </span>
-                        <div className="mx-2"></div>
-                        <svg onClick={() => deleteCustomNarrativeConfirm(customNarrativeItem)} xmlns="http://www.w3.org/2000/svg" width={20} height={20} fill="currentColor" className="bi bi-trash icon-color mr-1 form-check-label" viewBox="0 0 16 16">
-                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                            <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                        </svg>
-                        <div className="mx-2"></div>
-                        <svg onClick={() => duplicateCustomNarrativeConfirm(customNarrativeItem)} version="1.0" fill='currentColor' className=" icon-color mr-1 form-check-label" xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 50 50">
-                          <g transform="translate(0.000000,50.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
-                              <path d="M190 473 c0 -16 5 -35 10 -43 7 -11 10 -7 10 18 l0 32 75 0 75 0 0
+          <div className="col-12 business-listing-item p-3 d-flex justify-content-between align-items-center">
+            <div className="insightStatus-content col-10">
+              <span className="px-1" > {isCustomInsight ? customNarrativeItem.name : customNarrativeItem.title ?? 'null'} </span>
+            </div>
+            <div className="insightAction d-flex ">
+              <span onClick={() => editCustomNarratives(customNarrativeItem)}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-pencil icon-color form-check-label" viewBox="0 0 16 16">
+                  <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                </svg>
+              </span>
+              <div className="mx-2"></div>
+              <svg onClick={() => deleteCustomNarrativeConfirm(customNarrativeItem)} xmlns="http://www.w3.org/2000/svg" width={20} height={20} fill="currentColor" className="bi bi-trash icon-color mr-1 form-check-label" viewBox="0 0 16 16">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+              </svg>
+              <div className="mx-2"></div>
+              <svg onClick={() => duplicateCustomNarrativeConfirm(customNarrativeItem)} version="1.0" fill='currentColor' className=" icon-color mr-1 form-check-label" xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 50 50">
+                <g transform="translate(0.000000,50.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
+                  <path d="M190 473 c0 -16 5 -35 10 -43 7 -11 10 -7 10 18 l0 32 75 0 75 0 0
                               -60 0 -60 60 0 60 0 0 -130 0 -130 -75 0 c-43 0 -75 -4 -75 -10 0 -6 35 -10
                               85 -10 l85 0 0 148 0 148 -63 62 -63 62 -92 0 -92 0 0 -27z m235 -53 l39 -40
                               -42 0 -42 0 0 40 c0 22 1 40 3 40 2 0 21 -18 42 -40z"/>
-                              <path d="M0 210 l0 -210 155 0 155 0 0 148 0 148 -63 62 -63 62 -92 0 -92 0 0
+                  <path d="M0 210 l0 -210 155 0 155 0 0 148 0 148 -63 62 -63 62 -92 0 -92 0 0
                               -210z m170 130 l0 -60 60 0 60 0 0 -130 0 -130 -135 0 -135 0 0 190 0 190 75
                               0 75 0 0 -60z m65 0 l39 -40 -42 0 -42 0 0 40 c0 22 1 40 3 40 2 0 21 -18 42
                               -40z"/>
-                            </g>
-                        </svg>
-                    </div>
-                </div>
+                </g>
+              </svg>
             </div>
+          </div>
+        </div>
       }
     })}
-    {isLoading && <div className="d-flex justify-content-center align-items-center" >
+      {isLoading && <div className="d-flex justify-content-center align-items-center" >
         <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">Loading...</span>
         </div>
-    </div>}
-    {isManageTabLoadMore && <div className="text-center pt-20 pb-20" onClick={() => manageLoadMore(customOffset, limit)}>
+      </div>}
+      {isManageTabLoadMore && <div className="text-center pt-20 pb-20" onClick={() => manageLoadMore(customOffset, limit)}>
         <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
-    </div>}
-        </div>
+      </div>}
+    </div>
   }
 
   const handleCustomInsightModal = (flag, isServiceCall) => {
@@ -1028,91 +1028,92 @@ const BlogInsights = (props) => {
   }
   const apps = JSON.parse(localStorage.getItem('selectedAppsInfo'))
   return (
-        <>
-            <main>
-                <section className="bg-white pb-20 position-relative shadow-sm">
-                    <div className="container">
-                        <InsightsHeader autoCompleteOption={autoCompleteOptions} autoCompleteValue={autoCompleteValue} autoCompleteValueChange={autoCompleteValueChange} isDisableManageBtn = {tabList.length > 1} currentTab={tabName} headingTitle={FAVORITES} businessName={apps.name} manageInsights={manageInsightsModal} />
-                    </div>
-                </section>
-                <section className="bg-section">
-                    <div className="container position-relative d-flex justify-content-between">
-                    <div>
-                            <nav className="nav page-tabs ">
-                                {
-                                    tabList.map((navTab, index) => (
-                                        <span
-                                            key={navTab.id}
-                                            className={(selectedTab.id === navTab.id) ? 'nav-link active' : 'nav-link'}
-                                            onClick={ () => setTabValue(navTab)}
-                                        >
-                                            {navTab.id === 'all' ? navTab.name : isCustomInsight ? navTab.name : navTab.title ?? 'null'}
-                                        </span>
-                                    ))
-                                }
-                            </nav>
-                        </div>
-                        <div className='d-flex align-items-center justify-content-between action-container'>
-                        {/* {selectedTab.id !== 'all' && <span className="btn btn-primary disabled-link h5 pr-2 mx-auto" style={{ fontSize: 14 }} onClick={() => editCustomNarratives(selectedTab)}>
+    <>
+      <main>
+        <section className="bg-white pb-20 position-relative shadow-sm">
+          <div className="container">
+            <InsightsHeader autoCompleteOption={autoCompleteOptions} autoCompleteValue={autoCompleteValue} autoCompleteValueChange={autoCompleteValueChange} isDisableManageBtn={tabList.length > 1} currentTab={tabName} headingTitle={FAVORITES} businessName={apps.name} manageInsights={manageInsightsModal} />
+          </div>
+        </section>
+        <section className="bg-section">
+          <div className="container position-relative d-flex justify-content-between">
+            <div>
+              <nav className="nav page-tabs ">
+                {
+                  tabList.map((navTab, index) => (
+                    <span
+                      key={navTab.id}
+                      className={(selectedTab.id === navTab.id) ? 'nav-link active' : 'nav-link'}
+                      onClick={() => setTabValue(navTab)}
+                    >
+                      {navTab.id === 'all' ? navTab.name : isCustomInsight ? navTab.name : navTab.title ?? 'null'}
+                    </span>
+                  ))
+                }
+              </nav>
+            </div>
+            <div className='d-flex align-items-center justify-content-between action-container'>
+              {/* {selectedTab.id !== 'all' && <span className="btn btn-primary disabled-link h5 pr-2 mx-auto" style={{ fontSize: 14 }} onClick={() => editCustomNarratives(selectedTab)}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" className="bi bi-pencil form-check-label" viewBox="0 0 16 16">
                                 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                             </svg>
                           </span>} */}
-                          <span className="btn btn-primary disabled-link h4 addCustomBtn" onClick={() => setIsShowCustomInsightModal(true)}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-plus-lg" viewBox="0 0 16 16">
-                                  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
-                              </svg>
-                          </span>
-                        </div>
-                    </div>
-                    <div className="container pb-40 pt-40">
-                        {/* Insights Data */}
-                        {(selectedTab.id !== 'all') ? renderBlogList() : (anosList.size > 0) ? renderTabContent(tabName) : (tabName === 'all' && !isLoading) ? <div className="d-flex flex-column align-items-center justify-content-center">
-                            <h5 className="fw-bolder">No insights yet</h5>
-                            <span>For new businesses, insights should get generated within 15-30 minutes from the time of setup.</span>
-                        </div> : null}
-                        {/* Insights Data end */}
-                        {isLoading && selectedTab.id === 'all' && <div className="d-flex justify-content-center align-items-center" >
-                            <div className="spinner-border text-primary" role="status">
-                                <span className="visually-hidden">Loading...</span>
-                            </div>
-                        </div>}
-                        {/* {(isLoadMore && selectedTab.id === 'all') && <div className="text-center pt-20 pb-20" onClick={() => loadMoreData(pageNo, limit)}>
+              <span className="btn btn-primary disabled-link h4 addCustomBtn" onClick={() => setIsShowCustomInsightModal(true)}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-plus-lg" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
+                </svg>
+              </span>
+            </div>
+          </div>
+          <div className="container pb-40 pt-40">
+            {/* Insights Data */}
+            {(selectedTab.id !== 'all') ? renderBlogList() : (anosList.size > 0) ? renderTabContent(tabName) : (tabName === 'all' && !isLoading) ? <div className="d-flex flex-column align-items-center justify-content-center">
+              <h5 className="fw-bolder">No insights yet</h5>
+              {<DateRangePicker minimumDate={false} disable={false} dateValue={dateValue} dateChange={handleDateChange} />}
+              <span>For new businesses, insights should get generated within 15-30 minutes from the time of setup.</span>
+            </div> : null}
+            {/* Insights Data end */}
+            {isLoading && selectedTab.id === 'all' && <div className="d-flex justify-content-center align-items-center" >
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>}
+            {/* {(isLoadMore && selectedTab.id === 'all') && <div className="text-center pt-20 pb-20" onClick={() => loadMoreData(pageNo, limit)}>
                             <span className="btn btn-primary disabled-link"><img className="btn-icon" src={ARROW_LEFT} alt="Arrow Left" height={16} width={16} />Load More</span>
                         </div>} */}
-                    </div>
-                    {
-                        showModal && <Modal
-                            modalDetail={modalDetail}
-                            onPress={onPressModalButton}
-                        />
-                    }{
-                      successModal && <Modal
-                          modalDetail={modalDetail}
-                          onPress={handleModalClick}
-                      />
-                  }
-                    {
-                        (isShowCustomInsightModal || manageInsightModal) && <Dialog disableBackdropClick ={!manageInsightModal} maxWidth={'lg'} fullWidth open={isShowCustomInsightModal || manageInsightModal} onClose={() => closeModal()} aria-labelledby="form-dialog-title" >
-                          <Grid container direction="row" justify="space-between" alignItems="center" >
-                            <DialogTitle className="text-primary" id="form-dialog-title">
-                              {`${manageInsightModal ? 'Manage' : localStorage.getItem('isEdit') === 'true' ? 'Edit' : 'Create'} Insights`}
-                            </DialogTitle>
-                            {!manageInsightModal && <DialogActions>
-                              <svg onClick={ () => handleCustomInsightModal(false)} xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                              </svg>
-                            </DialogActions>}
-                          </Grid>
-                            <DialogContent >
-                                {
-                                    manageInsightModal ? renderCustomNarratives() : <AddCustomMetric isCustomInsight = {isCustomInsight} dateValue={dateValue} isDisplayByModal={true} customInsightId={selectedTab.id} isEdit={localStorage.getItem('isEdit')} handleModal={handleCustomInsightModal} />}
-                            </DialogContent>
-                        </Dialog>
-                    }
-                </section>
-            </main>
-        </>
+          </div>
+          {
+            showModal && <Modal
+              modalDetail={modalDetail}
+              onPress={onPressModalButton}
+            />
+          }{
+            successModal && <Modal
+              modalDetail={modalDetail}
+              onPress={handleModalClick}
+            />
+          }
+          {
+            (isShowCustomInsightModal || manageInsightModal) && <Dialog disableBackdropClick={!manageInsightModal} maxWidth={'lg'} fullWidth open={isShowCustomInsightModal || manageInsightModal} onClose={() => closeModal()} aria-labelledby="form-dialog-title" >
+              <Grid container direction="row" justify="space-between" alignItems="center" >
+                <DialogTitle className="text-primary" id="form-dialog-title">
+                  {`${manageInsightModal ? 'Manage' : localStorage.getItem('isEdit') === 'true' ? 'Edit' : 'Create'} Insights`}
+                </DialogTitle>
+                {!manageInsightModal && <DialogActions>
+                  <svg onClick={() => handleCustomInsightModal(false)} xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                  </svg>
+                </DialogActions>}
+              </Grid>
+              <DialogContent >
+                {
+                  manageInsightModal ? renderCustomNarratives() : <AddCustomMetric isCustomInsight={isCustomInsight} dateValue={dateValue} isDisplayByModal={true} customInsightId={selectedTab.id} isEdit={localStorage.getItem('isEdit')} handleModal={handleCustomInsightModal} />}
+              </DialogContent>
+            </Dialog>
+          }
+        </section>
+      </main>
+    </>
   )
 }
 
