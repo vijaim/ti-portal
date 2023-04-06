@@ -85,7 +85,7 @@ export const HEADING_TITLE = {
   CUSTOM_INSIGHTS: 'Custom Insights'
 }
 
-export const API_ROOT = process.env.REACT_APP_API_ENDPOINT || 'https://devportalapi.trueinsights.co/'
+export const API_ROOT = process.env.REACT_APP_API_ENDPOINT || 'https://portalapi.trueinsights.co/'
 
 export const ROOT = {
   OTP_GENERATE: `${API_ROOT}users/generate_password`,
