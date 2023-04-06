@@ -1067,11 +1067,18 @@ const BlogInsights = (props) => {
           </div>
           <div className="container pb-40 pt-40">
             {/* Insights Data */}
-            {(selectedTab.id !== 'all') ? renderBlogList() : (anosList.size > 0) ? renderTabContent(tabName) : (tabName === 'all' && !isLoading) ? <div className="d-flex flex-column align-items-center justify-content-center">
+            {(selectedTab.id !== 'all') ? renderBlogList() : (anosList.size > 0) ? renderTabContent(tabName) : (tabName === 'all' && !isLoading) ? <div className="insightStatus-content d-flex flex-column position-relative  px-2 justify-content-md-between align-items-md-start mx-2 my-1 w-100 p-3" >
+            <div className='position-relative d-flex justify-content-end align-items-center mb-3 w-100'>
+              <span className='mt-1 text-dark'>Generated on :</span>
+              <div className='d-flex align-items-center'>
+                {<DateRangePicker minimumDate={false} disable={false} dateValue={dateValue} dateChange={handleDateChange} />}
+              </div>
+            </div>
+            <div className="d-flex flex-column w-100 align-items-center justify-content-center my-2">
               <h5 className="fw-bolder">No insights yet</h5>
-              {<DateRangePicker minimumDate={false} disable={false} dateValue={dateValue} dateChange={handleDateChange} />}
               <span>For new businesses, insights should get generated within 15-30 minutes from the time of setup.</span>
-            </div> : null}
+            </div>
+          </div> : null}
             {/* Insights Data end */}
             {isLoading && selectedTab.id === 'all' && <div className="d-flex justify-content-center align-items-center" >
               <div className="spinner-border text-primary" role="status">
