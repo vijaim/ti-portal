@@ -175,9 +175,8 @@ const AddBusiness = (props) => {
         timeConvert('00:00', false)
       }
       props.businessData.admins.map((item) => {
-        if (item.user_id !== parseInt(localStorage.getItem('userId'))) {
-          adminsList.push(item.email_id)
-        }
+        adminsList.push(item.email_id)
+
         setAdminList(adminsList)
         return null
       })
