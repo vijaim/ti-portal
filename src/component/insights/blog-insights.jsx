@@ -131,7 +131,7 @@ const BlogInsights = (props) => {
           } else {
             setIsManageTabLoadMore(false)
           }
-          tabList = [...response.data.response_objects.custom_narratives, ...tabList]
+          tabList = [...tabList, ...response.data.response_objects.custom_narratives]
           selectedTab = tabList[0]
           setSelectedTab(selectedTab)
           // blogList = [...response.data.response_objects.app_narrative_blogs, ...blogList]
